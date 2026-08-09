@@ -1,0 +1,161 @@
+/* ------------------------------------------------------------------ */
+/*  #nudot-loader — boot loader (spec §3)                              */
+/*  Pure CSS keyframe timeline; every delay is absolute from paint:    */
+/*    0.30s  N blurs in          2.00s  letters spread / icon out      */
+/*    0.60s  D blurs in          2.60s  mask hole opens                */
+/*    2.90s  letters fade        3.15s  shield off (CSS failsafe)      */
+/* ------------------------------------------------------------------ */
+
+#nudot-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  /* CSS failsafe: shell turns itself off even if JS never runs. */
+  animation: ndLoaderShieldOff 0.01s linear 3.15s forwards;
+}
+
+/* JS force-hide (dismiss + hard fallback). */
+#nudot-loader.nd-dismissed {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* The backdrop: a centered 0x0 div whose giant box-shadow paints the
+   whole screen #080808. Growing the div opens a rectangular "hole"
+   from the center, revealing the page underneath. */
+#nudot-loader .nd-mask {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 150vmax var(--color-bg-loader, #080808);
+  animation: ndBoxOpen 1.2s cubic-bezier(0.76, 0, 0.24, 1) 2.6s forwards;
+}
+
+#nudot-loader .nd-logo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-family: var(--font-family-display);
+  font-weight: 600;
+  font-size: clamp(44px, 8vw, 104px);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #fff;
+}
+
+#nudot-loader .nd-letter {
+  display: inline-block;
+  opacity: 0; /* hidden until ndLetterIn kicks in */
+  will-change: transform, opacity, filter;
+}
+
+#nudot-loader .nd-n {
+  animation:
+    ndLetterIn 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 0.3s forwards,
+    ndSpreadL 1.1s cubic-bezier(0.76, 0, 0.24, 1) 2s forwards,
+    ndFadeOut 0.45s ease 2.9s forwards;
+}
+
+#nudot-loader .nd-d {
+  animation:
+    ndLetterIn 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) 0.6s forwards,
+    ndSpreadR 1.1s cubic-bezier(0.76, 0, 0.24, 1) 2s forwards,
+    ndFadeOut 0.45s ease 2.9s forwards;
+}
+
+#nudot-loader .nd-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: ndIconOut 0.45s ease 2s forwards;
+}
+
+#nudot-loader .nd-icon video {
+  display: block;
+  width: clamp(44px, 8vw, 104px);
+  height: clamp(44px, 8vw, 104px);
+  object-fit: contain;
+}
+
+/* ---------------------------- keyframes --------------------------- */
+
+@keyframes ndLetterIn {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(6px) scale(1.15);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ndSpreadL {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50vw + 120px));
+  }
+}
+
+@keyframes ndSpreadR {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(50vw - 120px));
+  }
+}
+
+@keyframes ndIconOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes ndFadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes ndBoxOpen {
+  0% {
+    width: 0;
+    height: 0;
+  }
+  15% {
+    width: 7vw;
+    height: 4vw;
+  }
+  100% {
+    width: 300vmax;
+    height: 300vmax;
+  }
+}
+
+@keyframes ndLoaderShieldOff {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}

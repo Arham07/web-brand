@@ -1,0 +1,94 @@
+"use client";
+
+import { useEffect } from "react";
+import type Lenis from "lenis";
+import { getLenis, scrollTop } from "@/lib/lenis";
+
+/**
+ * #scroll-progress — 1.5px fixed top bar (spec §6).
+ * Target progress (0–100) tracks scrollTop / (docHeight − innerHeight);
+ * rendered through a self-terminating rAF lerp that sleeps once settled.
+ */
+export default function ScrollProgress() {
+  useEffect(() => {
+    const bar = document.getElementById("scroll-progress");
+    if (!(bar instanceof HTMLElement)) return;
+
+    let target = 0; // 0..100
+    let current = 0;
+    let lastWritten = -1;
+    let rafId = 0;
+    let running = false;
+    let disposed = false;
+
+    const write = (value: number) => {
+      bar.style.transform = `scaleX(${value / 100})`;
+      lastWritten = value;
+    };
+
+    const step = () => {
+      if (disposed) return;
+      current += (target - current) * 0.12;
+
+      const settled = Math.abs(target - current) < 0.05;
+      if (settled) current = target;
+
+      // Skip DOM writes below 0.05 (of the 0–100 range) unless finishing.
+      if (settled || Math.abs(current - lastWritten) > 0.05) write(current);
+
+      if (settled) {
+        running = false;
+        rafId = 0;
+        return; // loop sleeps until the next wake()
+      }
+      rafId = requestAnimationFrame(step);
+    };
+
+    const wake = () => {
+      if (running || disposed) return;
+      running = true;
+      rafId = requestAnimationFrame(step);
+    };
+
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = max > 0 ? (scrollTop() / max) * 100 : 0;
+      target = Math.min(100, Math.max(0, pct));
+      wake();
+    };
+
+    // Lenis drives the real window scroll, so the native listener covers the
+    // fallback; the Lenis event (hooked once available) mirrors the original.
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    window.addEventListener("load", update);
+
+    let hookedLenis: Lenis | null = null;
+    const hookRaf = requestAnimationFrame(() => {
+      const lenis = getLenis();
+      if (lenis) {
+        hookedLenis = lenis;
+        lenis.on("scroll", update);
+      }
+    });
+
+    const ro = new ResizeObserver(update);
+    ro.observe(document.body);
+
+    update();
+
+    return () => {
+      disposed = true;
+      running = false;
+      cancelAnimationFrame(rafId);
+      cancelAnimationFrame(hookRaf);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      window.removeEventListener("load", update);
+      hookedLenis?.off("scroll", update);
+      ro.disconnect();
+    };
+  }, []);
+
+  return <div id="scroll-progress" aria-hidden="true" />;
+}

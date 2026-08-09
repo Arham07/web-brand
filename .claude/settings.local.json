@@ -7,7 +7,9 @@
       "Bash(grep -E '^\\(ScrollTrigger|Flip|ScrambleTextPlugin\\)\\\\.js$')",
       "Bash(node scripts/download-assets.mjs)",
       "Bash(git add *)",
-      "Bash(git commit -q -m 'P0: scaffold Next 16 + fonts + tokens + asset pipeline \\(98 assets mirrored\\) *)"
+      "Bash(git commit -q -m 'P0: scaffold Next 16 + fonts + tokens + asset pipeline \\(98 assets mirrored\\) *)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }

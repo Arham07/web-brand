@@ -7,6 +7,14 @@ import {
 
 import "../styles/tokens.css";
 import "../styles/base.css";
+import "../styles/loader.css";
+import "../styles/nav.css";
+import "../styles/cursor.css";
+import "../styles/chrome-misc.css";
+import "../styles/sections/hero.css";
+import "../styles/sections/dark-wrapper.css";
+
+import AppShell from "@/components/providers/AppShell";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -59,7 +67,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${dmSans.variable} ${zalando.variable} ${bitcount.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }

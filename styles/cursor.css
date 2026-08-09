@@ -1,0 +1,131 @@
+/* ------------------------------------------------------------------ */
+/*  Custom cursor (dot + ring) and grid mouse trail — desktop only     */
+/* ------------------------------------------------------------------ */
+
+/* Hard CSS gate mirroring the JS gate */
+@media (max-width: 1024px), (hover: none), (pointer: coarse) {
+  #cursor-dot,
+  #cursor-ring,
+  .mouseTracker--01 {
+    display: none !important;
+  }
+}
+
+/* -------------------------------- dot ----------------------------- */
+
+#cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0; /* the grid trail is the idle cursor */
+  z-index: 99998;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  transition:
+    transform 0.03s linear,
+    opacity 0.3s ease;
+}
+
+/* stays hidden even while hovering interactives */
+#cursor-dot.is-link {
+  opacity: 0;
+}
+
+/* ------------------------------- ring ------------------------------ */
+
+#cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--cursor-ring-size);
+  height: var(--cursor-ring-size);
+  margin: calc(var(--cursor-ring-size) / -2) 0 0
+    calc(var(--cursor-ring-size) / -2);
+  z-index: 99998;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* inner circle: thin ring at rest, solid white disc on hover */
+#cursor-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  background: transparent;
+  transform: scale(0.5294);
+  transition:
+    transform 0.24s cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 0.24s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+#cursor-ring.is-link::before {
+  transform: scale(1);
+  background: #fff;
+}
+
+#cursor-ring.is-leaving::before {
+  transform: scale(0.5294);
+  background: transparent;
+}
+
+/* hover label, centered inside the white disc */
+#cursor-ring::after {
+  content: attr(data-cursor-label);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 52px;
+  height: 52px;
+  margin: -26px 0 0 -26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #000;
+  font-family: var(--font-family-body);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-ui);
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+#cursor-ring.is-link::after {
+  opacity: 1;
+}
+
+#cursor-ring.is-leaving::after {
+  opacity: 0;
+}
+
+/* fade out when the pointer leaves the document (or before first move) */
+#cursor-dot.is-hidden,
+#cursor-ring.is-hidden {
+  opacity: 0 !important;
+}
+
+/* --------------------------- grid trail ---------------------------- */
+
+.mouseTracker--01 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 2px;
+  background: #fff;
+  opacity: 0; /* WAAPI animates 1 -> 0 when placed */
+  z-index: 99999;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
