@@ -19,5 +19,5 @@ export default async function Page({
   const { slug } = await params;
   const title = WORK_SLUGS[slug];
   if (!title) notFound();
-  return <PlaceholderPage title={title} zhLabel="設計案例" />;
+  return <PlaceholderPage title={title} caption="Selected Work" />;
 }

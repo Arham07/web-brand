@@ -3,7 +3,7 @@
 type MenuRow = {
   href: string;
   transitionLabel: string;
-  zh: string;
+  caption: string;
   title: string;
   thumbs: [string, string];
 };
@@ -12,35 +12,35 @@ const ROWS: MenuRow[] = [
   {
     href: "/",
     transitionLabel: "Home",
-    zh: "首頁",
+    caption: "Home",
     title: "HOME",
     thumbs: ["/images/nav/1.webp", "/images/nav/2.webp"],
   },
   {
     href: "/about",
     transitionLabel: "About",
-    zh: "核點創意",
+    caption: "About Us",
     title: "ABOUT",
     thumbs: ["/images/nav/3.webp", "/images/nav/4.webp"],
   },
   {
     href: "/work",
     transitionLabel: "Work",
-    zh: "設計案例",
+    caption: "Selected Work",
     title: "WORK",
     thumbs: ["/images/nav/5.webp", "/images/nav/6.webp"],
   },
   {
     href: "/lab",
     transitionLabel: "Labs",
-    zh: "核點實驗室",
+    caption: "Experiments",
     title: "LABS",
     thumbs: ["/images/nav/7.webp", "/images/nav/8.webp"],
   },
   {
     href: "/contact",
     transitionLabel: "Contact",
-    zh: "聯繫我們",
+    caption: "Get in Touch",
     title: "CONTACT",
     thumbs: ["/images/nav/9.webp", "/images/nav/10.webp"],
   },
@@ -63,11 +63,11 @@ export default function NavMenu() {
                 className="ns-showcase-row ns-dropdown__item"
                 href={row.href}
                 data-transition-label={row.transitionLabel}
-                aria-label={row.zh}
+                aria-label={row.caption}
               >
                 <span
                   className="ns-showcase-row__index"
-                  data-text={`( ${row.zh} )`}
+                  data-text={`( ${row.caption} )`}
                 />
                 <span className="ns-showcase-row__thumb is-left" aria-hidden="true">
                   <img

@@ -182,7 +182,7 @@ export default function GallerySection() {
           </video>
         </div>
         <h2 className="gallery-header-label" data-reveal="fade">
-          ( 重新定義品牌的視覺思維 )
+          ( Redefining Brand Visual Thinking )
         </h2>
         <div className="gallery-header-title">
           <span className="gh-line" data-reveal="word">
@@ -196,7 +196,7 @@ export default function GallerySection() {
           </span>
         </div>
         <p className="gallery-header-sub text1vw" data-reveal="fade" data-reveal-delay="0.3">
-          數位視覺能量釋放點
+          Where digital visual energy is unleashed
         </p>
       </div>
 

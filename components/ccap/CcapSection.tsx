@@ -14,10 +14,10 @@ import { useSectionNear } from "@/hooks/useSectionNear";
 const RingGallery = dynamic(() => import("./RingGallery"), { ssr: false });
 
 const SERVICE_TAGS = [
-  "( 網頁視覺美學 )",
-  "( 高階商業視覺 )",
-  "( 使用體驗與介面 )",
-  "( AI 圖像 · 影像 )",
+  "( Web Visual Aesthetics )",
+  "( High-End Commercial Visuals )",
+  "( UX & Interface )",
+  "( AI Image & Motion )",
 ];
 
 type TitleState = "hidden" | "visible" | "exiting";
@@ -192,7 +192,9 @@ export default function CcapSection() {
                     </video>
                   </div>
                   <div className="service-label reveal-wrap text1vw">
-                    <h2 className="reveal-inner">跨領域視覺與數位整合</h2>
+                    <h2 className="reveal-inner">
+                      Cross-Disciplinary Visuals & Digital Integration
+                    </h2>
                   </div>
                 </div>
               </div>

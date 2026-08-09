@@ -6,18 +6,18 @@ import { useSectionNear } from "@/hooks/useSectionNear";
 import { prefersReducedMotion } from "@/lib/device";
 
 const DORMANT_NAV = [
-  { href: "/work", label: "Work", text: "設計案例" },
-  { href: "/about", label: "About", text: "關於核點" },
-  { href: "/lab", label: "Lab", text: "核點實驗室" },
-  { href: "/blog", label: "Blog", text: "核點洞察" },
-  { href: "/contact", label: "Contact", text: "聯繫我們" },
+  { href: "/work", label: "Work" },
+  { href: "/about", label: "About" },
+  { href: "/lab", label: "Lab" },
+  { href: "/blog", label: "Blog" },
+  { href: "/contact", label: "Contact" },
 ] as const;
 
 const SOCIALS = [
   { href: "https://www.instagram.com/nudotlabs", text: "Instagram" },
   { href: "https://www.threads.com/@leeyiheng0513", text: "Threads" },
   {
-    href: "https://www.facebook.com/profile.php?id=61588727983387&locale=zh_TW",
+    href: "https://www.facebook.com/profile.php?id=61588727983387",
     text: "Facebook",
   },
 ] as const;
@@ -173,10 +173,10 @@ export default function SiteFooter() {
 
   return (
     <footer id="site-footer" className="site-footer" ref={footerRef}>
-      <nav className="dark-nav footer-nav" id="ui-nav" aria-label="頁尾選單">
+      <nav className="dark-nav footer-nav" id="ui-nav" aria-label="Footer menu">
         {DORMANT_NAV.map((item) => (
           <a key={item.href} href={item.href} data-transition-label={item.label}>
-            {item.text}
+            {item.label}
           </a>
         ))}
       </nav>
@@ -191,9 +191,11 @@ export default function SiteFooter() {
         <div className="footer-main-content">
           <div className="footer-left">
             <p className="footer-description">
-              NUDOT 核點創意｜台中網頁設計・高階商業視覺生成・AI
-              動態影像。整合品牌識別、互動體驗設計與 Gen-AI
-              視覺技術，為品牌打造具備國際競爭力的數位視覺敘事。
+              NUDOT Studio | Taichung web design, high-end commercial visual
+              generation, and AI motion imagery. We integrate brand identity,
+              interactive experience design, and Gen-AI visual technology to
+              build internationally competitive digital visual narratives for
+              brands.
             </p>
             <div className="footer-contact-info">
               <a className="footer-email" href="mailto:hello@nudot.com.tw">
@@ -201,7 +203,10 @@ export default function SiteFooter() {
               </a>
               <span className="footer-phone">(04) 3603-3622</span>
             </div>
-            <div className="footer-address">406臺中市北屯區文心路三段447號4樓</div>
+            <div className="footer-address">
+              4F, No. 447, Sec. 3, Wenxin Rd., Beitun Dist., Taichung City
+              406, Taiwan
+            </div>
             <div className="footer-nav-links">
               {SOCIALS.map((s) => (
                 <a key={s.text} href={s.href} target="_blank" rel="noopener noreferrer">
@@ -245,7 +250,7 @@ export default function SiteFooter() {
           data-bg="/images/footer.webp"
         />
         <div className="footer-parallax-copy">
-          <span>核點創意有限公司</span>
+          <span>NUDOT Creative Co., Ltd.</span>
           <span>© 2026 NUDOT STUDIO. ALL RIGHTS RESERVED.</span>
         </div>
       </div>

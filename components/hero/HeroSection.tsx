@@ -8,7 +8,6 @@ import { SLIDES } from "./slides-data";
 
 const HeroSlider = dynamic(() => import("./HeroSlider"), { ssr: false });
 
-const SERVICES_ZH = ["核心策略規劃", "品牌識別", "內容創意", "技術趨勢實踐"];
 const SERVICES_EN = [
   "Creative Strategy",
   "Brand Identity",
@@ -139,13 +138,6 @@ export default function HeroSection() {
             </div>
           </div>
           <div className="grid-4">
-            <ul className="services-list">
-              {SERVICES_ZH.map((s) => (
-                <li key={s}>
-                  <Mask>{s}</Mask>
-                </li>
-              ))}
-            </ul>
             <div className="col-right">
               <ul className="services-list services-list_en bordered">
                 {SERVICES_EN.map((s) => (
@@ -175,18 +167,18 @@ export default function HeroSection() {
             </div>
             <div className="grid-4 border-top-line">
               <div>
-                <Mask>( 網頁互動開發 )</Mask>
+                <Mask>( Interactive Web Development )</Mask>
               </div>
               <div className="cell-center">
-                <Mask>( 動態設計 )</Mask>
+                <Mask>( Motion Design )</Mask>
               </div>
               <div className="cell-center">
                 <h1 className="hero-title">
-                  <Mask>高階網頁設計</Mask>
+                  <Mask>High-End Web Design</Mask>
                 </h1>
               </div>
               <div className="cell-right">
-                <Mask>( 品牌核心識別 )</Mask>
+                <Mask>( Core Brand Identity )</Mask>
               </div>
             </div>
           </div>
@@ -207,7 +199,7 @@ export default function HeroSection() {
                 <br />
                 04-36033622
                 <br />
-                核點 Nudot Studio 2026©
+                NUDOT Studio 2026©
               </Mask>
             </div>
             <div className="footer-col col-right footer-links">

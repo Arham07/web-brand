@@ -45,7 +45,7 @@ export default function FixedLogo() {
         data-cursor="HOME"
         aria-label="NUDOT home"
       >
-        <img src="/images/pc_logo.svg" alt="NUDOT 核點創意" width={45} height={35} />
+        <img src="/images/pc_logo.svg" alt="NUDOT" width={45} height={35} />
       </a>
     </nav>
   );

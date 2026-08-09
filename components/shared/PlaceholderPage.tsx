@@ -1,10 +1,10 @@
 interface Props {
   title: string;
-  zhLabel: string;
+  caption: string;
 }
 
 /** Minimal dark placeholder used by the not-yet-designed routes. */
-export default function PlaceholderPage({ title, zhLabel }: Props) {
+export default function PlaceholderPage({ title, caption }: Props) {
   return (
     <main
       style={{
@@ -26,7 +26,7 @@ export default function PlaceholderPage({ title, zhLabel }: Props) {
           textTransform: "uppercase",
         }}
       >
-        （ {zhLabel} ）
+        ( {caption} )
       </p>
       <h1
         style={{

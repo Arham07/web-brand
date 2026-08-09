@@ -43,19 +43,19 @@ const bitcount = Bitcount_Grid_Single({
 });
 
 export const metadata: Metadata = {
-  title: "核點 Nudot Studio｜台中網頁設計 × 品牌視覺升級 × 動態特效",
+  title: "NUDOT Studio | Web Design x Brand Visuals x Motion Design",
   description:
-    "專注於台中網頁設計的頂尖團隊——核點設計 NUDOT。我們深耕高階網頁設計、動態特效設計與品牌視覺升級。結合流體極簡美學與高階前端技術，為企業打造具備國際大器格局的沉浸式互動網站，讓數位體驗成為您最強的商業資產。",
+    "NUDOT is a leading creative studio specializing in high-end web design, motion design, and brand visual elevation. We blend fluid minimalist aesthetics with advanced front-end technology to build immersive, interactive websites with an international standard of craft — turning digital experience into your strongest business asset.",
   metadataBase: new URL("https://nudot.com.tw"),
   openGraph: {
     type: "website",
     url: "https://nudot.com.tw/",
-    title: "核點設計 NUDOT｜台中網頁設計 × 動態特效設計 × 品牌視覺升級",
+    title: "NUDOT Studio | Web Design x Motion Design x Brand Visuals",
     description:
-      "專注於台中網頁設計的頂尖團隊——核點設計 NUDOT。深耕高階網頁設計、動態特效設計與品牌視覺升級，為企業打造具備國際大器格局的沉浸式互動網站。",
+      "NUDOT is a leading creative studio specializing in high-end web design, motion design, and brand visual elevation, building immersive, interactive websites with an international standard of craft.",
     images: ["/images/og.jpg"],
-    locale: "zh_TW",
-    siteName: "核點設計 NUDOT",
+    locale: "en_US",
+    siteName: "NUDOT Studio",
   },
   twitter: {
     card: "summary_large_image",
@@ -69,11 +69,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="zh-TW"
+      lang="en"
       suppressHydrationWarning
       className={`${dmSans.variable} ${zalando.variable} ${bitcount.variable}`}
     >
-      <body>
+      <body suppressHydrationWarning>
         <AppShell>{children}</AppShell>
       </body>
     </html>

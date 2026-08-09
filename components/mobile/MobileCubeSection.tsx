@@ -182,7 +182,7 @@ export default function MobileCubeSection() {
       </div>
 
       <div className="mcube-title">
-        <h2 className="mcube-title__eye">（ 專注本質的數位實踐 ）</h2>
+        <h2 className="mcube-title__eye">( Focused on the Essence of Digital Craft )</h2>
         <p className="mcube-title__line">WHO WE ARE</p>
       </div>
 
@@ -218,9 +218,10 @@ export default function MobileCubeSection() {
 
       <div className="mcube-copy">
         <p className="mcube-copy__desc">
-          任何強大的數位體驗，都源自一個精準的「核點」。NUDOT
-          核點創意專注台中網頁設計、高階商業視覺圖像生成與 AI
-          動態影像製作，以最精準的數位工藝，讓每一個像素都發揮最大的品牌商業價值。
+          Every powerful digital experience begins at a single precise point.
+          NUDOT specializes in Taichung web design, high-end commercial
+          visual generation, and AI motion imagery — crafting every pixel
+          with precision so it delivers maximum brand value.
         </p>
       </div>
     </section>

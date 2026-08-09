@@ -12,7 +12,15 @@
       "Bash(echo \"exit: $?\")",
       "Bash(echo \"tsc exit: $?\")",
       "Bash(git commit -q -m 'P4-P8: STM field, mobile cube, ring gallery, works gallery, footer, page transitions *)",
-      "Bash(git commit -q -m 'P9: rIC fallback for hidden documents/Safari, cursor rest-state fidelity, README *)"
+      "Bash(git commit -q -m 'P9: rIC fallback for hidden documents/Safari, cursor rest-state fidelity, README *)",
+      "Bash(sed -i '' 's/zhLabel=\"核點創意\"/caption=\"About Us\"/' app/about/page.tsx)",
+      "Bash(sed -i '' 's/zhLabel=\"設計案例\"/caption=\"Selected Work\"/' app/work/page.tsx)",
+      "Bash(sed -i '' 's/zhLabel=\"核點實驗室\"/caption=\"Experiments\"/' app/lab/page.tsx)",
+      "Bash(sed -i '' 's/zhLabel=\"核點洞察\"/caption=\"Insights\"/' app/blog/page.tsx)",
+      "Bash(sed -i '' 's/zhLabel=\"聯繫我們\"/caption=\"Get in Touch\"/' app/contact/page.tsx)",
+      "Bash(echo \"TSC_EXIT:$?\")",
+      "Bash(npm run *)",
+      "Bash(git commit -q -m 'Remove all Chinese/CJK text — English-only site *)"
     ]
   }
 }

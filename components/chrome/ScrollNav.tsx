@@ -493,7 +493,7 @@ export default function ScrollNav() {
         <a className="ns-logo" href="/" data-cursor="HOME" aria-label="NUDOT home">
           <img
             src="/images/pc_logo.svg"
-            alt="NUDOT 核點創意"
+            alt="NUDOT"
             width={45}
             height={35}
             loading="lazy"

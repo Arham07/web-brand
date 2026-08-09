@@ -178,17 +178,17 @@
   grid-area: 1 / 1;
   transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.at-zh {
+.at-gloss {
   transform: translateY(130%);
   text-transform: none;
   letter-spacing: 0.05em;
 }
-.animated-text.focused .at-en,
-.animated-text:hover .at-en {
+.animated-text.focused .at-primary,
+.animated-text:hover .at-primary {
   transform: translateY(-130%);
 }
-.animated-text.focused .at-zh,
-.animated-text:hover .at-zh {
+.animated-text.focused .at-gloss,
+.animated-text:hover .at-gloss {
   transform: translateY(0);
 }
 

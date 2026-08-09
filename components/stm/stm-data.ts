@@ -30,26 +30,26 @@ const xl = (letter: string, pos: number, alt: number, flipEase?: string): StmGro
   { text: letter, pos, alt, xl: true, scramble: 2.5, ...(flipEase ? { flipEase } : {}) },
 ];
 
-/** zh status line: instant text + blinking block cursor below it. */
+/** status line: instant text + blinking block cursor below it. */
 const status = (text: string): StmGroup => [
   { text, pos: 1, alt: 3, scramble: 0, typing: true },
 ];
 
 export const STM_GROUPS: StmGroup[] = [
   // 1
-  group(4, 2, ["Brand identity", "Visual strategy", "核點創意"]),
+  group(4, 2, ["Brand identity", "Visual strategy", "Brand Craft"]),
   // 2
   group(1, 3, [
     "Motion design",
     "Micro interactions",
     "Type system",
     "Creative direction",
-    "設計語言",
+    "Design Language",
   ]),
   // 3 — giant N
   xl("N", 1, 2),
   // 4
-  status("品牌識別系統建構中"),
+  status("Building Brand Identity System"),
   // 5
   group(2, 5, ["Interface design", "Web experience", "Digital storytelling"]),
   // 6 — giant U
@@ -58,11 +58,11 @@ export const STM_GROUPS: StmGroup[] = [
   group(3, 2, [
     "Art direction",
     "Campaign design",
-    "視覺敘事",
+    "Visual Storytelling",
     "Brand experience",
   ]),
   // 8
-  status("視覺系統載入中"),
+  status("Loading Visual System"),
   // 9
   group(2, 4, [
     "UX strategy",
@@ -70,7 +70,7 @@ export const STM_GROUPS: StmGroup[] = [
     "Logo design",
     "Editorial layout",
     "Packaging design",
-    "數位體驗",
+    "Digital Experience",
   ]),
   // 10 — giant D
   xl("D", 1, 3),
@@ -80,7 +80,7 @@ export const STM_GROUPS: StmGroup[] = [
     "Brand guidelines",
     "Typography",
     "Colour systems",
-    "品牌顧問",
+    "Brand Consulting",
   ]),
   // 12 — giant O (only element with a custom flip ease)
   xl("O", 3, 10, "expo.in"),
@@ -89,10 +89,10 @@ export const STM_GROUPS: StmGroup[] = [
     "Social media design",
     "Video production",
     "Illustration",
-    "創意策略",
+    "Concept Strategy",
   ]),
   // 14
-  status("創意能量持續輸出中"),
+  status("Creative Energy Flowing"),
   // 15
   group(3, 5, [
     "Print design",
@@ -106,7 +106,7 @@ export const STM_GROUPS: StmGroup[] = [
   group(3, 6, [
     "Concept development",
     "Market positioning",
-    "品牌個性定義",
+    "Brand Personality",
     "Audience insight",
   ]),
   // 18
@@ -125,18 +125,18 @@ export const STM_GROUPS: StmGroup[] = [
     "Design system",
     "Cross-media branding",
     "Landing page",
-    "數位品牌規範",
+    "Digital Brand Guidelines",
     "Scroll experience",
     "WebGL interface",
     "Kinetic typography",
-    "動態視覺設計",
+    "Motion Visual Design",
   ]),
   // 20 — all pos-1, per-item alt targets
   [
     { text: "Brand audit", pos: 1, alt: 1 },
     { text: "Competitor analysis", pos: 1, alt: 2 },
     { text: "Mood board", pos: 1, alt: 4 },
-    { text: "品牌核心價值", pos: 1, alt: 5 },
+    { text: "Core Brand Values", pos: 1, alt: 5 },
     { text: "Style guide", pos: 1, alt: 6 },
     { text: "Launch strategy", pos: 1, alt: 4 },
   ],

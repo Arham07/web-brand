@@ -5,7 +5,7 @@ import { DarkWrapperSequencer } from "./sequencer";
 import {
   WAVE_LEFT,
   WAVE_RIGHT,
-  WAVE_ZH,
+  WAVE_GLOSS,
   MARQUEE_ITEMS,
   CUBE_FACES,
 } from "./wave-data";
@@ -14,9 +14,9 @@ function WaveItem({ text, image }: { text: string; image?: string }) {
   return (
     <div className="animated-text" data-image={image}>
       <span className="flip-wrap">
-        <span className="at-en">{text}</span>
-        <span className="at-zh" aria-hidden="true">
-          {WAVE_ZH[text] ?? text}
+        <span className="at-primary">{text}</span>
+        <span className="at-gloss" aria-hidden="true">
+          {WAVE_GLOSS[text] ?? text}
         </span>
       </span>
     </div>
@@ -101,10 +101,12 @@ export default function DarkWrapper() {
         </div>
 
         <div id="intro-panel" className="intro-panel">
-          <div className="ip-top-chapter1">( 品牌策略專家 )</div>
+          <div className="ip-top-chapter1">( Brand Strategy Experts )</div>
           <div className="ip-top-header">
             <div className="title-reveal-wrap">
-              <h2 className="ip-top-chapter">( 守護美學核心，定義數位落點 )</h2>
+              <h2 className="ip-top-chapter">
+                ( Guarding the Aesthetic Core, Defining the Digital Landing Point )
+              </h2>
             </div>
           </div>
 
