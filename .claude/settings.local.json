@@ -9,7 +9,9 @@
       "Bash(git add *)",
       "Bash(git commit -q -m 'P0: scaffold Next 16 + fonts + tokens + asset pipeline \\(98 assets mirrored\\) *)",
       "Bash(npx tsc *)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(echo \"tsc exit: $?\")",
+      "Bash(git commit -q -m 'P4-P8: STM field, mobile cube, ring gallery, works gallery, footer, page transitions *)"
     ]
   }
 }

@@ -52,13 +52,13 @@
   transition: opacity 0.3s ease;
 }
 
-/* inner circle: thin ring at rest, solid white disc on hover */
+/* inner circle: invisible at rest (grid trail is the idle cursor),
+   solid white disc on hover */
 #cursor-ring::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 1px solid #fff;
   background: transparent;
   transform: scale(0.5294);
   transition:

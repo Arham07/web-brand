@@ -89,7 +89,41 @@ export default function HeroSection() {
 
   return (
     <section className="hero-section" ref={root}>
+      {/* instant slide-0 backdrop; the WebGL canvas paints over it once ready */}
+      <video
+        className="hero-prewarm"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        src="/images/home/slider1/slider01.mp4"
+      />
       <div id="webgl-container" />
+
+      <div className="brand-core-video-row">
+        <div className="brand-core-video">
+          <a
+            href="https://www.youtube.com/watch?v=MyC-JCaQDtI"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Watch on YouTube"
+            data-cursor="VIDEO"
+          >
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="none"
+              poster="/images/home/slider_video02_thumb.jpg"
+              data-lazy-video
+            >
+              <source data-src="/images/home/slider_video02.mp4" type="video/mp4" />
+            </video>
+          </a>
+        </div>
+      </div>
 
       <div className="overlay-ui">
         <div className="overlay-top">

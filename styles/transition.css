@@ -1,0 +1,33 @@
+/* ------------------------------------------------------------------ */
+/*  Pixel-grid page transition                                         */
+/* ------------------------------------------------------------------ */
+
+.page-transition-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 300000;
+  pointer-events: none;
+  visibility: hidden;
+}
+.page-transition-shell.is-active {
+  visibility: visible;
+}
+
+.page-transition-pixels {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(17, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+}
+
+.pt-cell {
+  background: var(--pt-bg, #000);
+  will-change: transform, opacity;
+  transform: scale(0);
+  opacity: 0;
+}
+
+html.is-page-transitioning {
+  cursor: progress;
+}

@@ -20,14 +20,23 @@ export function useSectionNear(
     if (!el) return;
 
     let ran = false;
+    let fired = false;
+    const invoke = () => {
+      if (fired) return;
+      fired = true;
+      cleanupRef.current = init();
+    };
     const run = () => {
       if (ran) return;
       ran = true;
-      const idle =
-        window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1));
-      idle(() => {
-        cleanupRef.current = init();
-      });
+      // rIC when available; the timeout guarantees the init still runs in
+      // hidden documents and on browsers without requestIdleCallback.
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(invoke, { timeout: 600 });
+        setTimeout(invoke, 900);
+      } else {
+        setTimeout(invoke, 1);
+      }
     };
 
     const io = new IntersectionObserver(

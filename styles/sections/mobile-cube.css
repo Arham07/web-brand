@@ -1,0 +1,189 @@
+/* ============================================================
+   Mobile cube section — phone-only stand-in for the STM field.
+   Hidden on every viewport wider than 767px.
+   ============================================================ */
+
+.mobile-cube-section {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobile-cube-section {
+    --mobile-cube-size: clamp(150px, 48vw, 210px);
+    --mcube-half: calc(var(--mobile-cube-size) / 2);
+
+    position: relative;
+    z-index: 2;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    min-height: clamp(360px, 62svh, 520px);
+    padding: 90px 0 48px;
+    overflow: visible;
+    background: var(--color-bg, #000);
+  }
+
+  /* Bottom fade — overhangs into the next black section */
+  .mobile-cube-section::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -72px;
+    height: 160px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.96;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.18) 28%,
+      rgba(0, 0, 0, 0.48) 58%,
+      rgba(0, 0, 0, 0.88) 100%
+    );
+  }
+
+  /* ── Fullbleed background video + dark veil ── */
+  .mobile-cube-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .mobile-cube-bg video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.72);
+    transform: scale(1.04);
+  }
+
+  .mobile-cube-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.42);
+  }
+
+  /* ── Title block ── */
+  .mcube-title {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .mcube-title__eye {
+    margin: 0;
+    font-family: var(--font-family-body);
+    font-size: clamp(0.6rem, 2.8vw, 0.75rem);
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .mcube-title__line {
+    margin: 0;
+    font-family: var(--font-family-display);
+    font-size: 10vw;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  /* ── 3D scene ── */
+  .mobile-cube-scene {
+    position: relative;
+    z-index: 3;
+    width: var(--mobile-cube-size);
+    height: var(--mobile-cube-size);
+    padding-top: 80px;
+    perspective: calc(var(--mobile-cube-size) * 5);
+    touch-action: pan-y;
+  }
+
+  .mobile-cube {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform: rotateY(0deg);
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  .mobile-cube-face {
+    position: absolute;
+    width: var(--mobile-cube-size);
+    height: var(--mobile-cube-size);
+    overflow: hidden;
+    background: #080808;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.88);
+    backface-visibility: hidden;
+  }
+
+  .mobile-cube-face img,
+  .mobile-cube-face video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mobile-cube-face.is-front {
+    transform: rotateY(0deg) translateZ(var(--mcube-half));
+  }
+
+  .mobile-cube-face.is-back {
+    transform: rotateY(180deg) translateZ(var(--mcube-half));
+  }
+
+  .mobile-cube-face.is-right {
+    transform: rotateY(90deg) translateZ(var(--mcube-half));
+  }
+
+  .mobile-cube-face.is-left {
+    transform: rotateY(-90deg) translateZ(var(--mcube-half));
+  }
+
+  .mobile-cube-face.is-top {
+    transform: rotateX(90deg) translateZ(var(--mcube-half));
+  }
+
+  .mobile-cube-face.is-bottom {
+    transform: rotateX(-90deg) translateZ(var(--mcube-half));
+  }
+
+  /* ── Description copy ── */
+  .mcube-copy {
+    position: relative;
+    z-index: 4;
+    width: 100%;
+    padding: 150px 28px 0;
+  }
+
+  .mcube-copy__desc {
+    margin: 0;
+    font-family: var(--font-family-body);
+    font-size: clamp(0.78rem, 3.6vw, 0.95rem);
+    font-weight: 400;
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.62);
+  }
+}

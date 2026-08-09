@@ -4,6 +4,7 @@ import { useEffect, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 
 import ScrollProvider from "./ScrollProvider";
+import TransitionProvider from "./TransitionProvider";
 import Loader from "@/components/chrome/Loader";
 import FixedLogo from "@/components/chrome/FixedLogo";
 import ScrollNav from "@/components/chrome/ScrollNav";
@@ -21,6 +22,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   return (
     <>
       <ScrollProvider />
+      <TransitionProvider />
       <ScrollProgress />
       <FixedLogo />
       <ScrollNav />

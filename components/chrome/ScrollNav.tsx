@@ -413,6 +413,12 @@ export default function ScrollNav() {
       };
       document.addEventListener("keydown", onKeyDown);
 
+      // page transitions force-close the menu the instant a link is taken
+      const onNavigate = () => {
+        if (menuOpen) closeMenu(true);
+      };
+      window.addEventListener("nudot:navigate", onNavigate);
+
       container.addEventListener("animationend", onAnimEnd);
 
       const rowHandlers = items.map((row) => {
@@ -436,6 +442,7 @@ export default function ScrollNav() {
         menuBtn.removeEventListener("click", onMenuBtnClick);
         document.removeEventListener("pointerdown", onDocPointerDown);
         document.removeEventListener("keydown", onKeyDown);
+        window.removeEventListener("nudot:navigate", onNavigate);
         container.removeEventListener("animationend", onAnimEnd);
         rowHandlers.forEach(({ row, enter, leave }) => {
           row.removeEventListener("pointerenter", enter);

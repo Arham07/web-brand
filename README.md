@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# web-brand
 
-## Getting Started
+A Next.js re-implementation of the [nudot.com.tw](https://nudot.com.tw) experience —
+smooth-scroll storytelling with Lenis, GSAP ScrollTrigger choreography, and
+three.js WebGL scenes. All media currently mirrors the original site as
+**placeholders**; swap files under `public/images/` with your own assets
+(same names/paths) when ready.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router) + TypeScript + React 19
+- **Lenis** smooth scroll (singleton in `lib/lenis.ts`, driven by `gsap.ticker`;
+  disabled on touch devices — native scroll fallback everywhere)
+- **GSAP 3.15** + ScrollTrigger (+ Flip & ScrambleText, desktop-only, lazy-loaded)
+- **three.js** — hero slide transition shader + ring-gallery scene
+  (color management disabled for r128-parity rendering)
+- Fonts via `next/font/google`: DM Sans (body), Zalando Sans SemiExpanded
+  (display), Bitcount Grid Single (dot-matrix accent)
+
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Refresh placeholder assets
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+node scripts/download-assets.mjs   # mirrors the manifest into public/, skips existing
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Missing files are listed in `missing-assets.json` and get generated SVG stand-ins.
 
-## Learn More
+## Page anatomy (home)
 
-To learn more about Next.js, take a look at the following resources:
+1. **Loader** — CSS-keyframe N▶D boot screen; dispatches
+   `nudot:hero-reveal` (2.7s) and `nudot:loader-dismissed` (3.2s)
+2. **Hero** — fullscreen WebGL slider (noise-warp + chromatic aberration
+   transition), overlay typography in `mix-blend-mode: difference`,
+   equalizer scrubber + filmstrip
+3. **Dark wrapper** — 600vh pinned sequence driven by a single ticker
+   state machine (`components/dark-wrapper/sequencer.ts`): curtain reveal →
+   dual-wave word columns → velocity-reactive marquee → CSS 3D cube
+   tumble / spin / zoom
+4. **STM** — scramble-text mosaic scrolling over the pinned cube (desktop);
+   velocity-reactive 3D cube section on mobile
+5. **CCAP** — three.js ring gallery (72 planes, 3 counter-rotating rings,
+   RGB-shift/grain/vignette/iris post pass) under reveal-wrap typography
+6. **S3 gallery** — sticky header + 6 parallax work cards
+7. **Footer** — staged reveal timeline, giant © bridge, fixed-attachment
+   parallax band
+8. **Page transitions** — 17×9 pixel grid blooming from center on route change
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Conventions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Global CSS with stable class names (JS toggles classes by string) —
+  tokens in `styles/tokens.css`
+- Animated sections are client components with SSR'd DOM; canvas-only code is
+  `next/dynamic` + `ssr:false`
+- Lazy media via `data-lazy-video` / `data-defer-src` attributes
+  (`lib/lazy-media.ts`)

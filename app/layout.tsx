@@ -11,8 +11,14 @@ import "../styles/loader.css";
 import "../styles/nav.css";
 import "../styles/cursor.css";
 import "../styles/chrome-misc.css";
+import "../styles/transition.css";
 import "../styles/sections/hero.css";
 import "../styles/sections/dark-wrapper.css";
+import "../styles/sections/stm.css";
+import "../styles/sections/ccap.css";
+import "../styles/sections/gallery.css";
+import "../styles/sections/footer.css";
+import "../styles/sections/mobile-cube.css";
 
 import AppShell from "@/components/providers/AppShell";
 

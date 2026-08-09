@@ -1,0 +1,143 @@
+/* ============================================================
+   STM section — scramble-text keyword field (desktop only).
+   Scrolls over the pinned dark-wrapper cube; every line uses
+   mix-blend difference so it inverts against the backdrop.
+   ============================================================ */
+
+.stm-section {
+  position: relative;
+  z-index: 25;
+  background: transparent;
+  pointer-events: none;
+  /* spacer absorbing the pinned scene's scroll distance */
+  padding-bottom: clamp(10vh, calc(241.2vh - 2265px), 800px);
+}
+
+/* dissolve into the black core-capabilities section below */
+.stm-section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40vh;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000);
+}
+
+.stm-content {
+  padding: 10vh 1.5rem 15vh;
+  contain: paint;
+}
+
+.stm-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 10vh;
+}
+
+.stm-el {
+  font-family: var(--font-family-body);
+  font-size: 13px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  opacity: 0.6;
+  mix-blend-mode: difference;
+  pointer-events: auto;
+}
+
+/* giant N / U / D / O / T dot-matrix letters */
+.stm-el--xl {
+  font-family: var(--font-family-accent);
+  font-size: clamp(2rem, 20vw, 15rem);
+  font-weight: 400;
+  line-height: 1;
+  opacity: 1;
+}
+
+/* ---- position classes: base + Flip alt endpoints ---- */
+
+.stm-pos-1 {
+  margin-left: 0;
+}
+
+.stm-pos-2 {
+  margin-left: 25vw;
+}
+
+.stm-pos-3 {
+  margin-left: 70vw;
+}
+
+.stm-pos-4 {
+  margin-left: auto;
+}
+
+.stm-pos-5 {
+  margin-left: 0;
+  margin-top: 200px;
+  opacity: 1;
+}
+
+.stm-pos-6 {
+  margin-left: auto;
+  margin-top: 200px;
+  opacity: 1;
+}
+
+.stm-pos-7 {
+  margin-left: 0;
+  margin-top: 200px;
+  opacity: 1;
+  filter: blur(1.2px);
+}
+
+.stm-pos-8 {
+  margin-left: 25vw;
+  margin-top: 50px;
+  opacity: 1;
+  filter: blur(2px);
+}
+
+.stm-pos-9 {
+  margin-left: 25vw;
+  margin-top: 250px;
+}
+
+.stm-pos-10 {
+  margin-left: 70vw;
+  margin-top: 40vh;
+}
+
+/* ---- blinking block cursor after zh status lines ---- */
+
+.stm-typing {
+  font-family: var(--font-family-body);
+  font-size: 13px;
+  color: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  animation: blink-cursor 0.7s steps(1, end) infinite;
+}
+
+@keyframes blink-cursor {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ---- mobile: section removed entirely ---- */
+
+@media (max-width: 768px) {
+  .stm-section {
+    display: none !important;
+  }
+}

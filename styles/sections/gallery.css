@@ -1,0 +1,192 @@
+/* ------------------------------------------------------------------ */
+/*  S3 selected-works gallery (#s3-gallery)                            */
+/*  Sticky centered header (z1) + 6-item project grid scrolling over   */
+/*  it (z2), edge scrims (z4) dissolving the seams into black.         */
+/* ------------------------------------------------------------------ */
+
+.s3-gallery-section {
+  position: relative;
+  background: var(--color-bg, #000);
+  isolation: isolate;
+}
+
+/* top / bottom seam scrims */
+.s3-gallery-section::before,
+.s3-gallery-section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: clamp(96px, 18vh, 220px);
+  z-index: 4;
+  pointer-events: none;
+}
+.s3-gallery-section::before {
+  top: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.96) 0%,
+    rgba(0, 0, 0, 0.72) 38%,
+    transparent 100%
+  );
+}
+.s3-gallery-section::after {
+  bottom: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.98) 0%,
+    rgba(0, 0, 0, 0.78) 36%,
+    transparent 100%
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Sticky header                                                      */
+/* ------------------------------------------------------------------ */
+
+.gallery-header {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 1;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.gallery-header-video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.gallery-header-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-header-label {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 1.4rem;
+  font-family: var(--font-family-body);
+  font-size: clamp(10px, 1vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.gallery-header-title {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-family-display);
+  font-size: clamp(2.5rem, 1.35rem + 2.875vw, 5rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.05;
+  letter-spacing: var(--tracking-brand, 0.02em);
+  color: #fff;
+}
+.gh-line {
+  display: block;
+}
+
+.gallery-header-sub {
+  position: relative;
+  z-index: 2;
+  margin: 1.6rem 0 0;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.s3-gallery-section .text1vw {
+  font-size: clamp(0.875rem, 1vw, 1.2rem);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Project grid                                                       */
+/* ------------------------------------------------------------------ */
+
+.pg-gallery {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 2vw;
+  row-gap: 12vw;
+  padding: 0 4vw 22vh;
+}
+
+.pg-item {
+  position: relative;
+  overflow: hidden;
+}
+.pg-item > a {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+.pg-item-1 { grid-column: 1 / 6;  height: 27.9vw; }
+.pg-item-2 { grid-column: 7 / 13; height: 33.75vw; }
+.pg-item-3 { grid-column: 4 / 10; height: 33.75vw; }
+.pg-item-4 { grid-column: 1 / 6;  height: 27.9vw; }
+.pg-item-5 { grid-column: 7 / 13; height: 33.75vw; }
+.pg-item-6 { grid-column: 4 / 10; height: 33.75vw; }
+
+.pg-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--color-bg-img-placeholder, #0d0d0d);
+  overflow: hidden;
+}
+.pg-img-wrap img {
+  position: absolute;
+  left: 0;
+  top: -20%;
+  width: 100%;
+  height: 140%;
+  object-fit: cover;
+}
+
+/* Images default to visible (no-JS fallback); clipping only engages
+   once the anim engine has confirmed itself ready. */
+html.pg-anim-ready .pg-img-wrap {
+  clip-path: inset(100% 0 0 0);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Mobile                                                             */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 768px) {
+  .gallery-header {
+    position: relative;
+    height: auto;
+    z-index: 4;
+    padding: 18vw 6vw;
+  }
+  .gallery-header-video {
+    display: none;
+  }
+  .pg-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 15vw;
+    padding: 10vw;
+  }
+  .pg-item {
+    height: 70vw;
+  }
+}

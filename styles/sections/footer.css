@@ -1,0 +1,216 @@
+/* ------------------------------------------------------------------ */
+/*  Site footer (#site-footer)                                         */
+/*  footer-top (z5) over the fixed-attachment parallax band (z1);      */
+/*  giant © bridge straddles the seam (z20).                           */
+/* ------------------------------------------------------------------ */
+
+.site-footer {
+  position: relative;
+  background: var(--color-bg, #000);
+  color: #fff;
+  font-family: var(--font-family-body);
+}
+
+/* dormant footer nav (never shown in this build) */
+.site-footer .dark-nav {
+  display: none;
+}
+
+.footer-top {
+  position: relative;
+  z-index: 5;
+  background: #000;
+  padding: 3vw 2.5vw;
+}
+
+/* runtime-inserted animated hairline (replaces the info bar border) */
+.footer-info-line {
+  height: 1px;
+  background: var(--color-hairline-footer, #222);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.footer-info-bar {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--color-hairline-footer, #222);
+  padding-top: 30px;
+  font-size: 16px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.footer-main-content {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  margin-top: clamp(40px, 5vw, 80px);
+}
+
+.footer-description {
+  margin: 0;
+  max-width: 450px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-text-dim, #888);
+}
+
+.footer-contact-info {
+  margin-top: clamp(28px, 3vw, 48px);
+}
+.footer-email {
+  display: block;
+  width: fit-content;
+  font-size: clamp(20px, 3.5vw, 50px);
+  color: #fff;
+  transition: opacity 0.3s;
+}
+.footer-email:hover {
+  opacity: 0.6;
+}
+.footer-phone {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: clamp(18px, 2.5vw, 30px);
+}
+
+.footer-address {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--color-text-dim, #888);
+}
+
+.footer-nav-links {
+  display: flex;
+  gap: 28px;
+  margin-top: clamp(28px, 3vw, 44px);
+  font-size: 16px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.footer-nav-links a {
+  transition: opacity 0.3s;
+}
+.footer-nav-links a:hover {
+  opacity: 0.5;
+}
+
+.footer-right-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+.footer-video-thumb {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.footer-video-thumb video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.footer-video-cover {
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg-video-cover, #0a0a0a);
+  transform-origin: right center;
+}
+
+/* giant © straddling into the parallax band */
+.footer-copyright-bridge {
+  position: absolute;
+  bottom: 0;
+  right: 6%;
+  z-index: 20;
+  width: clamp(90px, 10vw, 148px);
+  height: clamp(90px, 10vw, 148px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(50%);
+  pointer-events: none;
+}
+.footer-copyright-bridge span {
+  display: inline-block;
+  font-family: var(--font-family-display);
+  font-size: clamp(6rem, 12vw, 11.25rem);
+  line-height: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Parallax band                                                      */
+/* ------------------------------------------------------------------ */
+
+.footer-parallax-section {
+  position: relative;
+  z-index: 1;
+  height: 50vh;
+  overflow: hidden;
+}
+
+.footer-parallax-bg {
+  position: absolute;
+  inset: 0;
+  background-attachment: fixed;
+  background-size: contain;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  mix-blend-mode: luminosity;
+}
+
+.footer-parallax-copy {
+  position: absolute;
+  top: 30px;
+  left: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Responsive                                                         */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1440px) {
+  .footer-parallax-section {
+    height: 300px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .footer-copyright-bridge,
+  .footer-parallax-section {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-top {
+    padding: 1.5rem;
+  }
+  .footer-info-line,
+  .footer-info-bar {
+    display: none;
+  }
+  .footer-main-content {
+    grid-template-columns: 1fr;
+    margin-top: 0;
+  }
+  .footer-right-panel {
+    align-items: flex-start;
+    margin-top: 40px;
+  }
+  .footer-nav-links {
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 11px;
+  }
+}
