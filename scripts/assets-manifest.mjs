@@ -73,4 +73,16 @@ export const ASSETS = [
   // --- footer ---
   "images/footer.mp4",
   "images/footer.webp",
+
+  // --- about page ---
+  "images/about/about.mp4",
+  "images/about/box.webp",
+  ...["box2", "box3", "box4"].map((b) => `images/about/${b}.webp`),
+  ...range(6).map((n) => `images/about/box/s${n}.svg`), // marquee separators
+  ...range(6).map((n) => `images/about/box/c${n}.svg`), // cube face icons
+  ...range(6).map((n) => `images/about/box/b${n}.webp`), // cube face backgrounds
+
+  // --- contact page ---
+  "images/contact.svg",
+  "images/lab/hourglass.svg",
 ];

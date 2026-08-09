@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { useSectionNear } from "@/hooks/useSectionNear";
 import { prefersReducedMotion } from "@/lib/device";
+import { hydrateVideosIn } from "@/lib/lazy-media";
 
 const DORMANT_NAV = [
   { href: "/work", label: "Work" },
@@ -42,6 +43,10 @@ export default function SiteFooter() {
     () => {
       const footer = footerRef.current;
       if (!footer) return;
+
+      // The global lazy-media engine only scans once at app mount, so a footer
+      // mounted by a client-side navigation would never load its video.
+      hydrateVideosIn(footer);
 
       // Parallax band background (always applied, even reduced-motion)
       const parallaxBg = footer.querySelector<HTMLElement>("#footer-parallax-bg");

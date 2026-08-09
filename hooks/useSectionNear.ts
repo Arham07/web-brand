@@ -3,10 +3,16 @@
 import { useEffect, useRef, type RefObject } from "react";
 
 /**
- * Runs `init` once when the section approaches the viewport
- * (IntersectionObserver with a large rootMargin), deferred through
+ * Runs `init` once when the section approaches the viewport, deferred through
  * requestIdleCallback so it never competes with scrolling.
- * Returns whatever cleanup `init` returns, invoked on unmount.
+ *
+ * Proximity is detected two ways on purpose: an IntersectionObserver (cheap,
+ * handles the common case) plus a rAF-throttled geometry check on scroll.
+ * IO callbacks are suppressed or heavily delayed while a document is hidden
+ * (background tab, offscreen embed), which would otherwise leave a section
+ * permanently uninitialised for anyone who returns to the tab mid-page.
+ *
+ * Whatever `init` returns is invoked on unmount.
  */
 export function useSectionNear(
   ref: RefObject<HTMLElement | null>,
@@ -21,37 +27,74 @@ export function useSectionNear(
 
     let ran = false;
     let fired = false;
+    let disposed = false;
+    let rafId = 0;
+    let timerId = 0;
+
     const invoke = () => {
-      if (fired) return;
+      // `disposed` matters in dev, where StrictMode tears the effect down
+      // while a deferred init is still queued — without it the section would
+      // initialise twice and leak a duplicate set of ScrollTriggers.
+      if (fired || disposed) return;
       fired = true;
       cleanupRef.current = init();
     };
+
     const run = () => {
       if (ran) return;
       ran = true;
+      io.disconnect();
+      window.removeEventListener("scroll", onScroll);
       // rIC when available; the timeout guarantees the init still runs in
       // hidden documents and on browsers without requestIdleCallback.
-      if ("requestIdleCallback" in window) {
-        window.requestIdleCallback(invoke, { timeout: 600 });
-        setTimeout(invoke, 900);
+      const ric = (
+        window as Window & {
+          requestIdleCallback?: (
+            cb: () => void,
+            opts?: { timeout: number }
+          ) => number;
+        }
+      ).requestIdleCallback;
+
+      if (typeof ric === "function") {
+        ric(invoke, { timeout: 600 });
+        timerId = window.setTimeout(invoke, 900);
       } else {
-        setTimeout(invoke, 1);
+        timerId = window.setTimeout(invoke, 1);
       }
+    };
+
+    const isNear = () => {
+      const r = el.getBoundingClientRect();
+      return r.top < window.innerHeight + rootMargin && r.bottom > -rootMargin;
+    };
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        if (isNear()) run();
+      });
     };
 
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          io.disconnect();
-          run();
-        }
+        if (entries.some((e) => e.isIntersecting)) run();
       },
       { rootMargin: `${rootMargin}px 0px ${rootMargin}px 0px` }
     );
     io.observe(el);
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    // already in range at mount (deep link, restored scroll position)
+    if (isNear()) run();
 
     return () => {
+      disposed = true;
       io.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+      if (timerId) window.clearTimeout(timerId);
       cleanupRef.current?.();
       cleanupRef.current = undefined;
     };

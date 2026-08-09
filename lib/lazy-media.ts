@@ -60,11 +60,14 @@ export function initLazyMedia() {
       ...document.querySelectorAll<HTMLImageElement>("img[data-defer-src]"),
     ].filter(visible);
 
+    // one video + two images per frame, whichever queue still has work
     const step = () => {
       const v = videos.shift();
       if (v) hydrateVideo(v);
-      hydrateImg(imgs.shift()!);
-      if (imgs.length) hydrateImg(imgs.shift()!);
+      for (let i = 0; i < 2; i++) {
+        const img = imgs.shift();
+        if (img) hydrateImg(img);
+      }
       if (videos.length || imgs.length) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);

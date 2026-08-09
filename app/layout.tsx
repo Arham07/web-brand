@@ -19,6 +19,10 @@ import "../styles/sections/ccap.css";
 import "../styles/sections/gallery.css";
 import "../styles/sections/footer.css";
 import "../styles/sections/mobile-cube.css";
+import "../styles/sections/about.css";
+import "../styles/sections/about-work.css";
+import "../styles/sections/about-cube.css";
+import "../styles/sections/contact.css";
 
 import AppShell from "@/components/providers/AppShell";
 

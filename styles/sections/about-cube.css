@@ -1,0 +1,395 @@
+/* ============================================================
+   About — capabilities cube.
+   480vh track + sticky 100svh stage (never pin:true). All rules are
+   scoped under .about-page; every class and keyframe is `ab-` prefixed.
+   ============================================================ */
+
+.about-page .ab-cube-section {
+  position: relative;
+  background: #0d0d0d;
+}
+
+.about-page .ab-cube-track {
+  position: relative;
+  height: 480vh;
+}
+
+.about-page .ab-cube-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  background: #0d0d0d;
+  color: #fff;
+}
+
+/* ── Decorative marquee backdrop ───────────────────────────── */
+
+.about-page .ab-cube-ticker {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6svh 0;
+  pointer-events: none;
+  opacity: 0.1;
+}
+
+.about-page .ab-cube-ticker-row {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+.about-page .ab-cube-ticker-move {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  animation-name: ab-cube-marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.about-page .ab-cube-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.4rem;
+  padding: 0.5rem 1.4rem;
+  font-family: var(--font-family-display, sans-serif);
+  font-size: clamp(0.8rem, 1.6vw, 1.5rem);
+  letter-spacing: var(--tracking-meta, 0.08em);
+  text-transform: uppercase;
+}
+
+.about-page .ab-cube-ticker-sep {
+  display: block;
+  width: 18px;
+  height: 18px;
+  filter: invert(1);
+}
+
+.about-page .ab-cube-ticker-center {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+}
+
+.about-page .ab-cube-ticker-center .ab-cube-ticker-move {
+  animation-duration: 50s;
+  animation-delay: -13s;
+}
+
+.about-page .ab-cube-ticker-center .ab-cube-ticker-item {
+  padding: 0 2rem;
+  font-size: clamp(3rem, 9vw, 18rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+@keyframes ab-cube-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ── Face dot strip ────────────────────────────────────────── */
+
+.about-page .ab-cube-dots {
+  position: absolute;
+  left: 2.5rem;
+  top: 55%;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transform: translateY(-50%);
+}
+
+.about-page .ab-cube-dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  transition: background 0.35s ease, transform 0.35s ease;
+}
+
+.about-page .ab-cube-dot.is-active {
+  background: #fff;
+  transform: scale(1.7);
+}
+
+/* ── The cube ──────────────────────────────────────────────── */
+
+.about-page .ab-cube-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1100px;
+  pointer-events: none;
+}
+
+.about-page .ab-cube {
+  --ab-s: min(58vw, 58vh, 360px);
+  position: relative;
+  width: var(--ab-s);
+  height: var(--ab-s);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.about-page .ab-cube-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  backface-visibility: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  /* image layered over a solid panel so a missing asset reads as a face */
+  background-color: #0d0d0d;
+  background-image: var(--ab-face-bg);
+  background-size: cover;
+  background-position: center;
+}
+
+.about-page .ab-cube-face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.38);
+}
+
+.about-page .ab-cube-face-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+}
+
+.about-page .ab-cube-face-icon {
+  width: 48%;
+  height: auto;
+  filter: invert(1);
+  opacity: 0.9;
+}
+
+.about-page .ab-cube-face-title {
+  margin: 0;
+  font-family: var(--font-family-display, sans-serif);
+  font-size: clamp(0.7rem, 1.6vw, 1.1rem);
+  letter-spacing: var(--tracking-meta, 0.08em);
+  text-transform: uppercase;
+}
+
+.about-page .ab-cube-face-sub {
+  margin: 0;
+  font-family: var(--font-family-body, sans-serif);
+  font-size: clamp(0.55rem, 1vw, 0.75rem);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.about-page .ab-cube-face--front {
+  transform: rotateY(0deg) translateZ(calc(var(--ab-s) / 2));
+}
+.about-page .ab-cube-face--right {
+  transform: rotateY(90deg) translateZ(calc(var(--ab-s) / 2));
+}
+.about-page .ab-cube-face--back {
+  transform: rotateY(180deg) translateZ(calc(var(--ab-s) / 2));
+}
+.about-page .ab-cube-face--left {
+  transform: rotateY(-90deg) translateZ(calc(var(--ab-s) / 2));
+}
+.about-page .ab-cube-face--top {
+  transform: rotateX(90deg) translateZ(calc(var(--ab-s) / 2));
+}
+.about-page .ab-cube-face--bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--ab-s) / 2));
+}
+
+/* the bottom face arrives quarter-turned — counter-rotate its content */
+.about-page .ab-cube-face--bottom .ab-cube-face-inner {
+  transform: rotate(90deg);
+}
+
+/* ── Caption block with the 45px twin cube ─────────────────── */
+
+.about-page .ab-cube-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 12svh;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transform: translateX(-50%);
+}
+
+.about-page .ab-cube-mini {
+  --ab-ms: 45px;
+  width: var(--ab-ms);
+  height: var(--ab-ms);
+  perspective: 400px;
+}
+
+.about-page .ab-cube-mini-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.about-page .ab-cube-mini-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-accent, monospace);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backface-visibility: hidden;
+}
+
+.about-page .ab-cube-mini-face--front {
+  transform: rotateY(0deg) translateZ(calc(var(--ab-ms) / 2));
+}
+.about-page .ab-cube-mini-face--right {
+  transform: rotateY(90deg) translateZ(calc(var(--ab-ms) / 2));
+}
+.about-page .ab-cube-mini-face--back {
+  transform: rotateY(180deg) translateZ(calc(var(--ab-ms) / 2));
+}
+.about-page .ab-cube-mini-face--left {
+  transform: rotateY(-90deg) translateZ(calc(var(--ab-ms) / 2));
+}
+.about-page .ab-cube-mini-face--top {
+  transform: rotateX(90deg) translateZ(calc(var(--ab-ms) / 2));
+}
+.about-page .ab-cube-mini-face--bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--ab-ms) / 2));
+}
+
+.about-page .ab-cube-caption-text {
+  margin: 0;
+  font-family: var(--font-family-accent, sans-serif);
+  font-size: clamp(0.6rem, 1vw, 0.75rem);
+  letter-spacing: var(--tracking-meta, 0.08em);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Icon nav ──────────────────────────────────────────────── */
+
+.about-page .ab-cube-nav {
+  position: absolute;
+  left: 50%;
+  bottom: 4svh;
+  z-index: 5;
+  display: flex;
+  gap: 0.75rem;
+  transform: translateX(-50%);
+}
+
+.about-page .ab-cube-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.about-page .ab-cube-nav-btn img {
+  display: block;
+  width: 22px;
+  height: 22px;
+  filter: invert(1);
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+
+.about-page .ab-cube-nav-btn:hover img,
+.about-page .ab-cube-nav-btn.is-active img {
+  opacity: 1;
+}
+
+.about-page .ab-cube-nav-btn.is-active {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.75);
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .about-page .ab-cube {
+    --ab-s: min(68vw, 52vh, 260px);
+  }
+
+  .about-page .ab-cube-dots {
+    display: none;
+  }
+
+  .about-page .ab-cube-nav {
+    gap: 0.4rem;
+  }
+
+  .about-page .ab-cube-nav-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .about-page .ab-cube-nav-btn img {
+    width: 17px;
+    height: 17px;
+  }
+
+  .about-page .ab-cube-ticker-item {
+    font-size: 0.7rem;
+    gap: 0.9rem;
+    padding: 0.35rem 0.9rem;
+  }
+
+  .about-page .ab-cube-ticker-center .ab-cube-ticker-item {
+    font-size: clamp(3rem, 16vw, 6rem);
+  }
+
+  .about-page .ab-cube-caption {
+    bottom: 15svh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-page .ab-cube-ticker-move {
+    animation: none;
+  }
+}

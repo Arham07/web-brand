@@ -1,0 +1,331 @@
+/* ------------------------------------------------------------------ */
+/*  About page — shared tokens, hero stage, grid overlay.              */
+/*  Every rule is scoped under .about-page (section CSS is global).     */
+/*  Work-preview lives in about-work.css, the cube in about-cube.css.   */
+/* ------------------------------------------------------------------ */
+
+.about-page {
+  --ab-side-pad: clamp(24px, 4vw, 60px);
+  --ab-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ab-line: rgba(255, 255, 255, 0.15);
+  position: relative;
+  background: var(--color-bg);
+}
+
+/* ================================================================== */
+/*  Hero — 200vh track, sticky 100vh stage (never pinned by GSAP)      */
+/* ================================================================== */
+
+.about-page .ab-hero-track {
+  position: relative;
+  display: block;
+  height: 200vh;
+}
+
+.about-page .ab-hero-viewport {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------- marquee rows */
+
+.about-page .ab-marquee-rows {
+  position: absolute;
+  top: 20vh;
+  left: 0;
+  width: 100%;
+  height: 14vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vw;
+  z-index: 1;
+}
+
+.about-page .ab-marquee-row {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.about-page .ab-marquee-lane {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  will-change: transform;
+}
+
+.about-page .ab-marquee-lane--l {
+  animation: ab-marquee-l 30s linear infinite;
+}
+
+.about-page .ab-marquee-lane--r {
+  animation: ab-marquee-r 35s linear infinite;
+}
+
+.about-page .ab-marquee-strip,
+.about-page .ab-marquee-cell {
+  display: flex;
+  align-items: center;
+}
+
+.about-page .ab-marquee-item {
+  font-family: var(--font-family-accent);
+  font-size: clamp(4.5rem, 5.8vw, 6.5rem);
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.01em;
+}
+
+.about-page .ab-marquee-sep {
+  display: block;
+  width: clamp(18px, 1.6vw, 30px);
+  height: auto;
+  margin: 0 clamp(18px, 1.8vw, 34px);
+  opacity: 0.75;
+}
+
+@keyframes ab-marquee-l {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes ab-marquee-r {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* -------------------------------------------------- divider + labels */
+
+.about-page .ab-divider {
+  position: absolute;
+  top: 50vh;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+}
+
+.about-page .ab-divider__labels {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  align-items: end;
+  padding: 0 var(--ab-side-pad);
+  margin-bottom: 0.85rem;
+}
+
+.about-page .ab-divider__cell {
+  display: block;
+  min-width: 0;
+}
+
+.about-page .ab-divider__cell--left {
+  text-align: left;
+}
+.about-page .ab-divider__cell--center {
+  text-align: center;
+}
+.about-page .ab-divider__cell--right {
+  text-align: right;
+}
+
+.about-page .ab-divider__mask {
+  display: block;
+  overflow: hidden;
+}
+
+.about-page .ab-divider__inner {
+  display: block;
+  margin: 0;
+  font-family: var(--font-family-body);
+  font-size: clamp(0.68rem, 0.75vw, 0.88rem);
+  font-weight: 400;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.about-page .ab-divider__inner--head::before {
+  content: "( ";
+}
+.about-page .ab-divider__inner--head::after {
+  content: " )";
+}
+
+.about-page .ab-divider__line {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* ---------------------------------------------------- video + copy */
+
+.about-page .ab-hero-placeholder,
+.about-page .ab-hero-video {
+  position: absolute;
+  top: 54vh;
+  left: 38vw;
+  width: 24vw;
+  height: 14vw;
+}
+
+.about-page .ab-hero-placeholder {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.about-page .ab-hero-video {
+  z-index: 3;
+  object-fit: cover;
+  display: block;
+  background: #000;
+  will-change: transform;
+}
+
+.about-page .ab-hero-caption,
+.about-page .ab-hero-bottom {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.28rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.about-page .ab-hero-caption {
+  top: calc(54vh + 14vw + 1.5vw);
+}
+
+.about-page .ab-hero-bottom {
+  bottom: 4vh;
+}
+
+.about-page .ab-hero-line {
+  display: block;
+  font-family: var(--font-family-body);
+  font-size: clamp(0.66rem, 0.72vw, 0.82rem);
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: rgba(255, 255, 255, 0.68);
+}
+
+/* ================================================================== */
+/*  Fixed 12-column hairline grid overlay                              */
+/* ================================================================== */
+
+.about-page .ab-grid-overlay {
+  position: fixed;
+  inset: 0;
+  padding: 0 2rem;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.about-page .ab-grid-inner {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0.75rem;
+  height: 100%;
+}
+
+.about-page .ab-grid-column {
+  height: 100%;
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  will-change: transform, opacity;
+}
+
+@media (max-width: 768px) {
+  .about-page .ab-grid-overlay {
+    display: none;
+  }
+}
+
+/* ================================================================== */
+/*  Reduced motion — render the final, fully visible state             */
+/* ================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .about-page .ab-divider__line {
+    transform: scaleX(1);
+  }
+  .about-page .ab-marquee-lane--l,
+  .about-page .ab-marquee-lane--r {
+    animation: none;
+  }
+}
+
+/* ================================================================== */
+/*  Mobile — single-screen hero, no sticky stage, no scrub             */
+/* ================================================================== */
+
+@media (max-width: 767px) {
+  .about-page .ab-hero-track {
+    height: 100vh;
+  }
+
+  .about-page .ab-hero-viewport {
+    position: relative;
+  }
+
+  .about-page .ab-marquee-rows {
+    top: 17vh;
+    height: 30vw;
+    gap: 2vw;
+  }
+
+  .about-page .ab-marquee-item {
+    font-size: clamp(2.2rem, 9vw, 3.4rem);
+  }
+
+  .about-page .ab-divider {
+    top: 46vh;
+  }
+
+  .about-page .ab-divider__labels {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem 1rem;
+  }
+
+  .about-page .ab-divider__cell--center,
+  .about-page .ab-divider__cell--right {
+    text-align: left;
+  }
+
+  .about-page .ab-hero-placeholder,
+  .about-page .ab-hero-video {
+    top: 54vh;
+    left: 6vw;
+    width: 88vw;
+    height: 50vw;
+  }
+
+  .about-page .ab-hero-caption {
+    display: none;
+  }
+
+  .about-page .ab-hero-bottom {
+    bottom: 3vh;
+  }
+}

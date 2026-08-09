@@ -234,7 +234,7 @@ export default function HeroSection() {
           </button>
           <div className="counter-display">
             <span className="current-slide">01</span>
-            <span className="counter-divider">//</span>
+            <span className="counter-divider">{"//"}</span>
             <span className="total-slides">
               {String(SLIDES.length).padStart(2, "0")}
             </span>
