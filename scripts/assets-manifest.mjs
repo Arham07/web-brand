@@ -1,0 +1,76 @@
+// Asset manifest — every media file the homepage references, mirrored from the
+// original site into public/. Paths are saved without query strings.
+// Replace any of these with your own assets later; the downloader only fills gaps.
+
+const range = (n, pad = 0) =>
+  Array.from({ length: n }, (_, i) => String(i + 1).padStart(pad, "0"));
+
+export const ORIGIN = "https://nudot.com.tw";
+
+export const ASSETS = [
+  // --- logos / svg ---
+  "images/pc_logo.svg",
+  "images/textlogo.svg",
+  "images/down.svg",
+  "images/fav.png",
+  "images/og.jpg",
+
+  // --- loader ---
+  "images/loading.mp4",
+
+  // --- hero slides (desktop + mobile variants + thumbs) ---
+  "images/home/slider1/slider01.mp4",
+  "images/home/slider1/slider01_s.mp4",
+  "images/home/slider1/slider01.webp",
+  "images/home/slider1/slider01_s.webp",
+  "images/home/slider2/slider02pro.mp4",
+  "images/home/slider2/slider02_s.mp4",
+  "images/home/slider2/slider02.webp",
+  "images/home/slider2/slider02_s.webp",
+  "images/home/slider3/slider03.webp",
+  "images/home/slider3/slider03_m.webp",
+  "images/home/slider3/slider03_pc.webp",
+  "images/home/slider3/slider03_s.webp",
+  "images/home/slider4/slider04.webp",
+  "images/home/slider4/slider04_m.webp",
+  "images/home/slider4/slider04_pc.webp",
+  "images/home/slider4/slider04_s.webp",
+  "images/home/slider5/slider05.webp",
+  "images/home/slider5/slider05_m.webp",
+  "images/home/slider5/slider05_pc.webp",
+  "images/home/slider5/slider05_s.webp",
+
+  // --- hero misc ---
+  "images/home/slider_video02.mp4?v=1",
+  "images/home/slider_video02_thumb.jpg",
+  "images/load.webp",
+
+  // --- dark wrapper ---
+  "images/wavebg.mp4",
+  ...range(12).map((n) => `images/home/company/${n}.webp`),
+  "images/cube/responsive-web-design-showcase-mobile-ipad.mp4",
+  "images/cube/high-end-restaurant-web-design.webp",
+  "images/cube/japanese-dining-brand-website.webp",
+  "images/cube/interior-design-website-mockup.webp",
+  "images/cube/fluid-minimalism-web-design-texture.webp",
+  "images/cube/b2b-manufacturing-web-design-portfolio.webp",
+
+  // --- mobile cube ---
+  "images/bg.mp4",
+  "images/cube/t1.mp4",
+  ...["t2", "t3", "t4", "t5", "t6"].map((t) => `images/cube/${t}.webp`),
+
+  // --- nav menu previews ---
+  ...range(10).map((n) => `images/nav/${n}.webp`),
+
+  // --- ccap ring gallery ---
+  "images/home/star.mp4",
+  ...range(25, 2).map((n) => `images/core-capabilities/ring/${n}.webp`),
+
+  // --- s3 gallery ---
+  ...range(6, 2).map((n) => `images/home/list/${n}.webp`),
+
+  // --- footer ---
+  "images/footer.mp4",
+  "images/footer.webp",
+];

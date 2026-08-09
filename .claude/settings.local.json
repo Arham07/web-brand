@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx -y create-next-app@latest . --typescript --eslint --app --no-tailwind --no-src-dir --import-alias \"@/*\" --use-npm --turbopack --yes)"
+      "Bash(npx -y create-next-app@latest . --typescript --eslint --app --no-tailwind --no-src-dir --import-alias \"@/*\" --use-npm --turbopack --yes)",
+      "Bash(npm install *)",
+      "Bash(node -e \"console.log\\('gsap', require\\('gsap/package.json'\\).version\\); console.log\\('lenis', require\\('lenis/package.json'\\).version\\); console.log\\('three', require\\('three/package.json'\\).version\\)\")",
+      "Bash(grep -E '^\\(ScrollTrigger|Flip|ScrambleTextPlugin\\)\\\\.js$')",
+      "Bash(node scripts/download-assets.mjs)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m 'P0: scaffold Next 16 + fonts + tokens + asset pipeline \\(98 assets mirrored\\) *)"
     ]
   }
 }
