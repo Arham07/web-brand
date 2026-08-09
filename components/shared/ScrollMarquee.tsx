@@ -4,16 +4,21 @@ import { useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useSectionNear } from "@/hooks/useSectionNear";
 import { prefersReducedMotion } from "@/lib/device";
-import { MARQUEE_WORD, MARQUEE_REPEAT } from "./contact-data";
 
 const SPIN_SECONDS = 3;
 
+interface Props {
+  word: string;
+  repeat?: number;
+}
+
 /**
- * Full-bleed "LET'S TALK" band. Two independent triggers: the track scrubs
- * against whole-document scroll, while the band's own clip reveal fires when
- * it comes into view — they run on different clocks by design.
+ * Full-bleed word marquee shared by the contact and work pages.
+ * Two independent triggers by design: the track scrubs against
+ * whole-document scroll while the band's own clip reveal fires when it
+ * comes into view — they run on different clocks.
  */
-export default function ContactMarquee() {
+export default function ScrollMarquee({ word, repeat = 8 }: Props) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useSectionNear(
@@ -21,7 +26,7 @@ export default function ContactMarquee() {
     () => {
       const section = sectionRef.current;
       if (!section) return;
-      const track = section.querySelector<HTMLElement>(".ct-marquee__track");
+      const track = section.querySelector<HTMLElement>(".sm-marquee__track");
       if (!track) return;
 
       if (prefersReducedMotion()) {
@@ -60,15 +65,15 @@ export default function ContactMarquee() {
   );
 
   // Duplicated once so translating the track by -50% loops seamlessly.
-  const items = Array.from({ length: MARQUEE_REPEAT * 2 }, (_, i) => i);
+  const items = Array.from({ length: repeat * 2 }, (_, i) => i);
 
   return (
-    <div className="ct-marquee" ref={sectionRef} aria-hidden="true">
-      <div className="ct-marquee__track">
+    <div className="sm-marquee" ref={sectionRef} aria-hidden="true">
+      <div className="sm-marquee__track">
         {items.map((i) => (
-          <span className="ct-marquee__unit" key={i}>
-            <span className="ct-marquee__item">{MARQUEE_WORD}</span>
-            <span className="ct-marquee__sep">
+          <span className="sm-marquee__unit" key={i}>
+            <span className="sm-marquee__item">{word}</span>
+            <span className="sm-marquee__sep">
               <img
                 src="/images/lab/hourglass.svg"
                 alt=""
@@ -76,9 +81,7 @@ export default function ContactMarquee() {
                 height={51}
                 style={{
                   // negative delays desynchronise the row
-                  animationDelay: `${
-                    -(i % MARQUEE_REPEAT) * (SPIN_SECONDS / MARQUEE_REPEAT)
-                  }s`,
+                  animationDelay: `${-(i % repeat) * (SPIN_SECONDS / repeat)}s`,
                 }}
               />
             </span>

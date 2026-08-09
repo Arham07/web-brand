@@ -85,4 +85,7 @@ export const ASSETS = [
   // --- contact page ---
   "images/contact.svg",
   "images/lab/hourglass.svg",
+
+  // --- work page (static covers only; hover videos deliberately excluded) ---
+  ...range(10).map((n) => `images/work/list/${n}.webp`),
 ];

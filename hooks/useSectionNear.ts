@@ -28,7 +28,6 @@ export function useSectionNear(
     let ran = false;
     let fired = false;
     let disposed = false;
-    let rafId = 0;
     let timerId = 0;
 
     const invoke = () => {
@@ -69,12 +68,15 @@ export function useSectionNear(
       return r.top < window.innerHeight + rootMargin && r.bottom > -rootMargin;
     };
 
+    // Timestamp-throttled rather than rAF-throttled: rAF callbacks are
+    // suppressed alongside IO in hidden documents, which would defeat the
+    // whole point of this fallback.
+    let lastCheck = 0;
     const onScroll = () => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = 0;
-        if (isNear()) run();
-      });
+      const now = Date.now();
+      if (now - lastCheck < 150) return;
+      lastCheck = now;
+      if (isNear()) run();
     };
 
     const io = new IntersectionObserver(
@@ -93,7 +95,6 @@ export function useSectionNear(
       disposed = true;
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
-      if (rafId) cancelAnimationFrame(rafId);
       if (timerId) window.clearTimeout(timerId);
       cleanupRef.current?.();
       cleanupRef.current = undefined;

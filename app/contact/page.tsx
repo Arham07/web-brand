@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import ContactHero from "@/components/contact/ContactHero";
 import ContactForm from "@/components/contact/ContactForm";
-import ContactMarquee from "@/components/contact/ContactMarquee";
+import ScrollMarquee from "@/components/shared/ScrollMarquee";
 import SiteFooter from "@/components/footer/SiteFooter";
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function ContactPage() {
     <div className="contact-page">
       <ContactHero />
       <ContactForm />
-      <ContactMarquee />
+      <ScrollMarquee word="LET'S TALK" />
       <SiteFooter />
     </div>
   );

@@ -1,0 +1,65 @@
+/* ------------------------------------------------------------------ */
+/*  Shared full-bleed word marquee (contact + work pages)              */
+/* ------------------------------------------------------------------ */
+
+.sm-marquee {
+  overflow: hidden;
+  padding: 10px 0;
+  border-top: 1px solid #313131;
+  border-bottom: 1px solid #313131;
+  clip-path: inset(100% 0 0 0);
+}
+
+.sm-marquee__track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  will-change: transform;
+}
+
+.sm-marquee__unit {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.sm-marquee__item {
+  font-family: var(--font-family-accent);
+  font-size: clamp(1.4rem, 4vw, 4.5rem);
+  letter-spacing: 0.08em;
+  padding: 0 clamp(20px, 3vw, 60px);
+  white-space: nowrap;
+}
+
+.sm-marquee__sep img {
+  width: clamp(20px, 2.8vw, 40px);
+  height: auto;
+  animation: sm-sep-spin 3s ease-in-out infinite;
+}
+
+@keyframes sm-sep-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  40% {
+    transform: rotate(180deg);
+  }
+  60% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sm-marquee {
+    clip-path: none;
+  }
+  .sm-marquee__track {
+    transform: none !important;
+  }
+  .sm-marquee__sep img {
+    animation: none;
+  }
+}
