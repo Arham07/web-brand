@@ -11,7 +11,8 @@
       "Bash(npx tsc *)",
       "Bash(echo \"exit: $?\")",
       "Bash(echo \"tsc exit: $?\")",
-      "Bash(git commit -q -m 'P4-P8: STM field, mobile cube, ring gallery, works gallery, footer, page transitions *)"
+      "Bash(git commit -q -m 'P4-P8: STM field, mobile cube, ring gallery, works gallery, footer, page transitions *)",
+      "Bash(git commit -q -m 'P9: rIC fallback for hidden documents/Safari, cursor rest-state fidelity, README *)"
     ]
   }
 }
