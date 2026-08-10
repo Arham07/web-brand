@@ -210,7 +210,7 @@ export default function GallerySection() {
 
       <div className="pg-gallery">
         {ITEMS.map((item, i) => (
-          <div key={item.href} className={`pg-item pg-item-${i + 1}`}>
+          <div key={item.img} className={`pg-item pg-item-${i + 1}`}>
             <a
               href={item.href}
               data-cursor="VIEW"
