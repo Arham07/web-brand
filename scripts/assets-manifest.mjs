@@ -41,8 +41,9 @@ export const ASSETS = [
   "images/home/slider5/slider05_s.webp",
 
   // --- hero misc ---
-  "images/home/slider_video02.mp4?v=1",
-  "images/home/slider_video02_thumb.jpg",
+  // TODO: brand-core video parked — re-enable with its markup/styles
+  // "images/home/slider_video02.mp4?v=1",
+  // "images/home/slider_video02_thumb.jpg",
   "images/load.webp",
 
   // --- dark wrapper ---

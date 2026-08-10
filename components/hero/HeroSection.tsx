@@ -100,6 +100,9 @@ export default function HeroSection() {
       />
       <div id="webgl-container" />
 
+      {/* TODO: brand-core video (slider_video02) — parked until the final
+          asset is chosen. Styles are commented out in sections/hero.css and
+          the assets in scripts/assets-manifest.mjs.
       <div className="brand-core-video-row">
         <div className="brand-core-video">
           <a
@@ -123,6 +126,7 @@ export default function HeroSection() {
           </a>
         </div>
       </div>
+      */}
 
       <div className="overlay-ui">
         <div className="overlay-top">
@@ -131,7 +135,7 @@ export default function HeroSection() {
               <Mask>STUDIO</Mask>
             </div>
             <div className="small-tag">
-              <Mask>( Brand Direction )</Mask>
+              <Mask>( AMERICAN WEB GUILD )</Mask>
             </div>
             <div className="huge-text">
               <Mask>DIGITAL</Mask>
