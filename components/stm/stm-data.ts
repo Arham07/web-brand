@@ -1,6 +1,6 @@
 // Content inventory for the STM ("scroll text motion") section:
-// 20 groups of keyword lines interleaved with the giant N/U/D/O/T
-// dot-matrix letters. Each item carries a base position class number
+// 20 groups of keyword lines interleaved with the giant A/W/E/B/G
+// (American Web Guild) dot-matrix letters. Each item carries a base position class number
 // (stm-pos-N) and an alternate slot the scrubbed Flip swap drifts to.
 
 export interface StmItem {
@@ -46,14 +46,14 @@ export const STM_GROUPS: StmGroup[] = [
     "Creative direction",
     "Design Language",
   ]),
-  // 3 — giant N
-  xl("N", 1, 2),
+  // 3 — giant A
+  xl("A", 1, 2),
   // 4
   status("Building Brand Identity System"),
   // 5
   group(2, 5, ["Interface design", "Web experience", "Digital storytelling"]),
-  // 6 — giant U
-  xl("U", 3, 9),
+  // 6 — giant W
+  xl("W", 3, 9),
   // 7
   group(3, 2, [
     "Art direction",
@@ -72,8 +72,8 @@ export const STM_GROUPS: StmGroup[] = [
     "Packaging design",
     "Digital Experience",
   ]),
-  // 10 — giant D
-  xl("D", 1, 3),
+  // 10 — giant E
+  xl("E", 1, 3),
   // 11
   group(2, 9, [
     "Interaction design",
@@ -82,8 +82,8 @@ export const STM_GROUPS: StmGroup[] = [
     "Colour systems",
     "Brand Consulting",
   ]),
-  // 12 — giant O (only element with a custom flip ease)
-  xl("O", 3, 10, "expo.in"),
+  // 12 — giant B (only element with a custom flip ease)
+  xl("B", 3, 10, "expo.in"),
   // 13
   group(4, 3, [
     "Social media design",
@@ -100,8 +100,8 @@ export const STM_GROUPS: StmGroup[] = [
     "Exhibition design",
     "Sound identity",
   ]),
-  // 16 — giant T
-  xl("T", 2, 3),
+  // 16 — giant G
+  xl("G", 2, 3),
   // 17
   group(3, 6, [
     "Concept development",
