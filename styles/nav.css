@@ -10,7 +10,15 @@
   left: 50%;
   z-index: 9999;
   transform: translateX(-50%);
-  mix-blend-mode: difference;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* a soft dark plate keeps the mark readable over bright slide imagery
+     (the scroll-nav pill does the same job with its own background) */
+  padding: 10px 16px;
+  border-radius: 6px;
+  background: rgba(8, 8, 8, 0.55);
+  backdrop-filter: blur(6px);
   opacity: 0;
   transition:
     transform 0.45s cubic-bezier(0.4, 0, 0.6, 1),
@@ -29,6 +37,8 @@
 #fixed-logo img {
   height: clamp(20px, 2.2vw, 25px);
   width: auto;
+  /* the mark ships black-filled — force it white, same as the scroll-nav */
+  filter: brightness(0) invert(1);
 }
 
 html.show-nav-scroll #fixed-logo {
