@@ -5,16 +5,16 @@ import ScrollMarquee from "@/components/shared/ScrollMarquee";
 import SiteFooter from "@/components/footer/SiteFooter";
 
 export const metadata: Metadata = {
-  title: "Contact | NUDOT Studio — Project Enquiries",
+  title: "Contact | American Web Guild — Project Enquiries",
   description:
-    "Get in touch with NUDOT Studio — a web design, premium commercial visual and AI motion-image team. Enquiries welcome for brand sites, interactive experience design and Gen-AI visual projects.",
+    "Get in touch with American Web Guild — a web design, premium commercial visual and AI motion-image team. Enquiries welcome for brand sites, interactive experience design and Gen-AI visual projects.",
   openGraph: {
-    title: "Contact | NUDOT Studio · Web Design & Commercial Visual Collaboration",
+    title: "Contact | American Web Guild · Web Design & Commercial Visual Collaboration",
     description:
-      "Start a conversation about your next digital transformation with NUDOT Studio.",
-    url: "https://nudot.com.tw/contact",
+      "Start a conversation about your next digital transformation with American Web Guild.",
+    url: "https://americanwebguild.com/contact",
   },
-  alternates: { canonical: "https://nudot.com.tw/contact" },
+  alternates: { canonical: "https://americanwebguild.com/contact" },
 };
 
 export default function ContactPage() {

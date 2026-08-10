@@ -192,7 +192,7 @@ export default function GallerySection() {
             THE SELECTED WORKS
           </span>
           <span className="gh-line" data-reveal="word">
-            BY NUDOT
+            BY AMERICAN WEB GUILD
           </span>
         </div>
         <p className="gallery-header-sub text1vw" data-reveal="fade" data-reveal-delay="0.3">

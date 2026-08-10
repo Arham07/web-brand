@@ -43,9 +43,9 @@ export default function FixedLogo() {
         ref={logoRef}
         href="/"
         data-cursor="HOME"
-        aria-label="NUDOT home"
+        aria-label="American Web Guild home"
       >
-        <img src="/images/pc_logo.svg" alt="NUDOT" width={45} height={35} />
+        <img src="/images/pc_logo.svg" alt="American Web Guild" width={45} height={35} />
       </a>
     </nav>
   );

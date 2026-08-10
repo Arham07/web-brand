@@ -14,13 +14,12 @@ const DORMANT_NAV = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
+// TODO: point these at American Web Guild's real profiles once they exist —
+// the original hrefs belonged to the reference site's own accounts.
 const SOCIALS = [
-  { href: "https://www.instagram.com/nudotlabs", text: "Instagram" },
-  { href: "https://www.threads.com/@leeyiheng0513", text: "Threads" },
-  {
-    href: "https://www.facebook.com/profile.php?id=61588727983387",
-    text: "Facebook",
-  },
+  { href: "#", text: "Instagram" },
+  { href: "#", text: "Threads" },
+  { href: "#", text: "Facebook" },
 ] as const;
 
 /** Wrap `el` in an overflow-hidden .frev-wrap (idempotent) and preset its offset. */
@@ -196,15 +195,16 @@ export default function SiteFooter() {
         <div className="footer-main-content">
           <div className="footer-left">
             <p className="footer-description">
-              NUDOT Studio | Taichung web design, high-end commercial visual
-              generation, and AI motion imagery. We integrate brand identity,
-              interactive experience design, and Gen-AI visual technology to
-              build internationally competitive digital visual narratives for
-              brands.
+              American Web Guild | Taichung web design, high-end commercial
+              visual generation, and AI motion imagery. We integrate brand
+              identity, interactive experience design, and Gen-AI visual
+              technology to build internationally competitive digital visual
+              narratives for brands.
             </p>
             <div className="footer-contact-info">
-              <a className="footer-email" href="mailto:hello@nudot.com.tw">
-                hello@nudot.com.tw
+              {/* TODO: swap in the real inbox once one exists */}
+              <a className="footer-email" href="mailto:hello@americanwebguild.com">
+                hello@americanwebguild.com
               </a>
               <span className="footer-phone">(04) 3603-3622</span>
             </div>
@@ -255,8 +255,8 @@ export default function SiteFooter() {
           data-bg="/images/footer.webp"
         />
         <div className="footer-parallax-copy">
-          <span>NUDOT Creative Co., Ltd.</span>
-          <span>© 2026 NUDOT STUDIO. ALL RIGHTS RESERVED.</span>
+          <span>American Web Guild Creative Co., Ltd.</span>
+          <span>© 2026 AMERICAN WEB GUILD. ALL RIGHTS RESERVED.</span>
         </div>
       </div>
     </footer>

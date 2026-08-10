@@ -1,8 +1,9 @@
 /* ------------------------------------------------------------------ */
 /*  #nudot-loader — boot loader (spec §3)                              */
+/*  (element id kept as-is; it's an internal DOM hook, not brand text) */
 /*  Pure CSS keyframe timeline; every delay is absolute from paint:    */
-/*    0.30s  N blurs in          2.00s  letters spread / icon out      */
-/*    0.60s  D blurs in          2.60s  mask hole opens                */
+/*    0.30s  A blurs in          2.00s  letters spread / icon out      */
+/*    0.60s  G blurs in          2.60s  mask hole opens                */
 /*    2.90s  letters fade        3.15s  shield off (CSS failsafe)      */
 /* ------------------------------------------------------------------ */
 

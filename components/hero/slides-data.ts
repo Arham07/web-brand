@@ -15,7 +15,7 @@ export const SLIDES: SlideData[] = [
     mobileVideo: "/images/home/slider1/slider01_s.mp4",
     thumb: "/images/home/slider1/slider01.webp",
     mobileThumb: "/images/home/slider1/slider01_s.webp",
-    title: "Nudot Creative Studio",
+    title: "American Web Guild",
   },
   {
     video: "/images/home/slider2/slider02pro.mp4",

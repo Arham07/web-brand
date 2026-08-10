@@ -490,10 +490,10 @@ export default function ScrollNav() {
             <polyline points="22,6 12,13 2,6" />
           </svg>
         </a>
-        <a className="ns-logo" href="/" data-cursor="HOME" aria-label="NUDOT home">
+        <a className="ns-logo" href="/" data-cursor="HOME" aria-label="American Web Guild home">
           <img
             src="/images/pc_logo.svg"
-            alt="NUDOT"
+            alt="American Web Guild"
             width={45}
             height={35}
             loading="lazy"

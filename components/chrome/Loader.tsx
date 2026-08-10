@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * NUDOT boot loader (spec §3).
+ * American Web Guild boot loader (spec §3).
  *
  * The visual choreography is 100% CSS keyframes (styles/loader.css) with
  * absolute delays measured from first paint / mount. This component only:
@@ -95,14 +95,16 @@ export default function Loader() {
     >
       <div className="nd-mask" />
       <div className="nd-logo">
-        <span className="nd-letter nd-n">N</span>
+        {/* "A" / "G" — American ... Guild. Class names (nd-n/nd-d) are just
+            positional (left/right spread direction), kept as-is. */}
+        <span className="nd-letter nd-n">A</span>
         {/* Raw HTML so muted/autoplay attributes exist in SSR markup and the
             video plays before hydration. */}
         <span
           className="nd-icon"
           dangerouslySetInnerHTML={{ __html: ICON_VIDEO_HTML }}
         />
-        <span className="nd-letter nd-d">D</span>
+        <span className="nd-letter nd-d">G</span>
       </div>
     </div>
   );

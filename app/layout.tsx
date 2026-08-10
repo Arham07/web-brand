@@ -49,19 +49,19 @@ const bitcount = Bitcount_Grid_Single({
 });
 
 export const metadata: Metadata = {
-  title: "NUDOT Studio | Web Design x Brand Visuals x Motion Design",
+  title: "American Web Guild | Web Design x Brand Visuals x Motion Design",
   description:
-    "NUDOT is a leading creative studio specializing in high-end web design, motion design, and brand visual elevation. We blend fluid minimalist aesthetics with advanced front-end technology to build immersive, interactive websites with an international standard of craft — turning digital experience into your strongest business asset.",
-  metadataBase: new URL("https://nudot.com.tw"),
+    "American Web Guild is a leading creative studio specializing in high-end web design, motion design, and brand visual elevation. We blend fluid minimalist aesthetics with advanced front-end technology to build immersive, interactive websites with an international standard of craft — turning digital experience into your strongest business asset.",
+  metadataBase: new URL("https://americanwebguild.com"),
   openGraph: {
     type: "website",
-    url: "https://nudot.com.tw/",
-    title: "NUDOT Studio | Web Design x Motion Design x Brand Visuals",
+    url: "https://americanwebguild.com/",
+    title: "American Web Guild | Web Design x Motion Design x Brand Visuals",
     description:
-      "NUDOT is a leading creative studio specializing in high-end web design, motion design, and brand visual elevation, building immersive, interactive websites with an international standard of craft.",
+      "American Web Guild is a leading creative studio specializing in high-end web design, motion design, and brand visual elevation, building immersive, interactive websites with an international standard of craft.",
     images: ["/images/og.jpg"],
     locale: "en_US",
-    siteName: "NUDOT Studio",
+    siteName: "American Web Guild",
   },
   twitter: {
     card: "summary_large_image",

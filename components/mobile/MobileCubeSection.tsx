@@ -219,9 +219,9 @@ export default function MobileCubeSection() {
       <div className="mcube-copy">
         <p className="mcube-copy__desc">
           Every powerful digital experience begins at a single precise point.
-          NUDOT specializes in Taichung web design, high-end commercial
-          visual generation, and AI motion imagery — crafting every pixel
-          with precision so it delivers maximum brand value.
+          American Web Guild specializes in Taichung web design, high-end
+          commercial visual generation, and AI motion imagery — crafting
+          every pixel with precision so it delivers maximum brand value.
         </p>
       </div>
     </section>

@@ -3,7 +3,7 @@
 
 /** Hero marquee rows — the second row scrolls the opposite way. */
 export const MARQUEE_ROW_A = [
-  "NUDOT CREATIVE STUDIO",
+  "AMERICAN WEB GUILD",
   "BRAND STRATEGY",
   "DIGITAL EXPERIENCE",
   "MOTION DESIGN",
@@ -32,7 +32,7 @@ export const DIVIDER_LABELS = [
 
 export const HERO_CAPTION = ["DEFINING THE CORE DNA OF", "BRAND AESTHETICS"];
 export const HERO_BOTTOM = [
-  "NUDOT IS COMMITTED",
+  "AMERICAN WEB GUILD IS COMMITTED",
   "TO THE ART OF SUBTRACTION.",
 ];
 
@@ -94,7 +94,7 @@ export const WORK_CARDS: WorkCard[] = [
 ];
 
 export const WORK_HEADER = {
-  tag: "NUDOT CREATIVE STUDIO",
+  tag: "AMERICAN WEB GUILD",
   copy: "Master of absolute precision and the art of subtraction.",
 };
 

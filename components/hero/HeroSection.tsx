@@ -199,21 +199,23 @@ export default function HeroSection() {
             </div>
             <div className="footer-col">
               <Mask>
-                <a href="mailto:hello@nudot.com.tw">hello@nudot.com.tw</a>
+                {/* TODO: swap in the real inbox once one exists */}
+                <a href="mailto:hello@americanwebguild.com">
+                  hello@americanwebguild.com
+                </a>
                 <br />
                 04-36033622
                 <br />
-                NUDOT Studio 2026©
+                American Web Guild 2026©
               </Mask>
             </div>
             <div className="footer-col col-right footer-links">
+              {/* TODO: point these at American Web Guild's real profiles —
+                  the original hrefs belonged to the reference site's own accounts */}
               {[
-                ["https://www.instagram.com/nudotlabs/", "Instagram"],
-                ["https://www.threads.com/@leeyiheng0513", "Threads"],
-                [
-                  "https://www.facebook.com/profile.php?id=61588727983387",
-                  "Facebook",
-                ],
+                ["#", "Instagram"],
+                ["#", "Threads"],
+                ["#", "Facebook"],
               ].map(([href, label]) => (
                 <Mask key={label}>
                   <a

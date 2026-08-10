@@ -1,10 +1,13 @@
-# web-brand
+# web-brand — American Web Guild
 
-A Next.js re-implementation of the [nudot.com.tw](https://nudot.com.tw) experience —
-smooth-scroll storytelling with Lenis, GSAP ScrollTrigger choreography, and
-three.js WebGL scenes. All media currently mirrors the original site as
-**placeholders**; swap files under `public/images/` with your own assets
-(same names/paths) when ready.
+The **American Web Guild** site, a Next.js build with smooth-scroll
+storytelling via Lenis, GSAP ScrollTrigger choreography, and three.js WebGL
+scenes — the animation techniques were originally studied from
+[nudot.com.tw](https://nudot.com.tw). All media currently mirrors that
+reference site as **placeholders**; swap files under `public/images/` with
+your own assets (same names/paths) when ready. Domain, email and social
+links throughout the codebase are also placeholders (`americanwebguild.com`,
+`hello@americanwebguild.com`, `#`) — search for `TODO` to find them.
 
 ## Stack
 
