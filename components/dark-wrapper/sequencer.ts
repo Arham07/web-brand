@@ -1,7 +1,7 @@
 import { gsap } from "@/lib/gsap";
 import { scrollTop } from "@/lib/lenis";
 import { clamp01, easeInOutCubic } from "@/lib/ease";
-import { hydrateVideosIn } from "@/lib/lazy-media";
+import { hydrateImagesIn, hydrateVideosIn } from "@/lib/lazy-media";
 import { MarqueeEngine } from "./marquee";
 
 // phase boundaries (progress 0..1 over 500vh of scroll)
@@ -125,6 +125,7 @@ export class DarkWrapperSequencer {
     if (!this.lazyFired && p > 0.035) {
       this.lazyFired = true;
       hydrateVideosIn(this.els.wrapper);
+      hydrateImagesIn(this.els.wrapper);
     }
 
     this.phaseReveal(p);

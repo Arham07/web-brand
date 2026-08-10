@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { easeInOutCubic } from "@/lib/ease";
 import { useSectionNear } from "@/hooks/useSectionNear";
+import { hydrateImagesIn, hydrateVideosIn } from "@/lib/lazy-media";
 
 const RingGallery = dynamic(() => import("./RingGallery"), { ssr: false });
 
@@ -43,6 +44,12 @@ export default function CcapSection() {
     () => {
       const section = sectionRef.current;
       if (!section || !section.isConnected) return;
+
+      // The global lazy-media engine only scans once at app mount, so a
+      // section remounted by a client-side navigation would never load its
+      // deferred video/images without this.
+      hydrateVideosIn(section);
+      hydrateImagesIn(section);
 
       const titleInners = Array.from(
         section.querySelectorAll<HTMLElement>(

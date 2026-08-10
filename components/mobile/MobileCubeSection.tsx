@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { getLenis } from "@/lib/lenis";
 import { useSectionNear } from "@/hooks/useSectionNear";
+import { hydrateImagesIn } from "@/lib/lazy-media";
 
 /** 1×1 transparent gif placeholder for deferred images. */
 const BLANK_GIF = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
@@ -41,6 +42,10 @@ export default function MobileCubeSection() {
     const scene = sceneRef.current;
     const cube = cubeRef.current;
     if (!scene || !cube) return;
+
+    // The global lazy-media engine only scans once at app mount — hydrate the
+    // cube-face images ourselves so a remounted section isn't left blank.
+    if (sectionRef.current) hydrateImagesIn(sectionRef.current);
 
     let angle = 0; // continuous auto-rotation (deg)
     let extra = 0; // scroll/fling boost (deg per frame)

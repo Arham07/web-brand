@@ -5,16 +5,18 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useSectionNear } from "@/hooks/useSectionNear";
 import { isMobileWidth, prefersReducedMotion } from "@/lib/device";
 import { initReveals } from "@/components/shared/reveal";
+import { hydrateImagesIn, hydrateVideosIn } from "@/lib/lazy-media";
 
 const GIF = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
 
+// All cards point at the Work listing page — per-project pages don't exist yet.
 const ITEMS = [
-  { href: "/work_co", img: "01" },
-  { href: "/work_food", img: "02" },
-  { href: "/work_nod", img: "03" },
-  { href: "/work_oil", img: "04" },
-  { href: "/work_camp", img: "05" },
-  { href: "/work_cnc", img: "06" },
+  { href: "/work", img: "01" },
+  { href: "/work", img: "02" },
+  { href: "/work", img: "03" },
+  { href: "/work", img: "04" },
+  { href: "/work", img: "05" },
+  { href: "/work", img: "06" },
 ] as const;
 
 const PARALLAX_SPEEDS = [12, 18, 10, 20, 15, 22];
@@ -27,6 +29,12 @@ export default function GallerySection() {
     () => {
       const section = sectionRef.current;
       if (!section) return;
+
+      // The global lazy-media engine only scans once at app mount, so a
+      // gallery mounted by a client-side navigation would never load its
+      // card images / header video without this.
+      hydrateImagesIn(section);
+      hydrateVideosIn(section);
 
       // Reduced motion: leave everything visible/static, no clipping gate.
       if (prefersReducedMotion()) return;

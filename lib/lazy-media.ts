@@ -124,3 +124,18 @@ export function hydrateVideosIn(container: HTMLElement) {
       if (video.autoplay) video.play().catch(() => {});
     });
 }
+
+/**
+ * Force-hydrate every deferred image inside a container. The global engine's
+ * intent-gated batch only queries the DOM once per full page load, so sections
+ * remounted by a client-side navigation must call this from their own init.
+ */
+export function hydrateImagesIn(container: HTMLElement) {
+  container
+    .querySelectorAll<HTMLImageElement>("img[data-defer-src]")
+    .forEach((img) => {
+      if (img.dataset.hydrated || !img.dataset.deferSrc) return;
+      img.dataset.hydrated = "1";
+      img.src = img.dataset.deferSrc;
+    });
+}
