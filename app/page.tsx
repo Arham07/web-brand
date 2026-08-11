@@ -4,6 +4,8 @@ import StmSection from "@/components/stm/StmSection";
 import MobileCubeSection from "@/components/mobile/MobileCubeSection";
 import CcapSection from "@/components/ccap/CcapSection";
 import GallerySection from "@/components/gallery/GallerySection";
+import FaqSection from "@/components/home/FaqSection";
+import HomeCtaSection from "@/components/home/HomeCtaSection";
 import SiteFooter from "@/components/footer/SiteFooter";
 
 export default function Home() {
@@ -20,6 +22,8 @@ export default function Home() {
       <MobileCubeSection />
       <CcapSection />
       <GallerySection />
+      <FaqSection />
+      <HomeCtaSection />
       <SiteFooter />
     </div>
   );

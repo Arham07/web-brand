@@ -26,10 +26,12 @@ export default function FloatingCta() {
 
     let last = 0;
     const check = () => {
-      const band = document.querySelector(".footer-cta");
-      const overlaps = band
-        ? band.getBoundingClientRect().top < window.innerHeight
-        : false;
+      // any big "Let's Talk" surface on screen → hide the floating twin
+      const bands = document.querySelectorAll(".footer-cta, .hcta");
+      const overlaps = Array.from(bands).some((band) => {
+        const r = band.getBoundingClientRect();
+        return r.top < window.innerHeight && r.bottom > 0;
+      });
       el.classList.toggle("is-suppressed", overlaps);
     };
     const onScroll = () => {

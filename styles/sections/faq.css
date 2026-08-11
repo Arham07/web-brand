@@ -1,0 +1,192 @@
+/* ------------------------------------------------------------------ */
+/*  Home page — FAQ accordion (.fq-*) + closing CTA statement (.hcta)  */
+/*  Both sit between the gallery and the footer. No blend modes.       */
+/* ------------------------------------------------------------------ */
+
+.fq-section {
+  position: relative;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: clamp(80px, 12vh, 150px) clamp(18px, 4vw, 40px) clamp(40px, 6vh, 80px);
+}
+
+/* ---------- header ---------- */
+
+.fq-head {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: clamp(30px, 4vh, 52px);
+}
+.fq-head__label {
+  font-size: 12px;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+.fq-head__title {
+  font-family: var(--font-family-display);
+  font-stretch: semi-expanded;
+  font-weight: 600;
+  font-size: var(--text-display-xs);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+/* ---------- accordion ---------- */
+
+.fq-item {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.fq-item:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.fq-q {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(14px, 2vw, 26px);
+  width: 100%;
+  padding: clamp(18px, 2.4vh, 26px) 0;
+  text-align: left;
+}
+.fq-q__index {
+  flex: 0 0 auto;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--color-accent-2, #e02e7e);
+}
+.fq-q__text {
+  flex: 1;
+  font-size: clamp(15px, 1.5vw, 19px);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #fff;
+  transition: color 0.25s ease;
+}
+.fq-q:hover .fq-q__text {
+  color: var(--color-accent, #2f8bff);
+}
+.fq-q__icon {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--color-accent, #2f8bff);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.fq-item.is-open .fq-q__icon {
+  transform: rotate(45deg);
+  border-color: var(--color-accent-2, #e02e7e);
+  color: var(--color-accent-2, #e02e7e);
+}
+
+/* collapse: grid-rows 0fr -> 1fr (height-agnostic, smooth) */
+.fq-a {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.22, 0.9, 0.3, 1);
+}
+.fq-a > div {
+  overflow: hidden;
+}
+.fq-a.is-open {
+  grid-template-rows: 1fr;
+}
+.fq-a p {
+  max-width: 640px;
+  padding: 0 0 clamp(18px, 2.4vh, 26px) calc(11px + clamp(14px, 2vw, 26px));
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Closing CTA statement                                              */
+/* ------------------------------------------------------------------ */
+
+.hcta {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(18px, 2.6vh, 28px);
+  padding: clamp(90px, 14vh, 170px) clamp(18px, 4vw, 40px);
+  overflow: hidden;
+}
+
+/* ambient color glows */
+.hcta::before,
+.hcta::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(110px);
+  pointer-events: none;
+}
+.hcta::before {
+  top: -10vh;
+  left: -8vw;
+  width: 46vw;
+  height: 44vh;
+  background: radial-gradient(circle, var(--glow-blue) 0%, transparent 62%);
+}
+.hcta::after {
+  bottom: -12vh;
+  right: -10vw;
+  width: 44vw;
+  height: 42vh;
+  background: radial-gradient(circle, var(--glow-magenta) 0%, transparent 62%);
+}
+
+.hcta__title {
+  font-family: var(--font-family-display);
+  font-stretch: semi-expanded;
+  font-weight: 600;
+  font-size: clamp(28px, 4.6vw, 64px);
+  line-height: 1.04;
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+.hcta__line {
+  display: block;
+}
+
+.hcta__sub {
+  max-width: 560px;
+  font-size: clamp(13px, 1.2vw, 15px);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.hcta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 18px 48px;
+  border-radius: 999px;
+  background: var(--grad-accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.hcta__btn:hover,
+.hcta__btn:focus-visible {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 28px rgba(47, 139, 255, 0.4),
+    0 6px 36px rgba(224, 46, 126, 0.32);
+}
