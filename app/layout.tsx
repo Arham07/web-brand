@@ -11,6 +11,7 @@ import "../styles/loader.css";
 import "../styles/nav.css";
 import "../styles/cursor.css";
 import "../styles/chrome-misc.css";
+import "../styles/cta.css";
 import "../styles/transition.css";
 import "../styles/shared-marquee.css";
 import "../styles/sections/hero.css";

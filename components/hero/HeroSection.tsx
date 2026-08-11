@@ -167,6 +167,14 @@ export default function HeroSection() {
                     <Mask>{label}</Mask>
                   </a>
                 ))}
+                <a className="hero-cta" href="/contact" data-cursor="CONTACT">
+                  <Mask>
+                    Let&apos;s Talk
+                    <span className="hero-cta__arrow" aria-hidden="true">
+                      {" "}&rarr;
+                    </span>
+                  </Mask>
+                </a>
               </nav>
             </div>
             <div className="grid-4 border-top-line">

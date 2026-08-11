@@ -243,6 +243,16 @@ export default function SiteFooter() {
           </div>
         </div>
 
+        <div className="footer-cta">
+          <span className="footer-cta__label">Have a project in mind?</span>
+          <a className="footer-cta__btn" href="/contact" data-cursor="CONTACT">
+            Let&apos;s Talk
+            <span className="footer-cta__arrow" aria-hidden="true">
+              &rarr;
+            </span>
+          </a>
+        </div>
+
         <div className="footer-copyright-bridge" id="footer-c-bridge">
           <span>©</span>
         </div>

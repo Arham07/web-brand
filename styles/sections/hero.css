@@ -148,6 +148,34 @@
   opacity: 1;
 }
 
+/* hero CTA pill — gradient border via padding-box/border-box stack,
+   pushed to the row's right edge. Sits in the blend-free quick-links row. */
+.hero-quick-links a.hero-cta {
+  margin-left: auto;
+  padding: 10px 22px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(rgba(8, 4, 15, 0.55), rgba(8, 4, 15, 0.55)) padding-box,
+    var(--grad-accent) border-box;
+  color: #fff;
+  text-shadow: none;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.hero-quick-links a.hero-cta:hover,
+.hero-quick-links a.hero-cta:focus-visible {
+  background: var(--grad-accent);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.hero-cta__arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+.hero-quick-links a.hero-cta:hover .hero-cta__arrow {
+  transform: translateX(3px);
+}
+
 .border-top-line > div {
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
