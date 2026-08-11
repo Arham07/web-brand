@@ -76,18 +76,6 @@ export const WORK_HERO = {
 };
 
 export const WORK_PROJECTS: WorkProject[] = [
-  {
-    index: "00-1",
-    date: "Section 01",
-    title: "HIGH-END SKINCARE",
-    subtitle: "Premium Skincare Brand Site",
-    img: "/images/work/list/1.webp",
-    width: 2560,
-    height: 1920,
-    full: "/images/work/list/1.webp",
-    fullWidth: 2560,
-    fullHeight: 1920,
-  },
-  ...AW_HEIGHTS.map((h, i) => entry(i + 2, aw(i + 1, h))),
-  ...[1, 2, 3, 4, 5, 6].map((n, i) => entry(i + 10, wm(n))),
+  ...AW_HEIGHTS.map((h, i) => entry(i + 1, aw(i + 1, h))),
+  ...[1, 2, 3, 4, 5, 6].map((n, i) => entry(i + 9, wm(n))),
 ];
