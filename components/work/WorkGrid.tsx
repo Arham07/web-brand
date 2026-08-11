@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
+import { getLenis } from "@/lib/lenis";
 import { prefersReducedMotion } from "@/lib/device";
 import { WORK_PROJECTS } from "./work-data";
 
 /**
- * The project archive: a 2-column grid of ten display-only cards.
- * No navigation, no hover videos — per the client's requirement the cards
- * are inert <article>s with a static cover image.
+ * The project archive: a 2-column grid of clickable cards. Clicking a card
+ * opens a fullscreen lightbox with the project's full-length page screenshot
+ * in its own scroll container (`data-lenis-prevent` keeps Lenis out of it;
+ * page scroll is stopped while open).
  *
  * Desktop hover choreography (fine pointers >1024px only): cover zooms
  * slightly, a backdrop-blur veil and a color-blend desaturation layer fade
@@ -16,7 +18,13 @@ import { WORK_PROJECTS } from "./work-data";
  */
 export default function WorkGrid() {
   const rootRef = useRef<HTMLElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closingRef = useRef(false);
+  const [active, setActive] = useState<number | null>(null);
+  const [hintGone, setHintGone] = useState(false);
 
+  // ---- hover choreography (unchanged) ----
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -81,14 +89,94 @@ export default function WorkGrid() {
     };
   }, []);
 
+  // ---- lightbox ----
+  const open = (i: number) => {
+    closingRef.current = false;
+    setHintGone(false);
+    setActive(i);
+  };
+
+  const close = useCallback(() => {
+    if (closingRef.current) return;
+    const overlay = overlayRef.current;
+    const finish = () => {
+      closingRef.current = false;
+      setActive(null);
+    };
+    if (!overlay || prefersReducedMotion()) {
+      finish();
+      return;
+    }
+    closingRef.current = true;
+    gsap.to(overlay, {
+      autoAlpha: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: finish,
+    });
+  }, []);
+
+  // open/close side effects: page-scroll lock + grain hide + entry animation
+  useEffect(() => {
+    if (active === null) return;
+
+    getLenis()?.stop();
+    document.documentElement.classList.add("wk-lb-open");
+
+    const overlay = overlayRef.current;
+    const panel = panelRef.current;
+    if (overlay && panel && !prefersReducedMotion()) {
+      gsap.fromTo(
+        overlay,
+        { autoAlpha: 0 },
+        { autoAlpha: 1, duration: 0.35, ease: "power2.out" }
+      );
+      gsap.fromTo(
+        panel,
+        { y: 60, clipPath: "inset(10% 6% 10% 6% round 14px)" },
+        {
+          y: 0,
+          clipPath: "inset(0% 0% 0% 0% round 14px)",
+          duration: 0.6,
+          ease: "expo.out",
+          delay: 0.05,
+          clearProps: "clipPath",
+        }
+      );
+    }
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.documentElement.classList.remove("wk-lb-open");
+      getLenis()?.start();
+    };
+  }, [active, close]);
+
+  const project = active !== null ? WORK_PROJECTS[active] : null;
+
   return (
-    <section
-      className="wk-grid"
-      aria-label="Selected works"
-      ref={rootRef}
-    >
+    <section className="wk-grid" aria-label="Selected works" ref={rootRef}>
       {WORK_PROJECTS.map((p, i) => (
-        <article className="wk-card" key={p.index} data-cursor="PREVIEW">
+        <article
+          className="wk-card"
+          key={p.index}
+          data-cursor="VIEW"
+          role="button"
+          tabIndex={0}
+          aria-label={`View ${p.title} — ${p.subtitle}`}
+          onClick={() => open(i)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              open(i);
+            }
+          }}
+        >
           <div className="wk-box">
             <img
               className="wk-cover"
@@ -116,6 +204,57 @@ export default function WorkGrid() {
           </div>
         </article>
       ))}
+
+      {project && (
+        <div
+          className="wk-lb"
+          ref={overlayRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${project.title} — full preview`}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) close();
+          }}
+        >
+          <div className="wk-lb__panel" ref={panelRef}>
+            <div className="wk-lb__bar">
+              <span className="wk-lb__meta">
+                <span className="wk-lb__index">{project.index}</span>
+                <span className="wk-lb__title">{project.title}</span>
+              </span>
+              <button
+                type="button"
+                className="wk-lb__close"
+                aria-label="Close preview"
+                data-cursor="CLOSE"
+                onClick={close}
+              >
+                ✕
+              </button>
+            </div>
+            <div
+              className="wk-lb__body"
+              data-lenis-prevent=""
+              onScroll={() => !hintGone && setHintGone(true)}
+            >
+              <img
+                className="wk-lb__img"
+                src={project.full}
+                alt={`${project.title} — full page design`}
+                width={project.fullWidth}
+                height={project.fullHeight}
+                decoding="async"
+              />
+            </div>
+            <span
+              className={`wk-lb__hint${hintGone ? " is-gone" : ""}`}
+              aria-hidden="true"
+            >
+              Scroll to explore ↓
+            </span>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

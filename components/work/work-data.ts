@@ -1,15 +1,79 @@
-// Content for the /work archive. Cards are display-only: no navigation and
-// no hover videos — a static cover image per project (the user's requirement).
+// Content for the /work archive. Cards open a fullscreen lightbox with the
+// project's full-length page screenshot (`full`) — thumbs (`img`) stay light
+// for the grid. Projects 02+ mirror the reference portfolios' website-design
+// shots (americanwebbuilders.com + webdesignmechanic.com), rehosted locally.
 
 export interface WorkProject {
   index: string;
   date: string;
   title: string;
   subtitle: string;
+  /** grid thumbnail */
   img: string;
   width: number;
   height: number;
+  /** full-length screenshot shown in the lightbox */
+  full: string;
+  fullWidth: number;
+  fullHeight: number;
 }
+
+/** aw-XX: 1920-wide full-page webp shots; thumbs 512x387 */
+const aw = (n: number, h: number): Pick<
+  WorkProject,
+  "img" | "width" | "height" | "full" | "fullWidth" | "fullHeight"
+> => {
+  const p = String(n).padStart(2, "0");
+  return {
+    img: `/images/work/list/aw-${p}.webp`,
+    width: 512,
+    height: 387,
+    full: `/images/work/full/aw-${p}.webp`,
+    fullWidth: 1920,
+    fullHeight: h,
+  };
+};
+
+/** wm-XX: 895x4096 full-page png shots; thumbs 900x674 top-crop jpg */
+const wm = (n: number): Pick<
+  WorkProject,
+  "img" | "width" | "height" | "full" | "fullWidth" | "fullHeight"
+> => {
+  const p = String(n).padStart(2, "0");
+  return {
+    img: `/images/work/list/wm-${p}.jpg`,
+    width: 900,
+    height: 674,
+    full: `/images/work/full/wm-${p}.png`,
+    fullWidth: 895,
+    fullHeight: 4096,
+  };
+};
+
+const AW_HEIGHTS = [8213, 8386, 6396, 6390, 7506, 8490, 9637, 6880];
+
+const entry = (
+  i: number,
+  media: Pick<
+    WorkProject,
+    "img" | "width" | "height" | "full" | "fullWidth" | "fullHeight"
+  >
+): WorkProject => ({
+  index: `00-${i}`,
+  date: `Section ${String(i).padStart(2, "0")}`,
+  title: `PROJECT ${String(i).padStart(2, "0")}`,
+  subtitle: "Website Design",
+  ...media,
+});
+
+export const WORK_HERO = {
+  title: "WORK",
+  code: "DESIGN",
+  desc: ["DEFINING THE CORE DNA OF", "BRAND AESTHETICS"],
+  year: "©2025—2026",
+  kicker: "( Selected Work )",
+  tags: "DIGITAL | WEB | BRANDING",
+};
 
 export const WORK_PROJECTS: WorkProject[] = [
   {
@@ -20,95 +84,10 @@ export const WORK_PROJECTS: WorkProject[] = [
     img: "/images/work/list/1.webp",
     width: 2560,
     height: 1920,
+    full: "/images/work/list/1.webp",
+    fullWidth: 2560,
+    fullHeight: 1920,
   },
-  {
-    index: "00-2",
-    date: "Section 02",
-    title: "METERSEVEN",
-    subtitle: "Twilight Table",
-    img: "/images/work/list/2.webp",
-    width: 3000,
-    height: 2000,
-  },
-  {
-    index: "00-3",
-    date: "Section 03",
-    title: "COUNTRY CAMPING",
-    subtitle: "Forest Luxury Retreat",
-    img: "/images/work/list/3.webp",
-    width: 2752,
-    height: 1536,
-  },
-  {
-    index: "00-4",
-    date: "Section 04",
-    title: "PERFORMANCE FLUIDS",
-    subtitle: "High-Performance Lubrication Technology",
-    img: "/images/work/list/4.webp",
-    width: 1200,
-    height: 860,
-  },
-  {
-    index: "00-5",
-    date: "Section 05",
-    title: "OURATTAN",
-    subtitle: "Ourattan Furniture",
-    img: "/images/work/list/5.webp",
-    width: 1280,
-    height: 960,
-  },
-  {
-    index: "00-6",
-    date: "Section 06",
-    title: "HAND PULLED NOODLE",
-    subtitle: "Noodle House",
-    img: "/images/work/list/6.webp",
-    width: 2560,
-    height: 1920,
-  },
-  {
-    index: "00-7",
-    date: "Section 07",
-    title: "PRECISION MACHINING",
-    subtitle: "High-Precision Machining",
-    img: "/images/work/list/7.webp",
-    width: 1280,
-    height: 853,
-  },
-  {
-    index: "00-8",
-    date: "Section 08",
-    title: "STELLAR MACHINING",
-    subtitle: "Steel Tempered, Future Built",
-    img: "/images/work/list/8.webp",
-    width: 2560,
-    height: 1920,
-  },
-  {
-    index: "00-9",
-    date: "Section 09",
-    title: "MEDICAL AESTHETICS",
-    subtitle: "Awakening Skin's Natural Radiance",
-    img: "/images/work/list/9.webp",
-    width: 1280,
-    height: 853,
-  },
-  {
-    index: "00-10",
-    date: "Section 10",
-    title: "SOLAR ENERGY",
-    subtitle: "Sustainable Power, Driving the Future",
-    img: "/images/work/list/10.webp",
-    width: 2560,
-    height: 1920,
-  },
+  ...AW_HEIGHTS.map((h, i) => entry(i + 2, aw(i + 1, h))),
+  ...[1, 2, 3, 4, 5, 6].map((n, i) => entry(i + 10, wm(n))),
 ];
-
-export const WORK_HERO = {
-  title: "WORK",
-  code: "DESIGN",
-  desc: ["DEFINING THE CORE DNA OF", "BRAND AESTHETICS"],
-  year: "©2025—2026",
-  kicker: "( Selected Work )",
-  tags: "DIGITAL | WEB | BRANDING",
-};
