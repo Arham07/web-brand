@@ -17,6 +17,7 @@ const SERVICES_EN = [
 const QUICK_LINKS: Array<[string, string]> = [
   ["/about", "About"],
   ["/work", "Work"],
+  ["/pricing", "Pricing"],
   ["/lab", "Labs"],
   ["/blog", "Blog"],
   ["/contact", "Contact"],

@@ -26,6 +26,7 @@ import "../styles/sections/about-work.css";
 import "../styles/sections/about-cube.css";
 import "../styles/sections/contact.css";
 import "../styles/sections/work.css";
+import "../styles/sections/pricing.css";
 
 import AppShell from "@/components/providers/AppShell";
 

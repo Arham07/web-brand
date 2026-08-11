@@ -31,6 +31,13 @@ const ROWS: MenuRow[] = [
     thumbs: ["/images/nav/5.webp", "/images/nav/6.webp"],
   },
   {
+    href: "/pricing",
+    transitionLabel: "Pricing",
+    caption: "Packages & Plans",
+    title: "PRICING",
+    thumbs: ["/images/nav/5.webp", "/images/nav/6.webp"],
+  },
+  {
     href: "/lab",
     transitionLabel: "Labs",
     caption: "Experiments",

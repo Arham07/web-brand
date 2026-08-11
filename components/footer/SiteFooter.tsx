@@ -9,6 +9,7 @@ import { hydrateVideosIn } from "@/lib/lazy-media";
 const DORMANT_NAV = [
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/lab", label: "Lab" },
   { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
