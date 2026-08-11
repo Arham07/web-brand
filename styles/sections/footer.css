@@ -71,6 +71,13 @@
 
 .footer-contact-info {
   margin-top: clamp(28px, 3vw, 48px);
+  /* flex column so the two children stack regardless of the runtime
+     .frev-wrap reveal spans (display: inline-block) that end up wrapping
+     .footer-email / .footer-phone and would otherwise flow side-by-side */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 .footer-email {
   display: block;
@@ -84,7 +91,6 @@
 }
 .footer-phone {
   display: inline-block;
-  margin-top: 6px;
   font-size: clamp(18px, 2.5vw, 30px);
 }
 
