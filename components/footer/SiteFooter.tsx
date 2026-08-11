@@ -10,8 +10,6 @@ const DORMANT_NAV = [
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/lab", label: "Lab" },
-  { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
 ] as const;
 
@@ -219,9 +217,6 @@ export default function SiteFooter() {
                   {s.text}
                 </a>
               ))}
-              <a href="/blog" data-transition-label="Blog">
-                blog
-              </a>
             </div>
           </div>
 
