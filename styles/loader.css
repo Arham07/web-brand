@@ -58,6 +58,11 @@
   display: inline-block;
   opacity: 0; /* hidden until ndLetterIn kicks in */
   will-change: transform, opacity, filter;
+  background: var(--grad-accent, none);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 #nudot-loader .nd-n {

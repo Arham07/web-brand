@@ -6,7 +6,7 @@
 
 .about-page .ab-cube-section {
   position: relative;
-  background: #0d0d0d;
+  background: var(--color-bg-img-placeholder, #0d0d0d);
 }
 
 .about-page .ab-cube-track {
@@ -19,7 +19,7 @@
   top: 0;
   height: 100svh;
   overflow: hidden;
-  background: #0d0d0d;
+  background: var(--color-bg-img-placeholder, #0d0d0d);
   color: #fff;
 }
 
@@ -162,7 +162,7 @@
   backface-visibility: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
   /* image layered over a solid panel so a missing asset reads as a face */
-  background-color: #0d0d0d;
+  background-color: var(--color-bg-img-placeholder, #0d0d0d);
   background-image: var(--ab-face-bg);
   background-size: cover;
   background-position: center;

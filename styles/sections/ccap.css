@@ -6,8 +6,32 @@
   position: relative;
   height: 100vh;
   overflow: hidden;
-  background: #000;
+  background: var(--color-bg, #000);
   z-index: 30;
+}
+
+/* ambient color glows behind the ring scene */
+.ccap-section::before,
+.ccap-section::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+}
+.ccap-section::before {
+  top: -14vh;
+  left: -8vw;
+  width: 52vw;
+  height: 52vh;
+  background: radial-gradient(circle, var(--glow-blue) 0%, transparent 62%);
+}
+.ccap-section::after {
+  bottom: -16vh;
+  right: -10vw;
+  width: 48vw;
+  height: 50vh;
+  background: radial-gradient(circle, var(--glow-magenta) 0%, transparent 62%);
 }
 
 .ring-gallery-sticky {
@@ -22,7 +46,7 @@
 .ccap-exit-overlay {
   position: absolute;
   inset: 0;
-  background: #000;
+  background: var(--color-bg, #000);
   opacity: 0;
   z-index: 1;
   pointer-events: none;
@@ -244,6 +268,11 @@
 .ccap-section .giant-title .reveal-inner {
   transition-duration: 1.1s;
   transition-delay: 0.15s;
+  background: var(--grad-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 .ccap-section .sub-title .reveal-wrap:nth-of-type(1) .reveal-inner {
   transition-delay: 0.25s;

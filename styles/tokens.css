@@ -13,14 +13,14 @@
   /* root type scaling: the whole rem system tracks the viewport */
   --type-root: clamp(13px, 12.4px + 0.2vw, 16px);
 
-  /* colors */
-  --color-bg: #000;
-  --color-bg-wrapper: #030303;
-  --color-bg-loader: #080808;
-  --color-bg-face: #080808;
-  --color-bg-video-cover: #0a0a0a;
-  --color-bg-img-placeholder: #0d0d0d;
-  --color-bg-pill: #141414;
+  /* colors — deep-plum dark base (blend-safe: near-black, faintly violet) */
+  --color-bg: #08040f;
+  --color-bg-wrapper: #0a0512;
+  --color-bg-loader: #0b0613;
+  --color-bg-face: #0d0716;
+  --color-bg-video-cover: #0c0714;
+  --color-bg-img-placeholder: #120a1c;
+  --color-bg-pill: #171021;
   --color-text: #fff;
   --color-text-subtitle: #ddd;
   --color-text-desc: #ccc;
@@ -28,12 +28,18 @@
   --color-text-dim: #888;
   --color-text-address: #575757;
   --color-hairline-footer: #222;
-  --color-lime: #a3ff00;
+
+  /* accents — electric blue → magenta */
+  --color-accent: #2f8bff;
+  --color-accent-2: #e02e7e;
+  --grad-accent: linear-gradient(92deg, #2f8bff 0%, #7a5cff 48%, #e02e7e 100%);
+  --glow-blue: rgba(47, 139, 255, 0.16);
+  --glow-magenta: rgba(224, 46, 126, 0.12);
 
   /* menu (cream) theme */
   --ns-menu-bg: #efe6d8;
   --ns-menu-text: #171411;
-  --ns-menu-accent: #c89a45;
+  --ns-menu-accent: #c21f6b;
   --ns-menu-line: rgba(23, 20, 17, 0.14);
 
   /* type scale */
@@ -75,7 +81,7 @@
   --scene-depth: calc(var(--scene-size) / 2);
 
   /* page transition */
-  --pt-bg: #000;
+  --pt-bg: #0e0618;
   --pt-top: -102%;
   --pt-bottom: 102%;
 

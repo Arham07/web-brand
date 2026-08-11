@@ -19,8 +19,22 @@
 .footer-top {
   position: relative;
   z-index: 5;
-  background: #000;
+  background: var(--color-bg, #000);
   padding: 3vw 2.5vw;
+}
+
+/* ambient magenta glow rising from the footer's lower edge */
+.footer-top::after {
+  content: "";
+  position: absolute;
+  bottom: -10vh;
+  left: 18vw;
+  width: 60vw;
+  height: 46vh;
+  border-radius: 50%;
+  filter: blur(110px);
+  background: radial-gradient(circle, var(--glow-magenta) 0%, transparent 62%);
+  pointer-events: none;
 }
 
 /* runtime-inserted animated hairline (replaces the info bar border) */
@@ -63,10 +77,10 @@
   width: fit-content;
   font-size: clamp(20px, 3.5vw, 50px);
   color: #fff;
-  transition: opacity 0.3s;
+  transition: color 0.3s;
 }
 .footer-email:hover {
-  opacity: 0.6;
+  color: var(--color-accent, #fff);
 }
 .footer-phone {
   display: inline-block;
@@ -89,10 +103,10 @@
   text-transform: uppercase;
 }
 .footer-nav-links a {
-  transition: opacity 0.3s;
+  transition: color 0.3s, opacity 0.3s;
 }
 .footer-nav-links a:hover {
-  opacity: 0.5;
+  color: var(--color-accent, #fff);
 }
 
 .footer-right-panel {
@@ -141,6 +155,11 @@
   font-family: var(--font-family-display);
   font-size: clamp(6rem, 12vw, 11.25rem);
   line-height: 1;
+  background: var(--grad-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* ------------------------------------------------------------------ */

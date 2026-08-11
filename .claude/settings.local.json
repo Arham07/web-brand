@@ -20,7 +20,8 @@
       "Bash(sed -i '' 's/zhLabel=\"聯繫我們\"/caption=\"Get in Touch\"/' app/contact/page.tsx)",
       "Bash(echo \"TSC_EXIT:$?\")",
       "Bash(npm run *)",
-      "Bash(git commit -q -m 'Remove all Chinese/CJK text — English-only site *)"
+      "Bash(git commit -q -m 'Remove all Chinese/CJK text — English-only site *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --max-time 3 http://localhost:3000/)"
     ]
   }
 }

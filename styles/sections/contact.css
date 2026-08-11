@@ -14,9 +14,35 @@
 /* ------------------------------------------------------------- hero */
 
 .contact-page .ct-hero {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: clamp(150px, 20vh, 220px) var(--ct-side-pad) 0;
+}
+
+/* ambient color glows behind the hero title */
+.contact-page .ct-hero::before,
+.contact-page .ct-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(110px);
+  pointer-events: none;
+}
+.contact-page .ct-hero::before {
+  top: -6vh;
+  left: -8vw;
+  width: 46vw;
+  height: 44vh;
+  background: radial-gradient(circle, var(--glow-blue) 0%, transparent 62%);
+}
+.contact-page .ct-hero::after {
+  top: 12vh;
+  right: -10vw;
+  width: 42vw;
+  height: 40vh;
+  background: radial-gradient(circle, var(--glow-magenta) 0%, transparent 62%);
 }
 
 .contact-page .ct-hero__top,
@@ -40,6 +66,11 @@
 }
 .contact-page .ct-hero__code {
   text-align: right;
+  background: var(--grad-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* entry: titles slide in from opposite edges */
@@ -141,7 +172,7 @@
   transition: border-color 0.3s ease;
 }
 .contact-page .ct-field-group:focus-within {
-  border-bottom-color: #555;
+  border-bottom-color: var(--color-accent, #555);
 }
 .contact-page .ct-field-group.is-invalid {
   border-bottom-color: #e55;
@@ -220,9 +251,9 @@
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 .contact-page .ct-submit:hover:not(:disabled) {
-  background: #fff;
-  color: #000;
-  border-color: #fff;
+  background: var(--grad-accent, #fff);
+  color: #fff;
+  border-color: transparent;
 }
 .contact-page .ct-submit:disabled {
   opacity: 0.5;

@@ -53,18 +53,24 @@ button {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #000;
+  background: var(--color-bg, #000);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(47, 139, 255, 0.35);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.32);
+  background: rgba(47, 139, 255, 0.55);
 }
 html {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.18) #000;
+  scrollbar-color: rgba(47, 139, 255, 0.35) #08040f;
+}
+
+/* text selection */
+::selection {
+  background: var(--color-accent-2, #e02e7e);
+  color: #fff;
 }
 
 /* ------------------------------------------------------------------ */
@@ -123,6 +129,24 @@ html {
 .border-top-line {
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   padding-top: 1rem;
+}
+
+/* gradient accent text (blue → violet → magenta).
+   data-reveal="word" hosts get their text moved into .reveal-word-inner
+   spans, so the clip must live on those (a clipped parent background does
+   not survive the inners' transforms). */
+.grad-text,
+.grad-text .reveal-word-inner {
+  background: var(--grad-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.grad-text:has(.reveal-word-inner) {
+  background: none;
+  -webkit-text-fill-color: initial;
+  color: inherit;
 }
 
 /* signature underlined block link */

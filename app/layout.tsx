@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
   },
   other: {
-    "theme-color": "#030303",
+    "theme-color": "#0a0512", /* keep in sync with --color-bg-wrapper */
     "format-detection": "telephone=no",
   },
 };

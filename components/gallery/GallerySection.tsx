@@ -196,7 +196,7 @@ export default function GallerySection() {
           <span className="gh-line" data-reveal="word">
             ARCHIVE OF
           </span>
-          <span className="gh-line" data-reveal="word">
+          <span className="gh-line grad-text" data-reveal="word">
             THE SELECTED WORKS
           </span>
           <span className="gh-line" data-reveal="word">

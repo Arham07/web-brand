@@ -22,7 +22,7 @@
   bottom: 0;
   height: 40vh;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), var(--color-bg, #000));
 }
 
 .stm-content {
@@ -48,13 +48,21 @@
   pointer-events: auto;
 }
 
-/* giant N / U / D / O / T dot-matrix letters */
+/* giant A / W / E / B / G dot-matrix letters — the one STM element family
+   that opts OUT of the difference blend so it can carry the accent
+   gradient at full saturation. */
 .stm-el--xl {
   font-family: var(--font-family-accent);
   font-size: clamp(2rem, 20vw, 15rem);
   font-weight: 400;
   line-height: 1;
   opacity: 1;
+  mix-blend-mode: normal;
+  background: var(--grad-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* ---- position classes: base + Flip alt endpoints ---- */
