@@ -168,11 +168,19 @@
   color: rgba(255, 255, 255, 0.65);
 }
 
+.hcta__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(12px, 1.6vw, 20px);
+  margin-top: 8px;
+}
+
 .hcta__btn {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-top: 8px;
   padding: 18px 48px;
   border-radius: 999px;
   background: var(--grad-accent);
@@ -189,4 +197,19 @@
   box-shadow:
     0 6px 28px rgba(47, 139, 255, 0.4),
     0 6px 36px rgba(224, 46, 126, 0.32);
+}
+
+/* secondary: gradient-border ghost pill (hero-cta's padding-box trick) */
+.hcta__btn--ghost {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-bg), var(--color-bg)) padding-box,
+    var(--grad-accent) border-box;
+}
+.hcta__btn--ghost:hover,
+.hcta__btn--ghost:focus-visible {
+  background: var(--grad-accent);
+  box-shadow:
+    0 6px 28px rgba(47, 139, 255, 0.3),
+    0 6px 36px rgba(224, 46, 126, 0.24);
 }

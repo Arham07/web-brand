@@ -41,13 +41,19 @@ export default function HomeCtaSection() {
         </span>
       </h2>
       <p className="hcta__sub" data-reveal="fade">
-        Get expert help for your website or app from top-rated web designers
-        and developers. Let us handle the code work!
+        Share a few details about your project and we&apos;ll send you a free,
+        no-obligation quote within 24 hours — know exactly what your website
+        will cost before you spend a single dollar.
       </p>
-      <a className="hcta__btn" href="/contact" data-cursor="CONTACT" data-reveal="fade">
-        Let&apos;s Talk
-        <span aria-hidden="true">&rarr;</span>
-      </a>
+      <div className="hcta__actions" data-reveal="fade">
+        <a className="hcta__btn" href="/contact" data-cursor="QUOTE">
+          Get a Free Quote
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+        <a className="hcta__btn hcta__btn--ghost" href="/pricing" data-cursor="PRICING">
+          View Pricing
+        </a>
+      </div>
     </section>
   );
 }
