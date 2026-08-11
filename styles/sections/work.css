@@ -13,7 +13,8 @@
 
 .work-page .wk-archive {
   position: relative;
-  z-index: 1;
+  /* above the film grain (z 90) — portfolio imagery stays noise-free */
+  z-index: 91;
   min-height: 100vh;
   isolation: isolate;
 }

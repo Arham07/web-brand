@@ -10,13 +10,15 @@ import { hydrateImagesIn, hydrateVideosIn } from "@/lib/lazy-media";
 const GIF = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
 
 // All cards point at the Work listing page — per-project pages don't exist yet.
+// Slots 2/3/5/6 mirror the /work archive's website designs (top-crops of the
+// aw-01/03/04/05 full-page shots); slots 1/4 keep their original imagery.
 const ITEMS = [
-  { href: "/work", img: "01" },
-  { href: "/work", img: "02" },
-  { href: "/work", img: "03" },
-  { href: "/work", img: "04" },
-  { href: "/work", img: "05" },
-  { href: "/work", img: "06" },
+  { href: "/work", img: "01", src: "/images/home/list/01.webp" },
+  { href: "/work", img: "02", src: "/images/home/list/g2.jpg" },
+  { href: "/work", img: "03", src: "/images/home/list/g3.jpg" },
+  { href: "/work", img: "04", src: "/images/home/list/04.webp" },
+  { href: "/work", img: "05", src: "/images/home/list/g5.jpg" },
+  { href: "/work", img: "06", src: "/images/home/list/g6.jpg" },
 ] as const;
 
 const PARALLAX_SPEEDS = [12, 18, 10, 20, 15, 22];
@@ -220,7 +222,7 @@ export default function GallerySection() {
             <div className="pg-img-wrap">
               <img
                 src={GIF}
-                data-defer-src={`/images/home/list/${item.img}.webp`}
+                data-defer-src={item.src}
                 alt={`Work ${item.img}`}
               />
             </div>

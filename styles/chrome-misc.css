@@ -24,7 +24,10 @@
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 9999;
+  /* 90 keeps the old sandwich exactly (sections are all z ≤ 30, fixed
+     chrome is all z ≥ 9998) while letting individual sections opt OUT of
+     the grain by taking z-index: 91 (home gallery, /work archive). */
+  z-index: 90;
   pointer-events: none;
   mix-blend-mode: screen;
   opacity: 0.06;

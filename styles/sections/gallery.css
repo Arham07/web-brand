@@ -8,6 +8,8 @@
   position: relative;
   background: var(--color-bg, #000);
   isolation: isolate;
+  /* above the film grain (z 90) — portfolio imagery stays noise-free */
+  z-index: 91;
 }
 
 /* top / bottom seam scrims */
