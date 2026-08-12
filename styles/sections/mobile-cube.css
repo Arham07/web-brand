@@ -113,7 +113,7 @@
     height: var(--mobile-cube-size);
     padding-top: 80px;
     perspective: calc(var(--mobile-cube-size) * 5);
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
   }
 
   .mobile-cube {

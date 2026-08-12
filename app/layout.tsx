@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   DM_Sans,
   Zalando_Sans_SemiExpanded,
@@ -70,9 +70,22 @@ export const metadata: Metadata = {
     card: "summary_large_image",
   },
   other: {
-    "theme-color": "#0a0512", /* keep in sync with --color-bg-wrapper */
     "format-detection": "telephone=no",
   },
+};
+
+/**
+ * Explicit viewport — declared rather than inherited so phones always lay
+ * the page out at device width, notched screens fill edge to edge, and the
+ * user can still pinch-zoom (maximumScale 5 / userScalable).
+ */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover",
+  themeColor: "#0a0512", // keep in sync with --color-bg-wrapper
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

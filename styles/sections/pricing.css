@@ -414,9 +414,15 @@
 }
 
 @media (max-width: 767px) {
+  /* stack the two display words — side by side they overflow the viewport
+     (PRICING + PLANS don't fit in 375px), which widened the whole document
+     and made mobile browsers open the page scaled/panned */
   .pricing-page .pr-hero__top,
   .pricing-page .pr-hero__bottom {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    row-gap: 6px;
+    text-align: center;
   }
   .pricing-page .pr-hero__center {
     display: none;
@@ -427,5 +433,9 @@
   .pricing-page .pr-hero__title,
   .pricing-page .pr-hero__code {
     font-size: clamp(40px, 12vw, 64px);
+    text-align: center;
+  }
+  .pricing-page .pr-hero__tags {
+    text-align: center;
   }
 }

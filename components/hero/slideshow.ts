@@ -1,4 +1,5 @@
 import { scrollTop, scrollToTarget } from "@/lib/lenis";
+import { isCoarsePointer } from "@/lib/device";
 import { WebGLManager } from "./webgl-manager";
 import {
   SLIDES,
@@ -93,7 +94,7 @@ export class Slideshow {
       });
       t.addEventListener("click", () => {
         void this.gl.load(i);
-        this.goTo(i);
+        this.goTo(i, undefined, true);
       });
       frag.appendChild(t);
       this.thumbs.push(t);
@@ -111,15 +112,15 @@ export class Slideshow {
   // ------------------------------------------------------------ inputs
 
   private bindInputs() {
-    const onPrev = () => this.navigate(-1);
-    const onNext = () => this.navigate(1);
+    const onPrev = () => this.navigate(-1, true);
+    const onNext = () => this.navigate(1, true);
     this.els.prev.addEventListener("click", onPrev);
     this.els.next.addEventListener("click", onNext);
 
     const onKey = (e: KeyboardEvent) => {
       if (scrollTop() > window.innerHeight * 0.5 || this.isAnimating) return;
-      if (e.key === "ArrowRight") this.navigate(1);
-      if (e.key === "ArrowLeft") this.navigate(-1);
+      if (e.key === "ArrowRight") this.navigate(1, true);
+      if (e.key === "ArrowLeft") this.navigate(-1, true);
     };
     window.addEventListener("keydown", onKey);
     this.cleanups.push(() => window.removeEventListener("keydown", onKey));
@@ -136,7 +137,8 @@ export class Slideshow {
         this.els.root.classList.remove("is-grabbing");
         if (downX !== null) {
           const dx = e.clientX - downX;
-          if (Math.abs(dx) > SWIPE_THRESHOLD_PX) this.navigate(dx < 0 ? 1 : -1);
+          if (Math.abs(dx) > SWIPE_THRESHOLD_PX)
+            this.navigate(dx < 0 ? 1 : -1, true);
         }
         downX = null;
         this.startAutoplay();
@@ -146,16 +148,33 @@ export class Slideshow {
       this.cleanups.push(() => window.removeEventListener("mouseup", onUp));
     }
 
-    // touch swipe (document level, hero on screen only)
+    // touch swipe — only for gestures that start inside the hero and are
+    // clearly horizontal, so a vertical scroll with a bit of thumb arc is
+    // never mistaken for a slide swipe.
     let touchX: number | null = null;
+    let touchY = 0;
     const onTouchStart = (e: TouchEvent) => {
-      touchX = e.touches[0].clientX;
+      // a touch anywhere pauses autoplay (mouseenter never fires on phones)
+      this.stopAutoplay();
+      const t = e.touches[0];
+      if (!this.els.root.contains(t.target as Node)) {
+        touchX = null;
+        return;
+      }
+      touchX = t.clientX;
+      touchY = t.clientY;
     };
     const onTouchEnd = (e: TouchEvent) => {
-      if (touchX === null || scrollTop() > window.innerHeight) return;
+      if (touchX === null || scrollTop() > window.innerHeight) {
+        touchX = null;
+        return;
+      }
       const dx = e.changedTouches[0].clientX - touchX;
-      if (Math.abs(dx) > SWIPE_THRESHOLD_PX) this.navigate(dx < 0 ? 1 : -1);
+      const dy = e.changedTouches[0].clientY - touchY;
       touchX = null;
+      if (Math.abs(dx) > SWIPE_THRESHOLD_PX && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        this.navigate(dx < 0 ? 1 : -1, true);
+      }
     };
     document.addEventListener("touchstart", onTouchStart, { passive: true });
     document.addEventListener("touchend", onTouchEnd, { passive: true });
@@ -167,18 +186,20 @@ export class Slideshow {
 
   // -------------------------------------------------------- navigation
 
-  navigate(dir: 1 | -1) {
+  navigate(dir: 1 | -1, userInitiated = false) {
     const next = (this.current + dir + this.total) % this.total;
-    this.goTo(next, dir);
+    this.goTo(next, dir, userInitiated);
   }
 
-  goTo(index: number, dirHint?: 1 | -1) {
+  goTo(index: number, dirHint?: 1 | -1, userInitiated = false) {
     if (index === this.current) return;
     if (this.isAnimating) {
       this.pending = index;
       return;
     }
-    this.ensureTop();
+    // Only a deliberate slide change pulls the hero back into view — an
+    // autoplay tick must never move the page under the reader.
+    if (userInitiated) this.ensureTop();
     const dir: 1 | -1 = dirHint ?? (index > this.current ? 1 : -1);
     this.isAnimating = true;
     this.setUiLocked(true);
@@ -203,6 +224,10 @@ export class Slideshow {
   }
 
   private ensureTop() {
+    // Desktop only: there the hero lives in a pinned scaffold, so a slide
+    // swap has to happen at scroll 0 to read correctly. On touch the hero
+    // is a plain relative block — scrolling the reader back would be a bug.
+    if (isCoarsePointer()) return;
     if (scrollTop() > 2) scrollToTarget(0, { duration: 1.2 });
   }
 
@@ -271,7 +296,9 @@ export class Slideshow {
     if (!this.autoplayArmed || this.autoplayTimer) return;
     this.autoplayTimer = setInterval(() => {
       if (this.isAnimating) return;
-      if (scrollTop() > window.innerHeight * 1.1) return; // hero asleep
+      // hero asleep — half a viewport is already past the mobile hero (90vh),
+      // so autoplay stops well before it leaves the screen
+      if (scrollTop() > window.innerHeight * 0.5) return;
       this.navigate(1);
     }, AUTOPLAY_MS);
   }

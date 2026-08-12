@@ -13,6 +13,14 @@
 html {
   font-size: var(--type-root);
   scroll-behavior: auto; /* Lenis owns smoothness */
+  /* Guard the layout viewport: a stray wide element (or an entry transform)
+     must never widen the document — on phones that makes the browser open
+     the page scaled/panned. `clip`, not `hidden`: hidden would create a
+     scroll container and break every position: sticky section. */
+  overflow-x: clip;
+  /* stop iOS inflating text in ways the layout doesn't expect */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -33,6 +41,19 @@ video {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* kill the double-tap-to-zoom gesture on tap targets — its zoom level
+   persists across navigations, so every new page then opens zoomed in.
+   Pinch-zoom is untouched. */
+a,
+button,
+[role="button"],
+input,
+textarea,
+select,
+label {
+  touch-action: manipulation;
 }
 
 ul,
@@ -80,7 +101,8 @@ html {
 .scroll-track {
   position: relative;
   height: 600vh;
-  touch-action: pan-y;
+  /* pan-y alone also blocks pinch — keep zoom available to the user */
+  touch-action: pan-y pinch-zoom;
   transform: translate3d(0, 0, 0);
 }
 
