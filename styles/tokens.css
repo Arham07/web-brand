@@ -13,14 +13,14 @@
   /* root type scaling: the whole rem system tracks the viewport */
   --type-root: clamp(13px, 12.4px + 0.2vw, 16px);
 
-  /* colors — deep-plum dark base (blend-safe: near-black, faintly violet) */
-  --color-bg: #08040f;
-  --color-bg-wrapper: #0a0512;
-  --color-bg-loader: #0b0613;
-  --color-bg-face: #0d0716;
-  --color-bg-video-cover: #0c0714;
-  --color-bg-img-placeholder: #120a1c;
-  --color-bg-pill: #171021;
+  /* colors — graphite dark base (blend-safe: neutral near-black ladder) */
+  --color-bg: #0a0b0c;
+  --color-bg-wrapper: #0b0c0e;
+  --color-bg-loader: #0c0d0f;
+  --color-bg-face: #0e0f11;
+  --color-bg-video-cover: #0d0e10;
+  --color-bg-img-placeholder: #141518;
+  --color-bg-pill: #17181c;
   --color-text: #fff;
   --color-text-subtitle: #ddd;
   --color-text-desc: #ccc;
@@ -29,17 +29,19 @@
   --color-text-address: #575757;
   --color-hairline-footer: #222;
 
-  /* accents — electric blue → magenta */
-  --color-accent: #2f8bff;
-  --color-accent-2: #e02e7e;
-  --grad-accent: linear-gradient(92deg, #2f8bff 0%, #7a5cff 48%, #e02e7e 100%);
-  --glow-blue: rgba(47, 139, 255, 0.16);
-  --glow-magenta: rgba(224, 46, 126, 0.12);
+  /* accents — gunmetal silver (brushed-steel sheen, monochrome metallic) */
+  --color-accent: #c7ccd4;
+  --color-accent-2: #8b929c;
+  --grad-accent: linear-gradient(105deg, #7d838d 0%, #e8ebef 50%, #8f959e 100%);
+  /* dark ink used on top of metallic (gradient-filled) surfaces */
+  --color-on-metal: #0d0e10;
+  --glow-1: rgba(200, 208, 220, 0.1);
+  --glow-2: rgba(150, 158, 170, 0.08);
 
   /* menu (cream) theme */
   --ns-menu-bg: #efe6d8;
   --ns-menu-text: #171411;
-  --ns-menu-accent: #c21f6b;
+  --ns-menu-accent: #5b6069;
   --ns-menu-line: rgba(23, 20, 17, 0.14);
 
   /* type scale */
@@ -81,7 +83,7 @@
   --scene-depth: calc(var(--scene-size) / 2);
 
   /* page transition */
-  --pt-bg: #0e0618;
+  --pt-bg: #101113;
   --pt-top: -102%;
   --pt-bottom: 102%;
 

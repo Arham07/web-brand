@@ -73,7 +73,7 @@ html.show-nav-scroll #fixed-logo {
   transform: translateX(-50%);
   width: min(500px, calc(100vw - 80px));
   height: 64px;
-  background: var(--color-bg-pill, #141414);
+  background: var(--color-bg-pill, #17181c);
   border-radius: 6px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
   z-index: 10000;

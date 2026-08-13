@@ -57,14 +57,14 @@
   left: -10vw;
   width: 76vw;
   height: 76vh;
-  background: radial-gradient(circle, var(--glow-blue, rgba(200, 210, 215, 0.15)) 0%, transparent 60%);
+  background: radial-gradient(circle, var(--glow-1, rgba(200, 208, 220, 0.1)) 0%, transparent 60%);
 }
 .glow-center-left {
   top: 20vh;
   left: 24vw;
   width: 56vw;
   height: 56vh;
-  background: radial-gradient(circle, var(--glow-magenta, rgba(120, 160, 160, 0.1)) 0%, transparent 60%);
+  background: radial-gradient(circle, var(--glow-2, rgba(150, 158, 170, 0.08)) 0%, transparent 60%);
 }
 
 /* scroll indicator */

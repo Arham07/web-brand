@@ -32,7 +32,7 @@ function makeFallbackTexture(index: number): THREE.Texture {
   canvas.height = 400;
   const ctx = canvas.getContext("2d");
   if (ctx) {
-    ctx.fillStyle = `hsl(${(index * 37) % 360}, 62%, 46%)`;
+    ctx.fillStyle = `hsl(${(index * 37) % 360}, 8%, 46%)`; // graphite steps, not rainbow
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
   return new THREE.CanvasTexture(canvas);

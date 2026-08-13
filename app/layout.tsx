@@ -85,7 +85,7 @@ export const viewport: Viewport = {
   maximumScale: 5,
   userScalable: true,
   viewportFit: "cover",
-  themeColor: "#0a0512", // keep in sync with --color-bg-wrapper
+  themeColor: "#0b0c0e", // keep in sync with --color-bg-wrapper
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

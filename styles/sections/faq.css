@@ -55,7 +55,7 @@
   flex: 0 0 auto;
   font-size: 11px;
   letter-spacing: 0.2em;
-  color: var(--color-accent-2, #e02e7e);
+  color: var(--color-accent-2, #8b929c);
 }
 .fq-q__text {
   flex: 1;
@@ -66,7 +66,7 @@
   transition: color 0.25s ease;
 }
 .fq-q:hover .fq-q__text {
-  color: var(--color-accent, #2f8bff);
+  color: var(--color-accent, #c7ccd4);
 }
 .fq-q__icon {
   flex: 0 0 auto;
@@ -79,13 +79,13 @@
   border-radius: 999px;
   font-size: 16px;
   line-height: 1;
-  color: var(--color-accent, #2f8bff);
+  color: var(--color-accent, #c7ccd4);
   transition: transform 0.3s ease, border-color 0.3s ease;
 }
 .fq-item.is-open .fq-q__icon {
   transform: rotate(45deg);
-  border-color: var(--color-accent-2, #e02e7e);
-  color: var(--color-accent-2, #e02e7e);
+  border-color: var(--color-accent-2, #8b929c);
+  color: var(--color-accent-2, #8b929c);
 }
 
 /* collapse: grid-rows 0fr -> 1fr (height-agnostic, smooth) */
@@ -138,14 +138,14 @@
   left: -8vw;
   width: 46vw;
   height: 44vh;
-  background: radial-gradient(circle, var(--glow-blue) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-1) 0%, transparent 62%);
 }
 .hcta::after {
   bottom: -12vh;
   right: -10vw;
   width: 44vw;
   height: 42vh;
-  background: radial-gradient(circle, var(--glow-magenta) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-2) 0%, transparent 62%);
 }
 
 .hcta__title {
@@ -184,7 +184,7 @@
   padding: 18px 48px;
   border-radius: 999px;
   background: var(--grad-accent);
-  color: #fff;
+  color: var(--color-on-metal, #0d0e10);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -195,8 +195,8 @@
 .hcta__btn:focus-visible {
   transform: translateY(-2px);
   box-shadow:
-    0 6px 28px rgba(47, 139, 255, 0.4),
-    0 6px 36px rgba(224, 46, 126, 0.32);
+    0 6px 28px rgba(232, 235, 239, 0.26),
+    0 6px 36px rgba(139, 146, 156, 0.22);
 }
 
 /* secondary: gradient-border ghost pill (hero-cta's padding-box trick) */
@@ -205,11 +205,14 @@
   background:
     linear-gradient(var(--color-bg), var(--color-bg)) padding-box,
     var(--grad-accent) border-box;
+  /* ghost rests on the dark page, not on metal — light text until filled */
+  color: #fff;
 }
 .hcta__btn--ghost:hover,
 .hcta__btn--ghost:focus-visible {
   background: var(--grad-accent);
+  color: var(--color-on-metal, #0d0e10);
   box-shadow:
-    0 6px 28px rgba(47, 139, 255, 0.3),
-    0 6px 36px rgba(224, 46, 126, 0.24);
+    0 6px 28px rgba(232, 235, 239, 0.2),
+    0 6px 36px rgba(139, 146, 156, 0.16);
 }

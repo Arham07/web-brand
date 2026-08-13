@@ -33,7 +33,7 @@
   height: 46vh;
   border-radius: 50%;
   filter: blur(110px);
-  background: radial-gradient(circle, var(--glow-magenta) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-2) 0%, transparent 62%);
   pointer-events: none;
 }
 
@@ -138,7 +138,7 @@
 .footer-video-cover {
   position: absolute;
   inset: 0;
-  background: var(--color-bg-video-cover, #0a0a0a);
+  background: var(--color-bg-video-cover, #0d0e10);
   transform-origin: right center;
 }
 
@@ -167,7 +167,7 @@
   padding: 18px 44px;
   border-radius: 999px;
   background: var(--grad-accent);
-  color: #fff;
+  color: var(--color-on-metal, #0d0e10);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -178,8 +178,8 @@
 .footer-cta__btn:focus-visible {
   transform: translateY(-2px);
   box-shadow:
-    0 6px 28px rgba(47, 139, 255, 0.4),
-    0 6px 36px rgba(224, 46, 126, 0.32);
+    0 6px 28px rgba(232, 235, 239, 0.26),
+    0 6px 36px rgba(139, 146, 156, 0.22);
 }
 .footer-cta__arrow {
   display: inline-block;

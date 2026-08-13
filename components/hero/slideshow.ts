@@ -277,10 +277,8 @@ export class Slideshow {
       if (dist <= maxDist) {
         const w = Math.cos((dist / maxDist) * (Math.PI / 2));
         bar.style.height = `${BASE_H + w * PEAK_H}px`;
-        // wave peak shifts from alpha-white into the accent blue
-        bar.style.backgroundColor = `rgba(${Math.round(255 - (255 - 47) * w)},${Math.round(
-          255 - (255 - 139) * w
-        )},255,${0.3 + w * 0.55})`;
+        // wave peak brightens into the silver sheen — monochrome metallic
+        bar.style.backgroundColor = `rgba(232,235,239,${0.3 + w * 0.6})`;
         bar.style.transitionDelay = `${(dist / maxDist) * 0.08}s`;
       } else {
         bar.style.height = `${BASE_H}px`;

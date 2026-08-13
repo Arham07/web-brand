@@ -9,7 +9,7 @@ import NavMenu from "./NavMenu";
 
 const SHOW_THRESHOLD = 300;
 const MENU_BG_OPEN = "#efe6d8";
-const MENU_BG_CLOSED = "#141414";
+const MENU_BG_CLOSED = "#17181c"; // keep in sync with --color-bg-pill
 const HOVER_GRACE_MS = 110;
 const BLEND_FADEOUT_MS = 260;
 

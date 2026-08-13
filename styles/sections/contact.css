@@ -35,14 +35,14 @@
   left: -8vw;
   width: 46vw;
   height: 44vh;
-  background: radial-gradient(circle, var(--glow-blue) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-1) 0%, transparent 62%);
 }
 .contact-page .ct-hero::after {
   top: 12vh;
   right: -10vw;
   width: 42vw;
   height: 40vh;
-  background: radial-gradient(circle, var(--glow-magenta) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-2) 0%, transparent 62%);
 }
 
 .contact-page .ct-hero__top,
@@ -172,7 +172,7 @@
   transition: border-color 0.3s ease;
 }
 .contact-page .ct-field-group:focus-within {
-  border-bottom-color: var(--color-accent, #555);
+  border-bottom-color: var(--color-accent, #c7ccd4);
 }
 .contact-page .ct-field-group.is-invalid {
   border-bottom-color: #e55;
@@ -252,7 +252,7 @@
 }
 .contact-page .ct-submit:hover:not(:disabled) {
   background: var(--grad-accent, #fff);
-  color: #fff;
+  color: var(--color-on-metal, #0d0e10);
   border-color: transparent;
 }
 .contact-page .ct-submit:disabled {

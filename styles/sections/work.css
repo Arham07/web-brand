@@ -45,14 +45,14 @@
   left: -8vw;
   width: 46vw;
   height: 44vh;
-  background: radial-gradient(circle, var(--glow-blue) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-1) 0%, transparent 62%);
 }
 .work-page .wk-hero::after {
   top: 10vh;
   right: -10vw;
   width: 42vw;
   height: 40vh;
-  background: radial-gradient(circle, var(--glow-magenta) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-2) 0%, transparent 62%);
 }
 
 .work-page .wk-hero__top,
@@ -385,7 +385,7 @@
   align-items: center;
   justify-content: center;
   padding: clamp(12px, 3vh, 40px) clamp(12px, 4vw, 48px);
-  background: rgba(8, 4, 15, 0.88);
+  background: rgba(10, 11, 12, 0.88);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -398,11 +398,11 @@
   height: 100%;
   border-radius: 14px;
   overflow: hidden;
-  background: var(--color-bg-img-placeholder, #120a1c);
+  background: var(--color-bg-img-placeholder, #141518);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
     0 20px 80px rgba(0, 0, 0, 0.6),
-    0 8px 40px rgba(47, 139, 255, 0.08);
+    0 8px 40px rgba(232, 235, 239, 0.06);
 }
 
 .wk-lb__bar {
@@ -412,7 +412,7 @@
   gap: 16px;
   padding: 14px clamp(16px, 2vw, 26px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(8, 4, 15, 0.6);
+  background: rgba(10, 11, 12, 0.6);
 }
 .wk-lb__meta {
   display: flex;
@@ -424,7 +424,7 @@
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-accent-2, #e02e7e);
+  color: var(--color-accent-2, #8b929c);
 }
 .wk-lb__title {
   font-family: var(--font-family-display);
@@ -453,6 +453,7 @@
 .wk-lb__close:focus-visible {
   background: var(--grad-accent);
   border-color: transparent;
+  color: var(--color-on-metal, #0d0e10);
 }
 
 .wk-lb__body {
@@ -474,7 +475,7 @@
   transform: translateX(-50%);
   padding: 8px 18px;
   border-radius: 999px;
-  background: rgba(8, 4, 15, 0.75);
+  background: rgba(10, 11, 12, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(6px);
   font-size: 11px;

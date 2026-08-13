@@ -75,14 +75,14 @@
   left: -6vw;
   width: 54vw;
   height: 54vh;
-  background: radial-gradient(circle, var(--glow-blue) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-1) 0%, transparent 62%);
 }
 .gallery-header::after {
   bottom: -14vh;
   right: -8vw;
   width: 50vw;
   height: 52vh;
-  background: radial-gradient(circle, var(--glow-magenta) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-2) 0%, transparent 62%);
 }
 
 .gallery-header-video {
@@ -175,7 +175,7 @@
   width: 100%;
   height: 100%;
   border-radius: 2px;
-  background: var(--color-bg-img-placeholder, #0d0d0d);
+  background: var(--color-bg-img-placeholder, #141518);
   overflow: hidden;
 }
 .pg-img-wrap img {
