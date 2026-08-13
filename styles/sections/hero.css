@@ -385,6 +385,19 @@
   }
 }
 
+/* #fixed-logo (nav.css) is fixed + horizontally centered, same as
+   .small-tag inside .top-header — on anything narrower than ~1560px they
+   sit at the same spot and the logo's plate covers the "( AMERICAN WEB
+   GUILD )" text. Desktop (≥1560px) already clears it; mobile (≤767px)
+   hides the logo entirely (#nav goes display:none). Push the top block
+   down just in the affected band — measured worst case (768px) needs
+   ~19px, 26px leaves a clean gap at every width in between. */
+@media (min-width: 768px) and (max-width: 1560px) {
+  .overlay-top {
+    margin-top: 26px;
+  }
+}
+
 /* huge-text min-width tiers */
 @media (min-width: 768px) and (max-width: 1024px) {
   .huge-text {
