@@ -337,7 +337,10 @@
   display: flex;
 }
 .slide-thumb {
-  width: calc(720px / 5);
+  /* fills the strip evenly for however many slides exist — was a fixed
+     720px/5 split, which left trailing empty space once slides were
+     removed and the count dropped below 5 */
+  flex: 1 1 0;
   height: 60px;
   background-size: cover;
   background-position: left center;
