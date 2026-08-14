@@ -192,7 +192,10 @@ export default function WorkGrid() {
             <div className="wk-blend" aria-hidden="true" />
             <div className="wk-card-caption" aria-hidden="true">
               <span className="wk-card-caption__index">{p.index}</span>
-              <span className="wk-card-caption__label">{p.subtitle}</span>
+              <span className="wk-card-caption__cta">
+                View Project
+                <span aria-hidden="true">&#8599;</span>
+              </span>
             </div>
           </div>
 
