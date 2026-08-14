@@ -18,32 +18,18 @@ export const SLIDES: SlideData[] = [
     title: "American Web Guild",
   },
   {
-    video: "/images/home/slider2/slider02pro.mp4",
-    mobileVideo: "/images/home/slider2/slider02_s.mp4",
-    thumb: "/images/home/slider2/slider02.webp",
+    image: "/images/home/slider2/slider02.webp",
+    mobileImage: "/images/home/slider2/slider02_m.webp",
+    thumb: "/images/home/slider2/slider02_pc.webp",
     mobileThumb: "/images/home/slider2/slider02_s.webp",
-    title: "Visual Direction",
-  },
-  {
-    image: "/images/home/slider3/slider03.webp",
-    mobileImage: "/images/home/slider3/slider03_m.webp",
-    thumb: "/images/home/slider3/slider03_pc.webp",
-    mobileThumb: "/images/home/slider3/slider03_s.webp",
-    title: "High-End Skincare",
-  },
-  {
-    image: "/images/home/slider4/slider04.webp",
-    mobileImage: "/images/home/slider4/slider04_m.webp",
-    thumb: "/images/home/slider4/slider04_pc.webp",
-    mobileThumb: "/images/home/slider4/slider04_s.webp",
-    title: "METERSEVEN",
-  },
-  {
-    image: "/images/home/slider5/slider05.webp",
-    mobileImage: "/images/home/slider5/slider05_m.webp",
-    thumb: "/images/home/slider5/slider05_pc.webp",
-    mobileThumb: "/images/home/slider5/slider05_s.webp",
     title: "PERFORMANCE FLUIDS",
+  },
+  {
+    video: "/images/home/slider3/slider03pro.mp4",
+    mobileVideo: "/images/home/slider3/slider03_s.mp4",
+    thumb: "/images/home/slider3/slider03.webp",
+    mobileThumb: "/images/home/slider3/slider03_s.webp",
+    title: "Visual Direction",
   },
 ];
 
