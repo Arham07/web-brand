@@ -66,8 +66,8 @@ export const MARQUEE_ITEMS: Array<[title: string, label: string]> = [
 export const CUBE_FACES = {
   frontVideo: "/images/cube/responsive-web-design-showcase-mobile-ipad.mp4",
   right: "/images/cube/high-end-restaurant-web-design.webp",
-  back: "/images/cube/japanese-dining-brand-website.webp",
+  back: "/images/cube/brand-website.webp",
   left: "/images/cube/interior-design-website-mockup.webp",
   top: "/images/cube/fluid-minimalism-web-design-texture.webp",
   bottom: "/images/cube/b2b-manufacturing-web-design-portfolio.webp",
-} as const;
+} as const; 
