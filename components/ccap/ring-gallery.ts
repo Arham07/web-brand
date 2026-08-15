@@ -93,6 +93,49 @@ void main() {
 }
 `;
 
+/* Mobile variant: single texture tap (no RGB shift) — grain, vignette and
+   the iris reveal are kept. Phone GPUs pay 3× texture bandwidth for a
+   shimmer that is invisible at that size. */
+const POST_FRAGMENT_MOBILE = /* glsl */ `
+precision highp float;
+
+uniform sampler2D tDiffuse;
+uniform float iTime;
+uniform vec2 iResolution;
+uniform vec2 iMouse;
+uniform float uTransitionProgress;
+
+varying vec2 vUv;
+
+float random(vec2 st) {
+  return fract(sin(dot(st, vec2(12.9898, 78.233))) * 43758.5453123);
+}
+
+void main() {
+  vec2 uv = vUv;
+  float raw = random(uv + iTime);
+
+  vec3 col = texture2D(tDiffuse, uv).rgb;
+
+  // film grain (±0.0125)
+  col += (raw - 0.5) * 0.025;
+
+  // vignette toward black, intensity 0.8
+  float dist = distance(uv, vec2(0.5));
+  float vig = pow(smoothstep(0.5, 0.3, dist), 0.6);
+  col *= mix(1.0, vig, 0.8);
+
+  // circular iris reveal (aspect-corrected SDF)
+  vec2 p = uv - 0.5;
+  p.x *= iResolution.x / max(iResolution.y, 1.0);
+  float sdf = length(p) - uTransitionProgress * sqrt(2.2);
+  float outside = smoothstep(-0.2, 0.0, sdf);
+  col = mix(col, vec3(0.0), outside);
+
+  gl_FragColor = vec4(col, 1.0);
+}
+`;
+
 interface PostUniforms {
   tDiffuse: { value: THREE.Texture };
   iTime: { value: number };
@@ -109,6 +152,12 @@ export class RingGalleryScene {
   enterProgress = 0;
   /** Spin multiplier — scrubbed 10 → 1 on entrance. */
   rotateSpeed = 10;
+
+  /** captured at construction: mobile trades plane density, post-shader
+      taps, DPR and render rate for a stable frame rate on phone GPUs */
+  private readonly mobile = isMobileLayout();
+  private readonly ringUnit = this.mobile ? 8 : RING_UNIT;
+  private frameParity = 0;
 
   private container: HTMLElement;
   private renderer: THREE.WebGLRenderer;
@@ -183,7 +232,7 @@ export class RingGalleryScene {
     this.postMaterial = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
       vertexShader: POST_VERTEX,
-      fragmentShader: POST_FRAGMENT,
+      fragmentShader: this.mobile ? POST_FRAGMENT_MOBILE : POST_FRAGMENT,
       depthTest: false,
       depthWrite: false,
     });
@@ -251,16 +300,16 @@ export class RingGalleryScene {
 
   // ------------------------------------------------------------------ //
 
-  /** slot base for ring i = 12·(1 + 2 + … + i) — matches the old
+  /** slot base for ring i = unit·(1 + 2 + … + i) — matches the old
       sequential counter across rings */
-  private static slotBase(i: number) {
-    return (RING_UNIT * (i * (i + 1))) / 2;
+  private slotBase(i: number) {
+    return (this.ringUnit * (i * (i + 1))) / 2;
   }
 
   private buildRing(i: number) {
-    let slot = RingGalleryScene.slotBase(i);
+    let slot = this.slotBase(i);
     const ring = new THREE.Group();
-    const count = RING_UNIT * (i + 1);
+    const count = this.ringUnit * (i + 1);
     const planeHeight = 1.6 * (0.36 * i + 1);
     const radius = 6.4 * (i + 1) + 2.3 - (RING_INSET[i] ?? 0);
 
@@ -322,6 +371,16 @@ export class RingGalleryScene {
               img && img.width && img.height
                 ? img.width / img.height
                 : FALLBACK_ASPECT;
+            // pre-upload to the GPU while idle — otherwise all uploads
+            // happen lazily on first use, mid-entrance, as one hitch
+            const idle =
+              "requestIdleCallback" in window
+                ? (cb: () => void) =>
+                    (window as Window).requestIdleCallback(() => cb())
+                : (cb: () => void) => window.setTimeout(cb, 30);
+            idle(() => {
+              if (!this.disposed) this.renderer.initTexture(tex);
+            });
             resolve({ tex, aspect });
           },
           undefined,
@@ -360,7 +419,7 @@ export class RingGalleryScene {
 
   private computeDpr() {
     const base = Math.min(window.devicePixelRatio || 1, 2);
-    return Math.min(base, isMobileWidth() ? 1.1 : 1.35);
+    return Math.min(base, isMobileWidth() ? 1.0 : 1.35);
   }
 
   private applySize() {
@@ -410,6 +469,10 @@ export class RingGalleryScene {
 
     this.uniforms.iTime.value = (time * 0.001) % 100;
     this.uniforms.uTransitionProgress.value = this.transitionProgress;
+
+    // mobile renders at half rate — state above still advances every
+    // callback so the motion's wall-clock speed is unchanged
+    if (this.mobile && (this.frameParity ^= 1)) return;
 
     const r = this.renderer;
     r.setRenderTarget(this.target);

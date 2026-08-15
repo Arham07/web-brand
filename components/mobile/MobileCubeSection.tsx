@@ -5,13 +5,15 @@ import { getLenis } from "@/lib/lenis";
 import { useSectionNear } from "@/hooks/useSectionNear";
 import { isMobileLayout } from "@/lib/device";
 
-// all faces ship as 1200×1200 (verified with sips)
+// 640×640 mobile-sized faces — the cube renders at ~200px per face, and
+// the old 1200×1200 sources held ~29MB of decoded bitmaps in GPU layers
+// while the cube spun (a measurable rotation-jank source on phones)
 const IMAGE_FACES = [
-  { face: "is-right", src: "/images/cube/t2.webp", width: 1200, height: 1200 },
-  { face: "is-back", src: "/images/cube/t3.webp", width: 1200, height: 1200 },
-  { face: "is-left", src: "/images/cube/t4.webp", width: 1200, height: 1200 },
-  { face: "is-top", src: "/images/cube/t5.webp", width: 1200, height: 1200 },
-  { face: "is-bottom", src: "/images/cube/t6.webp", width: 1200, height: 1200 },
+  { face: "is-right", src: "/images/cube/t2-m.jpg", width: 640, height: 640 },
+  { face: "is-back", src: "/images/cube/t3-m.jpg", width: 640, height: 640 },
+  { face: "is-left", src: "/images/cube/t4-m.jpg", width: 640, height: 640 },
+  { face: "is-top", src: "/images/cube/t5-m.jpg", width: 640, height: 640 },
+  { face: "is-bottom", src: "/images/cube/t6-m.jpg", width: 640, height: 640 },
 ] as const;
 
 // Spin model constants
@@ -118,6 +120,7 @@ export default function MobileCubeSection() {
     scene.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
     // ── Frame loop (gated by the IntersectionObserver below) ──
+    let writeParity = 0;
     const tick = () => {
       rafId = 0;
       extra *= FRICTION;
@@ -130,7 +133,12 @@ export default function MobileCubeSection() {
         boost *= BOOST_DECAY;
       }
 
-      cube.style.transform = `rotateX(${rotX}deg) rotateY(${angle + rotY}deg)`;
+      // 30fps transform writes: state advances every frame (speed
+      // unchanged) but the 3D scene re-composites at half rate — the slow
+      // spin's 0.4°/step is imperceptible, the GPU saving on phones isn't
+      if ((writeParity ^= 1)) {
+        cube.style.transform = `rotateX(${rotX}deg) rotateY(${angle + rotY}deg)`;
+      }
       if (running) rafId = requestAnimationFrame(tick);
     };
 

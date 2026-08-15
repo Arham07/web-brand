@@ -51,7 +51,7 @@ export const ASSETS = [
   // --- mobile cube ---
   "images/bg.mp4",
   "images/cube/t1.mp4",
-  ...["t2", "t3", "t4", "t5", "t6"].map((t) => `images/cube/${t}.webp`),
+  ...["t2", "t3", "t4", "t5", "t6"].map((t) => `images/cube/${t}-m.jpg`),
 
   // --- nav menu previews ---
   ...range(10).map((n) => `images/nav/${n}.webp`),
