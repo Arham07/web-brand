@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getLenis } from "@/lib/lenis";
 import { useSectionNear } from "@/hooks/useSectionNear";
 import { isMobileLayout } from "@/lib/device";
@@ -37,6 +37,16 @@ export default function MobileCubeSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const cubeRef = useRef<HTMLDivElement>(null);
+
+  // Faces get their src on mobile only, right after mount — eager fetch +
+  // decode happens while the user reads the hero instead of on the first
+  // scroll. On desktop the section is display:none and must never fetch
+  // (Chromium loads even loading=lazy images inside display:none, so the
+  // only reliable guard is withholding src).
+  const [eagerFaces, setEagerFaces] = useState(false);
+  useEffect(() => {
+    if (isMobileLayout()) setEagerFaces(true);
+  }, []);
 
   useSectionNear(sectionRef, () => {
     // desktop: the section is display:none — its zero rect fools isNear(),
@@ -218,11 +228,11 @@ export default function MobileCubeSection() {
           {IMAGE_FACES.map(({ face, src, width, height }) => (
             <div key={face} className={`mobile-cube-face ${face}`}>
               <img
-                src={src}
+                src={eagerFaces ? src : undefined}
                 alt=""
                 width={width}
                 height={height}
-                loading="lazy"
+                loading="eager"
                 decoding="async"
               />
             </div>

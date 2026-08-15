@@ -2,9 +2,55 @@
 
 import { useEffect, useRef, type RefObject } from "react";
 
+/* ------------------------------------------------------------------ */
+/*  Idle warm-up queue                                                 */
+/*  Section inits used to run mid-scroll as each section came near —   */
+/*  the entire first scroll paid for GSAP contexts, video hydration,   */
+/*  image decodes and (heaviest) the ring scene's WebGL boot, which is */
+/*  exactly the "laggy the first time, fine afterwards" report. The    */
+/*  pump drains every pending init one idle slice at a time shortly    */
+/*  after load, while the user is still reading the hero.              */
+/* ------------------------------------------------------------------ */
+
+const warmQueue = new Set<() => void>();
+let pumpStarted = false;
+
+const idleSlice = (cb: () => void) => {
+  const ric = (
+    window as Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+    }
+  ).requestIdleCallback;
+  if (typeof ric === "function") ric(cb, { timeout: 500 });
+  else window.setTimeout(cb, 250);
+};
+
+function pump() {
+  const next = warmQueue.values().next();
+  if (next.done) {
+    // queue drained — allow a later pump for newly mounted sections
+    // (client-side navigations register fresh inits)
+    pumpStarted = false;
+    return;
+  }
+  warmQueue.delete(next.value);
+  next.value(); // idempotent — no-op if proximity already ran it
+  idleSlice(pump);
+}
+
+function startPump() {
+  if (pumpStarted || typeof window === "undefined") return;
+  pumpStarted = true;
+  const begin = () => window.setTimeout(() => idleSlice(pump), 2500);
+  if (document.readyState === "complete") begin();
+  else window.addEventListener("load", begin, { once: true });
+}
+
 /**
  * Runs `init` once when the section approaches the viewport, deferred through
- * requestIdleCallback so it never competes with scrolling.
+ * requestIdleCallback so it never competes with scrolling — or earlier, from
+ * the global idle warm-up pump that drains all pending inits shortly after
+ * load so the first scroll never pays for them.
  *
  * Proximity is detected two ways on purpose: an IntersectionObserver (cheap,
  * handles the common case) plus a rAF-throttled geometry check on scroll.
@@ -88,11 +134,17 @@ export function useSectionNear(
     io.observe(el);
     window.addEventListener("scroll", onScroll, { passive: true });
 
+    // idle warm-up: init runs shortly after load even if the user never
+    // scrolls near — run() is idempotent so the proximity path stays safe
+    warmQueue.add(run);
+    startPump();
+
     // already in range at mount (deep link, restored scroll position)
     if (isNear()) run();
 
     return () => {
       disposed = true;
+      warmQueue.delete(run);
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       if (timerId) window.clearTimeout(timerId);
