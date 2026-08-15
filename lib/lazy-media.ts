@@ -25,6 +25,7 @@ export function initLazyMedia() {
     if (changed) {
       video.load();
       if (video.autoplay) video.play().catch(() => {});
+      watchPlayback(video);
     }
   };
 
@@ -60,11 +61,11 @@ export function initLazyMedia() {
       ...document.querySelectorAll<HTMLImageElement>("img[data-defer-src]"),
     ].filter(visible);
 
-    // one video + two images per frame, whichever queue still has work
+    // one video + four images per frame, whichever queue still has work
     const step = () => {
       const v = videos.shift();
       if (v) hydrateVideo(v);
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < 4; i++) {
         const img = imgs.shift();
         if (img) hydrateImg(img);
       }
@@ -116,13 +117,55 @@ export function hydrateVideosIn(container: HTMLElement) {
     .querySelectorAll<HTMLVideoElement>("video[data-lazy-video]")
     .forEach((video) => {
       if (video.dataset.hydrated) return;
+      // a display:none video (e.g. the gallery header video on mobile)
+      // must not be fetched and decoded invisibly
+      if (typeof video.checkVisibility === "function" && !video.checkVisibility())
+        return;
       video.dataset.hydrated = "1";
       video.querySelectorAll<HTMLSourceElement>("source[data-src]").forEach((s) => {
         s.src = s.dataset.src!;
       });
       video.load();
       if (video.autoplay) video.play().catch(() => {});
+      watchPlayback(video);
     });
+}
+
+/* ------------------------------------------------------------------ */
+/*  Off-screen playback manager                                        */
+/*  Autoplay videos never used to pause once hydrated — 5-6 decoders   */
+/*  ran simultaneously on a full home scroll. One IO pauses whatever   */
+/*  is far off-screen and resumes it on approach.                      */
+/* ------------------------------------------------------------------ */
+
+let playbackIO: IntersectionObserver | null = null;
+const observedVideos = new WeakSet<HTMLVideoElement>();
+
+export function initVideoPlaybackManager() {
+  if (playbackIO || typeof window === "undefined") return;
+  playbackIO = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        const video = e.target as HTMLVideoElement;
+        if (e.isIntersecting) {
+          if (video.autoplay && video.paused) video.play().catch(() => {});
+        } else if (!video.paused) {
+          video.pause();
+        }
+      });
+    },
+    { rootMargin: "300px 0px 300px 0px" }
+  );
+  document
+    .querySelectorAll<HTMLVideoElement>("video[data-lazy-video]")
+    .forEach((v) => watchPlayback(v));
+}
+
+/** Register a (possibly late-hydrated) lazy video with the playback IO. */
+function watchPlayback(video: HTMLVideoElement) {
+  if (!playbackIO || observedVideos.has(video)) return;
+  observedVideos.add(video);
+  playbackIO.observe(video);
 }
 
 /**

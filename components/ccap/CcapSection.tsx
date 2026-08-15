@@ -185,9 +185,10 @@ export default function CcapSection() {
               <div className="media-track">
                 <div className="center-divider">
                   <div className="center-video-box">
+                    {/* proximity-tier: a 120px accent video must never race
+                        the hero for boot bandwidth */}
                     <video
                       data-lazy-video=""
-                      data-lazy-priority="high"
                       autoPlay
                       muted
                       loop

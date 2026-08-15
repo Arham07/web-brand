@@ -39,7 +39,10 @@ export default function FilmGrain() {
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
 
-    let frames: ImageData[] = [];
+    // Frames are baked once into offscreen canvases and blitted with
+    // drawImage (GPU-composited) — putImageData of a full-viewport
+    // ImageData 25×/s was a multi-MB CPU upload per tick.
+    let frames: HTMLCanvasElement[] = [];
     let frameIndex = 0;
     let holdUntil = 0;
     let interval = BASE_INTERVAL;
@@ -52,18 +55,24 @@ export default function FilmGrain() {
       const h = Math.max(1, window.innerHeight);
       canvas.width = w; // 1× DPR on purpose
       canvas.height = h;
-      const next: ImageData[] = [];
+      const next: HTMLCanvasElement[] = [];
       for (let i = 0; i < FRAME_COUNT; i++) {
-        const img = ctx.createImageData(w, h);
+        const off = document.createElement("canvas");
+        off.width = w;
+        off.height = h;
+        const octx = off.getContext("2d")!;
+        const img = octx.createImageData(w, h);
         const px = new Uint32Array(img.data.buffer);
         for (let p = 0; p < px.length; p++) {
           if (Math.random() < DENSITY) px[p] = 0xffffffff;
         }
-        next.push(img);
+        octx.putImageData(img, 0, 0);
+        next.push(off);
       }
       frames = next;
       frameIndex = 0;
-      ctx.putImageData(frames[frameIndex], 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(frames[frameIndex], 0, 0);
     };
 
     const stopLoop = () => {
@@ -81,7 +90,8 @@ export default function FilmGrain() {
       interval = held ? SCROLL_INTERVAL : BASE_INTERVAL;
       if (!held && frames.length > 0) {
         frameIndex = (frameIndex + 1) % frames.length;
-        ctx.putImageData(frames[frameIndex], 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(frames[frameIndex], 0, 0);
       }
       queueTick();
     };

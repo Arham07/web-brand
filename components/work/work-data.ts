@@ -44,7 +44,7 @@ const wm = (n: number): Pick<
     img: `/images/work/list/wm-${p}.jpg`,
     width: 900,
     height: 674,
-    full: `/images/work/full/wm-${p}.png`,
+    full: `/images/work/full/wm-${p}.jpg`,
     fullWidth: 895,
     fullHeight: 4096,
   };

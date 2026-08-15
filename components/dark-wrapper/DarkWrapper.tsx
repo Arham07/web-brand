@@ -31,6 +31,11 @@ export default function DarkWrapper() {
   const maskRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // the wrapper is display:none !important on mobile — building the
+    // sequencer there just subscribed a no-op callback to gsap.ticker at
+    // 60Hz for the whole session
+    if (window.innerWidth <= 767) return;
+
     const mask = maskRef.current;
     const track = mask?.closest<HTMLElement>(".scroll-track");
     if (!mask || !track) return;
@@ -212,6 +217,7 @@ export default function DarkWrapper() {
                       alt={`Cube ${side}`}
                       width={1200}
                       height={1200}
+                      decoding="async"
                     />
                   </div>
                 )

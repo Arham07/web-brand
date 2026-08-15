@@ -258,7 +258,7 @@ export default function SiteFooter() {
         <div
           className="footer-parallax-bg"
           id="footer-parallax-bg"
-          data-bg="/images/footer.webp"
+          data-bg="/images/footer-bg.jpg"
         />
         <div className="footer-parallax-copy">
           <span>American Web Guild Creative Co., Ltd.</span>

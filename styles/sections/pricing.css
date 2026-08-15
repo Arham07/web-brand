@@ -439,3 +439,12 @@
     text-align: center;
   }
 }
+
+/* mobile: the radial gradient already fades to transparent — the extra
+   GPU blur pass on these huge layers is jank for near-zero visual gain */
+@media (max-width: 767px) {
+  .pricing-page .pr-hero::before,
+  .pricing-page .pr-hero::after {
+    filter: none;
+  }
+}

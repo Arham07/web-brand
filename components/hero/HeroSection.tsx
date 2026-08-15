@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
@@ -32,6 +32,30 @@ function Mask({ children, className }: { children: React.ReactNode; className?: 
 
 export default function HeroSection() {
   const root = useRef<HTMLElement>(null);
+  const prewarmRef = useRef<HTMLVideoElement>(null);
+
+  // Prewarm lifecycle: pick the width-appropriate variant on mount, then
+  // stop + hide the element as soon as the WebGL canvas can paint slide 0
+  // itself (no reason to keep a second decoder running underneath).
+  useEffect(() => {
+    const v = prewarmRef.current;
+    if (!v) return;
+
+    v.src =
+      window.innerWidth <= 767
+        ? "/images/home/slider1/slider01_s.mp4"
+        : "/images/home/slider1/slider01.mp4";
+    v.play().catch(() => {});
+
+    const onGlReady = () => {
+      v.pause();
+      v.removeAttribute("src");
+      v.load();
+      v.style.display = "none";
+    };
+    window.addEventListener("nudot:hero-gl-ready", onGlReady, { once: true });
+    return () => window.removeEventListener("nudot:hero-gl-ready", onGlReady);
+  }, []);
 
   useGSAP(
     () => {
@@ -87,15 +111,20 @@ export default function HeroSection() {
 
   return (
     <section className="hero-section" ref={root}>
-      {/* instant slide-0 backdrop; the WebGL canvas paints over it once ready */}
+      {/* instant slide-0 backdrop; the poster paints pre-hydration, the
+          mount effect picks the width-appropriate variant, and the element
+          is stopped + hidden once the WebGL canvas is ready (it used to
+          keep decoding the desktop file forever, in parallel with WebGL's
+          own copy — on phones that meant two decoders and 1.2MB extra). */}
       <video
         className="hero-prewarm"
+        ref={prewarmRef}
         autoPlay
         muted
         loop
         playsInline
-        preload="auto"
-        src="/images/home/slider1/slider01.mp4"
+        preload="metadata"
+        poster="/images/home/slider1/slider01.webp"
       />
       <div id="webgl-container" />
 

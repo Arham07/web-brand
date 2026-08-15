@@ -65,7 +65,7 @@ export const ASSETS = [
 
   // --- footer ---
   "images/footer.mp4",
-  "images/footer.webp",
+  "images/footer-bg.jpg",
 
   // --- about page ---
   "images/about/about.mp4",

@@ -122,6 +122,8 @@ html {
   .sticky-container {
     position: relative;
     height: auto;
+    /* nothing is pinned on mobile — don't hold a full-viewport layer */
+    will-change: auto;
   }
 }
 

@@ -289,3 +289,12 @@ html.ab-anim-ready .about-page .ab-lens {
     height: 280px;
   }
 }
+
+/* mobile: the radial gradient already fades to transparent — the extra
+   GPU blur pass on these huge layers is jank for near-zero visual gain */
+@media (max-width: 767px) {
+  .about-page .ab-work::before,
+  .about-page .ab-work::after {
+    filter: none;
+  }
+}

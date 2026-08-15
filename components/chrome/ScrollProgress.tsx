@@ -50,9 +50,17 @@ export default function ScrollProgress() {
       rafId = requestAnimationFrame(step);
     };
 
+    // scrollHeight is a forced-layout read — reading it on every scroll
+    // event thrashed layout on mobile. Cache it; the resize listener and
+    // the body ResizeObserver keep it fresh.
+    let cachedMax = 0;
+    const remeasure = () => {
+      cachedMax = document.documentElement.scrollHeight - window.innerHeight;
+      update();
+    };
+
     const update = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = max > 0 ? (scrollTop() / max) * 100 : 0;
+      const pct = cachedMax > 0 ? (scrollTop() / cachedMax) * 100 : 0;
       target = Math.min(100, Math.max(0, pct));
       wake();
     };
@@ -60,8 +68,8 @@ export default function ScrollProgress() {
     // Lenis drives the real window scroll, so the native listener covers the
     // fallback; the Lenis event (hooked once available) mirrors the original.
     window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    window.addEventListener("load", update);
+    window.addEventListener("resize", remeasure);
+    window.addEventListener("load", remeasure);
 
     let hookedLenis: Lenis | null = null;
     const hookRaf = requestAnimationFrame(() => {
@@ -72,10 +80,10 @@ export default function ScrollProgress() {
       }
     });
 
-    const ro = new ResizeObserver(update);
+    const ro = new ResizeObserver(remeasure);
     ro.observe(document.body);
 
-    update();
+    remeasure();
 
     return () => {
       disposed = true;
@@ -83,8 +91,8 @@ export default function ScrollProgress() {
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(hookRaf);
       window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-      window.removeEventListener("load", update);
+      window.removeEventListener("resize", remeasure);
+      window.removeEventListener("load", remeasure);
       hookedLenis?.off("scroll", update);
       ro.disconnect();
     };

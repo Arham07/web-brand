@@ -217,3 +217,12 @@ html.pg-anim-ready .pg-img-wrap {
     height: 70vw;
   }
 }
+
+/* mobile: the radial gradient already fades to transparent — the extra
+   GPU blur pass on these huge layers is jank for near-zero visual gain */
+@media (max-width: 767px) {
+  .gallery-header::before,
+  .gallery-header::after {
+    filter: none;
+  }
+}

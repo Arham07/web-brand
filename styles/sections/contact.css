@@ -401,3 +401,12 @@ html.ct-modal-open #film-grain-canvas {
 
 @media (prefers-reduced-motion: reduce) {
 }
+
+/* mobile: the radial gradient already fades to transparent — the extra
+   GPU blur pass on these huge layers is jank for near-zero visual gain */
+@media (max-width: 767px) {
+  .contact-page .ct-hero::before,
+  .contact-page .ct-hero::after {
+    filter: none;
+  }
+}

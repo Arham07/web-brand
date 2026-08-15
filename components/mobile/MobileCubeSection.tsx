@@ -3,17 +3,15 @@
 import { useRef } from "react";
 import { getLenis } from "@/lib/lenis";
 import { useSectionNear } from "@/hooks/useSectionNear";
-import { hydrateImagesIn } from "@/lib/lazy-media";
+import { isMobileLayout } from "@/lib/device";
 
-/** 1×1 transparent gif placeholder for deferred images. */
-const BLANK_GIF = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
-
+// all faces ship as 1200×1200 (verified with sips)
 const IMAGE_FACES = [
-  { face: "is-right", src: "/images/cube/t2.webp", width: 2752, height: 1536 },
-  { face: "is-back", src: "/images/cube/t3.webp", width: 2752, height: 1536 },
-  { face: "is-left", src: "/images/cube/t4.webp", width: 5504, height: 3072 },
-  { face: "is-top", src: "/images/cube/t5.webp", width: 7360, height: 4912 },
-  { face: "is-bottom", src: "/images/cube/t6.webp", width: 3000, height: 2000 },
+  { face: "is-right", src: "/images/cube/t2.webp", width: 1200, height: 1200 },
+  { face: "is-back", src: "/images/cube/t3.webp", width: 1200, height: 1200 },
+  { face: "is-left", src: "/images/cube/t4.webp", width: 1200, height: 1200 },
+  { face: "is-top", src: "/images/cube/t5.webp", width: 1200, height: 1200 },
+  { face: "is-bottom", src: "/images/cube/t6.webp", width: 1200, height: 1200 },
 ] as const;
 
 // Spin model constants
@@ -39,13 +37,14 @@ export default function MobileCubeSection() {
   const cubeRef = useRef<HTMLDivElement>(null);
 
   useSectionNear(sectionRef, () => {
+    // desktop: the section is display:none — its zero rect fools isNear(),
+    // so without this guard the whole init (and the section's media) ran on
+    // desktop too
+    if (!isMobileLayout()) return;
+
     const scene = sceneRef.current;
     const cube = cubeRef.current;
     if (!scene || !cube) return;
-
-    // The global lazy-media engine only scans once at app mount — hydrate the
-    // cube-face images ourselves so a remounted section isn't left blank.
-    if (sectionRef.current) hydrateImagesIn(sectionRef.current);
 
     let angle = 0; // continuous auto-rotation (deg)
     let extra = 0; // scroll/fling boost (deg per frame)
@@ -205,11 +204,13 @@ export default function MobileCubeSection() {
               <source data-src="/images/cube/t1.mp4" type="video/mp4" />
             </video>
           </div>
+          {/* native lazy: the browser's fetch scheduler beats the JS
+              trickle-hydrator (faces used to show up blank mid-spin), and
+              display:none on desktop means it never fetches there */}
           {IMAGE_FACES.map(({ face, src, width, height }) => (
             <div key={face} className={`mobile-cube-face ${face}`}>
               <img
-                src={BLANK_GIF}
-                data-defer-src={src}
+                src={src}
                 alt=""
                 width={width}
                 height={height}

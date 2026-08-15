@@ -224,6 +224,10 @@ export default function GallerySection() {
                 src={GIF}
                 data-defer-src={item.src}
                 alt={`Work ${item.img}`}
+                width={1600}
+                height={1081}
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>

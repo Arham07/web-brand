@@ -119,6 +119,12 @@ export class RingGalleryScene {
   private lines: THREE.Group[] = [];
   private textures: THREE.Texture[] = [];
   private loader = new THREE.TextureLoader();
+  /** one shared load per unique texture URL — 72 planes cycle 25 images,
+      so per-plane loads meant 47 redundant decodes + GPU uploads */
+  private sharedTextures = new Map<
+    number,
+    Promise<{ tex: THREE.Texture; aspect: number }>
+  >();
 
   private target: THREE.WebGLRenderTarget;
   private postScene: THREE.Scene;
@@ -140,7 +146,10 @@ export class RingGalleryScene {
   constructor(container: HTMLElement) {
     this.container = container;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // antialias off: the scene draws into a render target (no MSAA there
+    // anyway) and the only default-framebuffer draw is the post quad —
+    // the flag was pure cost
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
     renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
     renderer.setClearColor(0x000000, 1);
     this.renderer = renderer;
@@ -152,7 +161,12 @@ export class RingGalleryScene {
     this.camera.position.z = 16;
 
     this.planeGeometry = new THREE.PlaneGeometry(1, 1);
-    this.buildRings();
+    // ring 0 (12 planes) builds now so a warm frame has content; the outer
+    // rings (24 + 36 planes) build in idle slices — constructing all 72
+    // synchronously was a visible scroll-jank spike ~2200px before the
+    // section
+    this.buildRing(0);
+    this.scheduleRing(1);
 
     // --- post pass: scene renders into a target, then a fullscreen quad ---
     this.target = new THREE.WebGLRenderTarget(1, 1);
@@ -177,10 +191,8 @@ export class RingGalleryScene {
 
     this.applySize();
     container.appendChild(renderer.domElement);
-
-    // prewarm: compile programs + one warm frame while idle
-    renderer.compile(this.scene, this.camera);
-    this.renderFrame(0);
+    // (program compile + warm frame happen after the last idle-built ring
+    // — see scheduleRing)
 
     // --- input ---
     this.dragEnabled = !(isCoarsePointer() || isMobileLayout());
@@ -191,7 +203,6 @@ export class RingGalleryScene {
     } else {
       container.style.touchAction = "pan-y";
     }
-    container.addEventListener("pointermove", this.onMouseTrack);
     window.addEventListener("resize", this.onWindowResize);
 
     // --- render loop gated by proximity ---
@@ -216,7 +227,6 @@ export class RingGalleryScene {
     window.removeEventListener("pointermove", this.onDragMove);
     window.removeEventListener("pointerup", this.onPointerUp);
     this.container.removeEventListener("pointerdown", this.onPointerDown);
-    this.container.removeEventListener("pointermove", this.onMouseTrack);
 
     for (const ring of this.rings) {
       ring.traverse((obj) => {
@@ -241,37 +251,90 @@ export class RingGalleryScene {
 
   // ------------------------------------------------------------------ //
 
-  private buildRings() {
-    let slot = 0;
-    for (let i = 0; i < RING_COUNT; i++) {
-      const ring = new THREE.Group();
-      const count = RING_UNIT * (i + 1);
-      const planeHeight = 1.6 * (0.36 * i + 1);
-      const radius = 6.4 * (i + 1) + 2.3 - (RING_INSET[i] ?? 0);
+  /** slot base for ring i = 12·(1 + 2 + … + i) — matches the old
+      sequential counter across rings */
+  private static slotBase(i: number) {
+    return (RING_UNIT * (i * (i + 1))) / 2;
+  }
 
-      for (let j = 0; j < count; j++) {
-        const index = slot++;
-        const material = new THREE.MeshBasicMaterial({ transparent: true });
-        const mesh = new THREE.Mesh(this.planeGeometry, material);
-        mesh.scale.set(planeHeight * FALLBACK_ASPECT, planeHeight, 1);
-        mesh.position.x = radius;
-        mesh.rotation.z = -Math.PI / 2;
+  private buildRing(i: number) {
+    let slot = RingGalleryScene.slotBase(i);
+    const ring = new THREE.Group();
+    const count = RING_UNIT * (i + 1);
+    const planeHeight = 1.6 * (0.36 * i + 1);
+    const radius = 6.4 * (i + 1) + 2.3 - (RING_INSET[i] ?? 0);
 
-        // wrapper "line" group: rotating it around Z places the tile
-        // tangentially on the circle
-        const line = new THREE.Group();
-        line.rotation.z = (j / count) * Math.PI * 2;
-        line.position.z = -90; // entrance start depth (enterProgress 0)
-        line.add(mesh);
-        ring.add(line);
-        this.lines.push(line);
+    for (let j = 0; j < count; j++) {
+      const index = slot++;
+      const material = new THREE.MeshBasicMaterial({ transparent: true });
+      const mesh = new THREE.Mesh(this.planeGeometry, material);
+      mesh.scale.set(planeHeight * FALLBACK_ASPECT, planeHeight, 1);
+      mesh.position.x = radius;
+      mesh.rotation.z = -Math.PI / 2;
 
-        this.assignTexture(index, material, mesh, planeHeight);
-      }
+      // wrapper "line" group: rotating it around Z places the tile
+      // tangentially on the circle
+      const line = new THREE.Group();
+      line.rotation.z = (j / count) * Math.PI * 2;
+      line.position.z = -90; // entrance start depth (enterProgress 0)
+      line.add(mesh);
+      ring.add(line);
+      this.lines.push(line);
 
-      this.scene.add(ring);
-      this.rings.push(ring);
+      this.assignTexture(index, material, mesh, planeHeight);
     }
+
+    this.scene.add(ring);
+    this.rings.push(ring);
+  }
+
+  private scheduleRing(i: number) {
+    const idle: (cb: () => void) => void =
+      "requestIdleCallback" in window
+        ? (cb) => (window as Window).requestIdleCallback(() => cb(), { timeout: 700 })
+        : (cb) => window.setTimeout(cb, 40);
+    idle(() => {
+      if (this.disposed) return;
+      if (i < RING_COUNT) {
+        this.buildRing(i);
+        this.scheduleRing(i + 1);
+      } else {
+        // all rings present — compile programs + one warm frame while idle
+        this.renderer.compile(this.scene, this.camera);
+        if (!this.running) this.renderFrame(0);
+      }
+    });
+  }
+
+  private loadShared(index: number) {
+    const key = index % TEXTURE_COUNT;
+    let promise = this.sharedTextures.get(key);
+    if (!promise) {
+      promise = new Promise((resolve) => {
+        this.loader.load(
+          textureUrl(index),
+          (tex) => {
+            this.textures.push(tex);
+            const img = tex.image as
+              | { width?: number; height?: number }
+              | undefined;
+            const aspect =
+              img && img.width && img.height
+                ? img.width / img.height
+                : FALLBACK_ASPECT;
+            resolve({ tex, aspect });
+          },
+          undefined,
+          () => {
+            const tex = makeFallbackTexture(index);
+            this.textures.push(tex);
+            resolve({ tex, aspect: FALLBACK_ASPECT });
+          }
+        );
+      });
+      this.sharedTextures.set(key, promise);
+    }
+    return promise;
   }
 
   private assignTexture(
@@ -280,28 +343,12 @@ export class RingGalleryScene {
     mesh: THREE.Mesh,
     planeHeight: number
   ) {
-    const apply = (tex: THREE.Texture, aspect: number) => {
-      if (this.disposed) {
-        tex.dispose();
-        return;
-      }
-      this.textures.push(tex);
+    void this.loadShared(index).then(({ tex, aspect }) => {
+      if (this.disposed) return;
       material.map = tex;
       material.needsUpdate = true;
       mesh.scale.x = planeHeight * aspect;
-    };
-
-    this.loader.load(
-      textureUrl(index),
-      (tex) => {
-        const img = tex.image as { width?: number; height?: number } | undefined;
-        const aspect =
-          img && img.width && img.height ? img.width / img.height : FALLBACK_ASPECT;
-        apply(tex, aspect);
-      },
-      undefined,
-      () => apply(makeFallbackTexture(index), FALLBACK_ASPECT)
-    );
+    });
   }
 
   private stageSize() {
@@ -318,6 +365,8 @@ export class RingGalleryScene {
 
   private applySize() {
     const { width, height } = this.stageSize();
+    this.appliedW = width;
+    this.appliedH = height;
     const dpr = this.computeDpr();
     this.renderer.setPixelRatio(dpr);
     this.renderer.setSize(width, height);
@@ -389,16 +438,20 @@ export class RingGalleryScene {
     this.dragging = false;
   };
 
-  /** iMouse is uploaded for shader parity (unused in the fragment math). */
-  private onMouseTrack = (e: PointerEvent) => {
-    const rect = this.container.getBoundingClientRect();
-    this.uniforms.iMouse.value.set(
-      e.clientX - rect.left,
-      rect.height - (e.clientY - rect.top)
-    );
-  };
-
+  private resizeTimer = 0;
+  private appliedW = 0;
+  private appliedH = 0;
+  /** debounced; a resize here reallocates the render target, so mobile
+      URL-bar height jitter must not reach applySize() */
   private onWindowResize = () => {
-    if (!this.disposed) this.applySize();
+    if (this.disposed) return;
+    window.clearTimeout(this.resizeTimer);
+    this.resizeTimer = window.setTimeout(() => {
+      if (this.disposed) return;
+      const w = this.container.clientWidth || window.innerWidth;
+      const h = this.container.clientHeight || window.innerHeight;
+      if (w === this.appliedW && Math.abs(h - this.appliedH) < 120) return;
+      this.applySize();
+    }, 200);
   };
 }

@@ -39,12 +39,27 @@ export class WebGLManager {
   private boundA = -1;
   private boundB = -1;
   private transitionToken = 0;
+  /** force one render after state changes (resize, wake, texture binds) */
+  private needsFrame = true;
   private paused = false;
   private frameParity = 0;
   private disposed = false;
 
   private tick = () => this.render();
-  private onResize = () => this.resize();
+  private resizeTimer = 0;
+  private appliedW = 0;
+  private appliedH = 0;
+  /** debounced; ignores the height-only jitter of mobile URL-bar collapse
+      (a full setSize reallocates the GL buffer — visible mid-scroll stutter) */
+  private onResize = () => {
+    window.clearTimeout(this.resizeTimer);
+    this.resizeTimer = window.setTimeout(() => {
+      const w = this.container.clientWidth || window.innerWidth;
+      const h = this.container.clientHeight || window.innerHeight;
+      if (w === this.appliedW && Math.abs(h - this.appliedH) < 120) return;
+      this.resize();
+    }, 200);
+  };
   private onMouseMove = (e: MouseEvent) => {
     this.targetMouse.set(
       (e.clientX / window.innerWidth) * 2 - 1,
@@ -61,7 +76,11 @@ export class WebGLManager {
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     this.renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
     this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    // cap the buffer: an uncapped DPR-3 phone would push ~2.7M px/frame
+    // through the 6-tap slide shader for no visible gain
+    this.renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio, window.innerWidth <= 768 ? 1.5 : 2)
+    );
     this.container.appendChild(this.renderer.domElement);
 
     this.videoBucket = document.createElement("div");
@@ -99,6 +118,9 @@ export class WebGLManager {
       this.bindA(0, s);
       this.material.uniforms.uTexReady.value = 1;
       this.syncPlayback();
+      // the canvas can paint slide 0 itself now — the prewarm <video>
+      // underneath stops on this signal (no second decoder)
+      window.dispatchEvent(new CustomEvent("nudot:hero-gl-ready"));
     });
     requestAnimationFrame(() => {
       if (!this.disposed) void this.load(1);
@@ -186,6 +208,7 @@ export class WebGLManager {
       slide.width,
       slide.height
     );
+    this.needsFrame = true;
   }
 
   private bindB(index: number, slide: LoadedSlide) {
@@ -195,6 +218,7 @@ export class WebGLManager {
       slide.width,
       slide.height
     );
+    this.needsFrame = true;
   }
 
   // ---------------------------------------------------------- transition
@@ -258,6 +282,7 @@ export class WebGLManager {
         this.slides.forEach((s) => s?.video?.pause());
       } else {
         this.syncPlayback();
+        this.needsFrame = true;
       }
     }
     if (this.paused) return;
@@ -265,26 +290,41 @@ export class WebGLManager {
     // mobile renders at half rate
     if (window.innerWidth <= 768 && (this.frameParity ^= 1)) return;
 
-    this.mouse.lerp(this.targetMouse, 0.05);
+    const mouseSettled =
+      this.mouse.distanceToSquared(this.targetMouse) < 0.000001;
+    if (!mouseSettled) this.mouse.lerp(this.targetMouse, 0.05);
 
+    let hasLiveVideo = false;
     for (const i of [this.boundA, this.boundB]) {
       const slide = this.slides[i];
-      if (slide?.video && slide.video.readyState >= 2) {
+      if (slide?.video && slide.video.readyState >= 2 && !slide.video.paused) {
         slide.texture.needsUpdate = true;
+        hasLiveVideo = true;
       }
     }
 
+    // idle skip: with a static image bound, no transition running and the
+    // mouse settled, re-rendering the identical frame is pure GPU waste
+    const transitioning =
+      (this.material.uniforms.uProgress.value as number) > 0 || this.boundB >= 0;
+    if (!hasLiveVideo && !transitioning && mouseSettled && !this.needsFrame)
+      return;
+
+    this.needsFrame = false;
     this.renderer.render(this.scene, this.camera);
   }
 
   private resize() {
     const w = this.container.clientWidth || window.innerWidth;
     const h = this.container.clientHeight || window.innerHeight;
+    this.appliedW = w;
+    this.appliedH = h;
     this.renderer.setSize(w, h);
     (this.material.uniforms.uResolution.value as THREE.Vector2).set(
       w * this.renderer.getPixelRatio(),
       h * this.renderer.getPixelRatio()
     );
+    this.needsFrame = true;
   }
 
   dispose() {
