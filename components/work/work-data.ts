@@ -42,8 +42,8 @@ const wm = (n: number): Pick<
   const p = String(n).padStart(2, "0");
   return {
     img: `/images/work/list/wm-${p}.jpg`,
-    width: 900,
-    height: 674,
+    width: 720,
+    height: 539,
     full: `/images/work/full/wm-${p}.jpg`,
     fullWidth: 895,
     fullHeight: 4096,

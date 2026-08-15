@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { gsap } from "@/lib/gsap";
 import { getLenis } from "@/lib/lenis";
 import { prefersReducedMotion } from "@/lib/device";
@@ -184,8 +185,8 @@ export default function WorkGrid() {
               alt={`${p.title} — ${p.subtitle}`}
               width={p.width}
               height={p.height}
-              loading={i === 0 ? "eager" : "lazy"}
-              fetchPriority={i === 0 ? "high" : undefined}
+              loading="eager"
+              fetchPriority={i < 2 ? "high" : undefined}
               decoding="async"
             />
             <div className="wk-blur" aria-hidden="true" />
@@ -208,7 +209,12 @@ export default function WorkGrid() {
         </article>
       ))}
 
-      {project && (
+      {/* portal: the grid/archive wrappers are stacking contexts
+          (isolation + z-index), and the sticky hero's z-index painted OVER
+          the overlay inside them — on mobile that buried the close button.
+          Rendering at document.body frees the overlay's z: 20000. */}
+      {project &&
+        createPortal(
         <div
           className="wk-lb"
           ref={overlayRef}
@@ -256,7 +262,8 @@ export default function WorkGrid() {
               Scroll to explore ↓
             </span>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );
