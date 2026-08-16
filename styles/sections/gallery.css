@@ -60,14 +60,20 @@
   overflow: hidden;
 }
 
-/* ambient color glows behind the header typography */
+/* Ambient color glows behind the header typography.
+   No blur filter: these are 10%- and 8%-alpha radial gradients on black that
+   already fade to transparent, so blurring them changed almost nothing you
+   can see — while costing ~12.8 megapixels of blur backing store per frame at
+   1440x900 @2x (blur(110px) outsets the buffer by ~330px per side), on two
+   layers that live inside a sticky 100vh header and therefore re-rasterise as
+   it moves. The falloff stop is widened instead, which restores the softness
+   for free. Phones have run without the blur for a while with no complaints. */
 .gallery-header::before,
 .gallery-header::after {
   content: "";
   position: absolute;
   z-index: 0;
   border-radius: 50%;
-  filter: blur(110px);
   pointer-events: none;
 }
 .gallery-header::before {
@@ -75,14 +81,14 @@
   left: -6vw;
   width: 54vw;
   height: 54vh;
-  background: radial-gradient(circle, var(--glow-1) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-1) 0%, transparent 74%);
 }
 .gallery-header::after {
   bottom: -14vh;
   right: -8vw;
   width: 50vw;
   height: 52vh;
-  background: radial-gradient(circle, var(--glow-2) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow-2) 0%, transparent 74%);
 }
 
 .gallery-header-video {
@@ -178,6 +184,22 @@
   background: var(--color-bg-img-placeholder, #141518);
   overflow: hidden;
 }
+/* Carries the wipe on phones so it can be a transform (compositor) rather
+   than a clip-path (repaint). `.pg-img-inner` is the curtain — it needs its
+   own overflow so that `.pg-img-shift`, counter-translated back into place,
+   stays hidden behind it. Both are `inset: 0` of the same box, so equal and
+   opposite yPercent cancel EXACTLY; countering against the image itself would
+   not, since the image is 140% tall and would drift by the difference.
+   Both are inert on desktop (no transform), where the clip path still runs. */
+.pg-img-inner {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.pg-img-shift {
+  position: absolute;
+  inset: 0;
+}
 .pg-img-wrap img {
   position: absolute;
   left: 0;
@@ -187,10 +209,25 @@
   object-fit: cover;
 }
 
-/* Images default to visible (no-JS fallback); clipping only engages
-   once the anim engine has confirmed itself ready. */
+/* Images default to visible (no-JS fallback); the hidden pre-state only
+   engages once the anim engine has confirmed itself ready. */
 html.pg-anim-ready .pg-img-wrap {
   clip-path: inset(100% 0 0 0);
+}
+
+/* Phones hide the same way the phone reveal animates — inner pushed down,
+   image pulled up by the same amount so the artwork sits still. GSAP's
+   inline transforms take over the moment the entry timeline runs. */
+@media (max-width: 768px) {
+  html.pg-anim-ready .pg-img-wrap {
+    clip-path: none;
+  }
+  html.pg-anim-ready .pg-img-inner {
+    transform: translateY(100%);
+  }
+  html.pg-anim-ready .pg-img-shift {
+    transform: translateY(-100%);
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -218,20 +255,10 @@ html.pg-anim-ready .pg-img-wrap {
   }
 }
 
-/* mobile: the radial gradient already fades to transparent — the extra
-   GPU blur pass on these huge layers is jank for near-zero visual gain */
-@media (max-width: 767px) {
-  .gallery-header::before,
-  .gallery-header::after {
-    filter: none;
-  }
-}
-
-/* phones: let the browser skip layout+paint for the off-screen half of a
-   single-column card list (each card is a promoted image layer) */
-@media (max-width: 767px) {
-  .pg-item {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 70vw;
-  }
-}
+/* No content-visibility here. It defers each card's layout and paint into the
+   one frame where the card becomes relevant to the user — which is exactly the
+   frame its reveal animation starts and its image decodes. For six cards the
+   skipped work was never worth much, and the bill arrived as a visible hitch
+   per card while scrolling. It also only ever applied below 767px, while the
+   mobile layout itself switches at 768px, so a 768px-wide tablet got the
+   phone layout without it. */

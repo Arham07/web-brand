@@ -12,13 +12,52 @@ const GIF = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
 // All cards point at the Work listing page — per-project pages don't exist yet.
 // Slots 2/3/5/6 reuse the /work archive's own thumbnails so both surfaces show
 // the same artwork; slots 1/4 keep their original imagery.
+// w/h are each file's real intrinsic size. They used to be a single hardcoded
+// 1600x1081 for all six, which matches none of them — so every card reserved a
+// box of the wrong aspect ratio and snapped to the right one on decode.
 const ITEMS = [
-  { href: "/work", img: "01", src: "/images/home/list/01.webp" },
-  { href: "/work", img: "02", src: "/images/work/list/aw-01.webp" },
-  { href: "/work", img: "03", src: "/images/work/list/aw-03.webp" },
-  { href: "/work", img: "04", src: "/images/home/list/04.webp" },
-  { href: "/work", img: "05", src: "/images/work/list/aw-04.webp" },
-  { href: "/work", img: "06", src: "/images/work/list/aw-05.webp" },
+  {
+    href: "/work",
+    img: "01",
+    src: "/images/home/list/01.webp",
+    w: 1008,
+    h: 1046,
+  },
+  {
+    href: "/work",
+    img: "02",
+    src: "/images/work/list/aw-01.webp",
+    w: 512,
+    h: 387,
+  },
+  {
+    href: "/work",
+    img: "03",
+    src: "/images/work/list/aw-03.webp",
+    w: 512,
+    h: 387,
+  },
+  {
+    href: "/work",
+    img: "04",
+    src: "/images/home/list/04.webp",
+    w: 1008,
+    h: 1046,
+  },
+  {
+    href: "/work",
+    img: "05",
+    src: "/images/work/list/aw-04.webp",
+    w: 512,
+    h: 387,
+  },
+  {
+    href: "/work",
+    img: "06",
+    src: "/images/work/list/aw-05.webp",
+    w: 512,
+    h: 387,
+  },
 ] as const;
 
 const PARALLAX_SPEEDS = [12, 18, 10, 20, 15, 22];
@@ -54,15 +93,38 @@ export default function GallerySection() {
         // Gate class: clip is only ever applied once GSAP is confirmed running.
         document.documentElement.classList.add("pg-anim-ready");
 
+        const mobile = isMobileWidth();
+
         items.forEach((item, i) => {
           const wrap = item.querySelector<HTMLElement>(".pg-img-wrap");
+          const inner = item.querySelector<HTMLElement>(".pg-img-inner");
+          const shift = item.querySelector<HTMLElement>(".pg-img-shift");
           const img = item.querySelector<HTMLElement>(".pg-img-wrap img");
-          if (!wrap || !img) return;
+          if (!wrap || !inner || !shift || !img) return;
 
-          // Entry: bottom-up clip wipe + settle-scale
-          const inView = item.getBoundingClientRect().top < window.innerHeight * 0.9;
+          // Entry: bottom-up wipe + settle-scale.
+          //
+          // Phones do the wipe with transforms instead of clip-path, because
+          // WebKit does not composite a clip-path animation — every frame of
+          // it repaints the whole card, on the same thread that is serving
+          // the scroll. The curtain (inner) drops and its child (shift) is
+          // counter-translated back up by the same amount on the same ease, so
+          // the artwork sits still and it reads as a wipe, not a slide —
+          // identical to the clip version, on the compositor. The counter has
+          // to be `shift`, not the image: the image is 140% tall, so equal
+          // yPercent there would leave a 40%-of-height drift.
+          //
+          // Desktop keeps the clip: its parallax already owns yPercent on the
+          // image, and two tweens fighting over one property is a worse bug
+          // than the repaint it would save on a machine with the headroom.
+          const inView =
+            item.getBoundingClientRect().top < window.innerHeight * 0.9;
           if (inView) {
-            gsap.set(wrap, { clipPath: "inset(0% 0% 0% 0%)" });
+            // `y: 0` is not redundant: GSAP parses the CSS pre-state's
+            // translateY(100%) into its *pixel* channel, and animating only
+            // yPercent would leave that pixel offset behind forever.
+            if (mobile) gsap.set([inner, shift], { yPercent: 0, y: 0 });
+            else gsap.set(wrap, { clipPath: "inset(0% 0% 0% 0%)" });
             gsap.set(img, { scale: 0.9 });
           } else {
             const tl = gsap.timeline({
@@ -72,16 +134,38 @@ export default function GallerySection() {
                 toggleActions: "play none none reverse",
               },
             });
+            if (mobile) {
+              // `y: 0` throughout: GSAP parses the CSS pre-state's
+              // translateY(100%) into its *pixel* channel, so animating
+              // yPercent alone would land at 0% + the leftover 262px.
+              tl.fromTo(
+                inner,
+                { yPercent: 100, y: 0 },
+                { yPercent: 0, y: 0, duration: 0.7, ease: "expo.out" },
+                0,
+              ).fromTo(
+                shift,
+                { yPercent: -100, y: 0 },
+                { yPercent: 0, y: 0, duration: 0.7, ease: "expo.out" },
+                0,
+              );
+            } else {
+              tl.fromTo(
+                wrap,
+                { clipPath: "inset(100% 0% 0% 0%)" },
+                {
+                  clipPath: "inset(0% 0% 0% 0%)",
+                  duration: 0.7,
+                  ease: "expo.out",
+                },
+                0,
+              );
+            }
             tl.fromTo(
-              wrap,
-              { clipPath: "inset(100% 0% 0% 0%)" },
-              { clipPath: "inset(0% 0% 0% 0%)", duration: 0.7, ease: "expo.out" },
-              0
-            ).fromTo(
               img,
               { scale: 1.3 },
               { scale: 1, duration: 1.0, ease: "power3.out" },
-              0
+              0,
             );
             entryTls.push({ item, tl });
           }
@@ -90,7 +174,7 @@ export default function GallerySection() {
           // tweens keep the ticker running for over a second after every
           // finger lift, and on the mobile single-column layout the drift
           // is barely perceptible anyway.
-          if (!isMobileWidth()) {
+          if (!mobile) {
             const speed = PARALLAX_SPEEDS[i % PARALLAX_SPEEDS.length];
             gsap.fromTo(
               img,
@@ -104,19 +188,21 @@ export default function GallerySection() {
                   end: "bottom top",
                   scrub: 1.2,
                 },
-              }
+              },
             );
           }
         });
 
         // Header exit — text lifts away as .pg-item-5 finishes (desktop only;
         // on mobile the header is static and long scrolled past).
-        if (!isMobileWidth()) {
+        if (!mobile) {
           const item5 = section.querySelector<HTMLElement>(".pg-item-5");
           const wordInners = section.querySelectorAll<HTMLElement>(
-            ".gallery-header-title .reveal-word-inner"
+            ".gallery-header-title .reveal-word-inner",
           );
-          const label = section.querySelector<HTMLElement>(".gallery-header-label");
+          const label = section.querySelector<HTMLElement>(
+            ".gallery-header-label",
+          );
           const sub = section.querySelector<HTMLElement>(".gallery-header-sub");
           if (item5) {
             const exitTl = gsap.timeline({
@@ -131,7 +217,7 @@ export default function GallerySection() {
               exitTl.to(
                 wordInners,
                 { yPercent: -130, ease: "power2.in", stagger: 0.04 },
-                0
+                0,
               );
             }
             if (label) exitTl.to(label, { autoAlpha: 0, y: -15 }, 0);
@@ -143,7 +229,7 @@ export default function GallerySection() {
         // section. Desktop only: on mobile it scrubs opacity on a wrapper
         // holding six promoted image layers, which is the most expensive
         // possible thing to animate while the user is flicking past.
-        if (grid && !isMobileWidth()) {
+        if (grid && !mobile) {
           gsap.to(grid, {
             opacity: 0,
             y: -30,
@@ -162,7 +248,11 @@ export default function GallerySection() {
       const forceUnclip = () => {
         entryTls.forEach(({ item, tl }) => {
           const r = item.getBoundingClientRect();
-          if (r.top < window.innerHeight && r.bottom > 0 && tl.progress() === 0) {
+          if (
+            r.top < window.innerHeight &&
+            r.bottom > 0 &&
+            tl.progress() === 0
+          ) {
             tl.progress(1);
           }
         });
@@ -170,8 +260,16 @@ export default function GallerySection() {
       timeouts.push(window.setTimeout(forceUnclip, 1500));
       timeouts.push(window.setTimeout(forceUnclip, 4000));
 
-      // Let layout settle (pin spacers etc.) then re-measure.
-      const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
+      // Let layout settle (pin spacers etc.) then re-measure — but only if the
+      // section is still comfortably below the fold. This refresh re-measures
+      // every trigger in the document; in the case where init lands late (idle
+      // starved by a fling) the section is already arriving, geometry has long
+      // settled, and the refresh is a full forced layout at the single worst
+      // moment. ScrollProvider already refreshes on load and fonts.ready.
+      const settled = section.getBoundingClientRect().top < window.innerHeight;
+      const raf = settled
+        ? 0
+        : requestAnimationFrame(() => ScrollTrigger.refresh());
 
       return () => {
         cancelAnimationFrame(raf);
@@ -180,7 +278,7 @@ export default function GallerySection() {
         ctx.revert();
       };
     },
-    { rootMargin: 1800 }
+    { rootMargin: 1800 },
   );
 
   return (
@@ -213,7 +311,11 @@ export default function GallerySection() {
             BY AMERICAN WEB GUILD
           </span>
         </div>
-        <p className="gallery-header-sub text1vw" data-reveal="fade" data-reveal-delay="0.3">
+        <p
+          className="gallery-header-sub text1vw"
+          data-reveal="fade"
+          data-reveal-delay="0.3"
+        >
           Where digital visual energy is unleashed
         </p>
       </div>
@@ -228,15 +330,24 @@ export default function GallerySection() {
               aria-label="View work"
             />
             <div className="pg-img-wrap">
-              <img
-                src={GIF}
-                data-defer-src={item.src}
-                alt={`Work ${item.img}`}
-                width={1600}
-                height={1081}
-                loading="lazy"
-                decoding="async"
-              />
+              <div className="pg-img-inner">
+                <div className="pg-img-shift">
+                  {/* Not loading="lazy": the src is already withheld until the
+                    deferred pipeline hands it over, and keeping the attribute
+                    made the browser apply its OWN viewport-distance threshold
+                    on top of that — so the fetch only started as the card came
+                    near and the artwork appeared a beat late. Six images,
+                    366 KB total. */}
+                  <img
+                    src={GIF}
+                    data-defer-src={item.src}
+                    alt={`Work ${item.img}`}
+                    width={item.w}
+                    height={item.h}
+                    decoding="async"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         ))}
