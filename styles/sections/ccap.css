@@ -345,7 +345,18 @@
   #sketch {
     --iris: 0;
   }
+  /* The mask only exists while the iris is mid-animation — it is not a
+     compositor-animatable property, so leaving it mounted made every frame
+     of the section re-rasterise a full-viewport mask. Closed and open both
+     have a cheaper equivalent: hidden, and no mask at all. */
   #sketch canvas {
+    visibility: hidden;
+  }
+  #sketch[data-iris="live"] canvas,
+  #sketch[data-iris="open"] canvas {
+    visibility: visible;
+  }
+  #sketch[data-iris="live"] canvas {
     -webkit-mask-image: radial-gradient(
       circle at 50% 50%,
       #000 calc(var(--iris) * 148.3vh - 20vh),

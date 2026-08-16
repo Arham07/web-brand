@@ -12,36 +12,48 @@ import { useEffect, useRef, type RefObject } from "react";
 /*  after load, while the user is still reading the hero.              */
 /* ------------------------------------------------------------------ */
 
+type IdleDeadline = { timeRemaining: () => number };
+
 const warmQueue = new Set<() => void>();
 let pumpStarted = false;
 
-const idleSlice = (cb: () => void) => {
+const idleSlice = (cb: (deadline?: IdleDeadline) => void) => {
   const ric = (
     window as Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      requestIdleCallback?: (
+        cb: (deadline: IdleDeadline) => void,
+        opts?: { timeout: number }
+      ) => number;
     }
   ).requestIdleCallback;
-  if (typeof ric === "function") ric(cb, { timeout: 500 });
-  else window.setTimeout(cb, 250);
+  if (typeof ric === "function") ric(cb, { timeout: 400 });
+  else window.setTimeout(cb, 200);
 };
 
-function pump() {
-  const next = warmQueue.values().next();
-  if (next.done) {
-    // queue drained — allow a later pump for newly mounted sections
-    // (client-side navigations register fresh inits)
-    pumpStarted = false;
-    return;
-  }
-  warmQueue.delete(next.value);
-  next.value(); // idempotent — no-op if proximity already ran it
+function pump(deadline?: IdleDeadline) {
+  // Drain as many inits as the idle deadline actually affords rather than one
+  // per slice. With ~10 sections queued, one-per-slice was still draining long
+  // after a phone user had started scrolling — and a scroll suppresses the
+  // idle queue outright, so everything left over waited for the scroll to
+  // stop. Which is exactly what "it only starts when I stop scrolling" is.
+  do {
+    const next = warmQueue.values().next();
+    if (next.done) {
+      // queue drained — allow a later pump for newly mounted sections
+      // (client-side navigations register fresh inits)
+      pumpStarted = false;
+      return;
+    }
+    warmQueue.delete(next.value);
+    next.value(); // idempotent — no-op if proximity already ran it
+  } while (deadline && deadline.timeRemaining() > 8);
   idleSlice(pump);
 }
 
 function startPump() {
   if (pumpStarted || typeof window === "undefined") return;
   pumpStarted = true;
-  const begin = () => window.setTimeout(() => idleSlice(pump), 2500);
+  const begin = () => window.setTimeout(() => idleSlice(pump), 1500);
   if (document.readyState === "complete") begin();
   else window.addEventListener("load", begin, { once: true });
 }
@@ -101,9 +113,12 @@ export function useSectionNear(
         }
       ).requestIdleCallback;
 
+      // Short deadlines on purpose: proximity fires ~2200px out, and a
+      // 600/900ms wait is 2–3 thousand pixels of fling — long enough for the
+      // section to have been scrolled past before its init even ran.
       if (typeof ric === "function") {
-        ric(invoke, { timeout: 600 });
-        timerId = window.setTimeout(invoke, 900);
+        ric(invoke, { timeout: 250 });
+        timerId = window.setTimeout(invoke, 400);
       } else {
         timerId = window.setTimeout(invoke, 1);
       }

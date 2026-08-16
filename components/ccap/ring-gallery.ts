@@ -164,6 +164,8 @@ export class RingGalleryScene {
      phone display. */
   /** last value pushed to the CSS `--iris` var (mobile iris mask) */
   private irisWritten = -1;
+  private irisState = "";
+  private lastTime = 0;
 
   private container: HTMLElement;
   private renderer: THREE.WebGLRenderer;
@@ -348,10 +350,15 @@ export class RingGalleryScene {
     this.rings.push(ring);
   }
 
+  // Chunked so the build never lands as one long task — but with a short
+  // deadline, because Blink suppresses the idle queue for the whole duration
+  // of a fling. At 700ms per link this four-step chain could only finish
+  // ~2.8s after the user stopped scrolling, which is why two thirds of the
+  // scene used to materialise the moment the finger left the glass.
   private scheduleRing(i: number) {
     const idle: (cb: () => void) => void =
       "requestIdleCallback" in window
-        ? (cb) => (window as Window).requestIdleCallback(() => cb(), { timeout: 700 })
+        ? (cb) => (window as Window).requestIdleCallback(() => cb(), { timeout: 200 })
         : (cb) => window.setTimeout(cb, 40);
     idle(() => {
       if (this.disposed) return;
@@ -383,11 +390,16 @@ export class RingGalleryScene {
                 ? img.width / img.height
                 : FALLBACK_ASPECT;
             // pre-upload to the GPU while idle — otherwise all uploads
-            // happen lazily on first use, mid-entrance, as one hitch
+            // happen lazily on first use, mid-entrance, as one hitch.
+            // The timeout is not optional: without one these 25 uploads can
+            // be starved for as long as the user keeps scrolling, which is
+            // precisely when they must already be done.
             const idle =
               "requestIdleCallback" in window
                 ? (cb: () => void) =>
-                    (window as Window).requestIdleCallback(() => cb())
+                    (window as Window).requestIdleCallback(() => cb(), {
+                      timeout: 500,
+                    })
                 : (cb: () => void) => window.setTimeout(cb, 30);
             idle(() => {
               if (!this.disposed) this.renderer.initTexture(tex);
@@ -466,13 +478,21 @@ export class RingGalleryScene {
   private renderFrame = (time: number) => {
     if (this.disposed) return;
 
+    // Advance by elapsed time, not by frame count. Per-callback stepping
+    // means the rings visibly slow down whenever rAF is starved — which is
+    // exactly what a phone fling does — and snap back to full speed once it
+    // recovers. That alone reads as "the animation only runs once I stop
+    // scrolling". Clamped to 3 frames so a long stall can't teleport it.
+    const dt = this.lastTime > 0 ? Math.min((time - this.lastTime) / 16.667, 3) : 1;
+    this.lastTime = time;
+
     const scrollDelta = scrollVelocity() * 0.02;
     const boost = 1 + Math.abs(scrollDelta * 10) + Math.abs(this.dragDelta);
     for (let i = 0; i < this.rings.length; i++) {
       const dir = i % 2 === 1 ? -1 : 1;
-      this.rings[i]!.rotation.z += 0.0025 * dir * boost * this.rotateSpeed;
+      this.rings[i]!.rotation.z += 0.0025 * dir * boost * this.rotateSpeed * dt;
     }
-    this.dragDelta *= 0.9;
+    this.dragDelta *= Math.pow(0.9, dt);
 
     const z =
       -lerp(0, 100, 1 - this.enterProgress) + lerp(10, 0, this.enterProgress);
@@ -491,12 +511,24 @@ export class RingGalleryScene {
       // mobile GPU that resolve is a pipeline stall, i.e. scroll jitter.
       // The iris is a CSS mask on the canvas and the vignette a static
       // gradient overlay, both driven from `--iris` below.
-      if (this.irisWritten !== this.transitionProgress) {
-        this.irisWritten = this.transitionProgress;
-        this.container.style.setProperty(
-          "--iris",
-          this.transitionProgress.toFixed(3)
-        );
+      // mask-image is not compositor-animatable: every --iris write
+      // invalidates paint and re-rasterises a full-viewport mask. So the
+      // mask is only mounted while the iris is actually moving. Fully open
+      // it is a no-op (radius past the corner) and fully closed it just
+      // hides the canvas — both resting states have a cheaper equivalent in
+      // CSS, which puts every frame outside the ~1.5s entrance back on the
+      // plain texture-layer path.
+      const t = this.transitionProgress;
+      if (this.irisWritten !== t) {
+        this.irisWritten = t;
+        const state = t <= 0.002 ? "closed" : t >= 0.998 ? "open" : "live";
+        if (this.irisState !== state) {
+          this.irisState = state;
+          this.container.dataset.iris = state;
+        }
+        if (state === "live") {
+          this.container.style.setProperty("--iris", t.toFixed(3));
+        }
       }
       r.render(this.scene, this.camera);
       return;

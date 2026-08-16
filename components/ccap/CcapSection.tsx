@@ -84,33 +84,42 @@ export default function CcapSection() {
       const triggers: ScrollTrigger[] = [];
 
       // --- reveal state machine ---
-      triggers.push(
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top 80%",
-          end: "bottom 45%",
-          onEnter: () => {
-            revealCoreContent();
-            setTitleState("visible");
-          },
-          onLeave: () => setTitleState("exiting"),
-          onEnterBack: () => setTitleState("visible"),
-          onLeaveBack: () => setTitleState("hidden"),
-        })
-      );
+      // The state is resolved from the rect, never from which callback fired,
+      // and both triggers end at "max" so neither can be stepped over.
+      // ScrollTrigger runs with limitCallbacks: true (lib/gsap.ts), which
+      // drops onEnter/onLeave entirely when one tick moves the scroll from
+      // before `start` to past `end` — routine on a phone fling, and it left
+      // the titles stuck at translateY(110%) until some later tick happened
+      // to land inside the range. That is a reveal that never plays while you
+      // scroll and then plays when you stop.
+      const resolveState = () => {
+        const rect = section.getBoundingClientRect();
+        const vh = window.innerHeight;
+        if (rect.bottom < vh * 0.45) {
+          revealCoreContent();
+          setTitleState("exiting");
+        } else if (rect.top <= vh * 0.8) {
+          revealCoreContent();
+          setTitleState("visible");
+        } else {
+          setTitleState("hidden");
+        }
+      };
 
-      // initial state resolution from the bounding rect
-      const rect = section.getBoundingClientRect();
-      const vh = window.innerHeight;
-      if (rect.bottom < vh * 0.45) {
-        revealCoreContent();
-        setTitleState("exiting");
-      } else if (rect.top <= vh * 0.8) {
-        revealCoreContent();
-        setTitleState("visible");
-      } else {
-        setTitleState("hidden");
+      for (const start of ["top 80%", "bottom 45%"]) {
+        triggers.push(
+          ScrollTrigger.create({
+            trigger: section,
+            start,
+            end: "max",
+            onEnter: resolveState,
+            onLeaveBack: resolveState,
+          })
+        );
       }
+
+      // initial state resolution (deep link, restored scroll position)
+      resolveState();
 
       // --- exit glue: overlay darkens, main shrinks as the next section
       // slides over (ease-in-out-cubic applied to the scrubbed progress) ---
