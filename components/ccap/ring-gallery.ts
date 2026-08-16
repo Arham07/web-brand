@@ -157,7 +157,11 @@ export class RingGalleryScene {
       taps, DPR and render rate for a stable frame rate on phone GPUs */
   private readonly mobile = isMobileLayout();
   private readonly ringUnit = this.mobile ? 8 : RING_UNIT;
-  private frameParity = 0;
+  /* The mobile half-rate cap is gone: it existed to pay for the post pass
+     (30fps × 2 fullscreen passes). With the post pass removed, full rate ×
+     1 pass costs the same GPU budget — and a slow continuous rotation
+     rendered at half rate is exactly what read as "laggy" on a 60/120Hz
+     phone display. */
   /** last value pushed to the CSS `--iris` var (mobile iris mask) */
   private irisWritten = -1;
 
@@ -332,7 +336,7 @@ export class RingGalleryScene {
       // tangentially on the circle
       const line = new THREE.Group();
       line.rotation.z = (j / count) * Math.PI * 2;
-      line.position.z = -90; // entrance start depth (enterProgress 0)
+      // entrance depth lives on the scene, not per line — see renderFrame
       line.add(mesh);
       ring.add(line);
       this.lines.push(line);
@@ -472,14 +476,13 @@ export class RingGalleryScene {
 
     const z =
       -lerp(0, 100, 1 - this.enterProgress) + lerp(10, 0, this.enterProgress);
-    for (const line of this.lines) line.position.z = z;
+    // Every line received the identical z, and the rings only ever rotate
+    // about Z — so translating the scene is the same transform for one
+    // write instead of 48 (plus 48 fewer matrix updates) per frame.
+    this.scene.position.z = z;
 
     this.uniforms.iTime.value = (time * 0.001) % 100;
     this.uniforms.uTransitionProgress.value = this.transitionProgress;
-
-    // mobile renders at half rate — state above still advances every
-    // callback so the motion's wall-clock speed is unchanged
-    if (this.mobile && (this.frameParity ^= 1)) return;
 
     const r = this.renderer;
     if (this.mobile) {

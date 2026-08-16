@@ -8,6 +8,7 @@
 import { useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { useSectionNear } from "@/hooks/useSectionNear";
+import { isMobileLayout } from "@/lib/device";
 import { RingGalleryScene } from "./ring-gallery";
 
 export default function RingGallery() {
@@ -31,13 +32,19 @@ export default function RingGallery() {
         return;
       }
 
+      // Phones play the entrance as a self-timed timeline instead of
+      // scrubbing it to scroll position. The scrubbed version mapped the
+      // whole entrance onto half a viewport of scroll: a flick crosses that
+      // in ~250ms, so the animation was still catching up after the finger
+      // left — "it only starts when I stop scrolling" — and every catch-up
+      // frame competed with the fling for the main thread. Self-timed, it
+      // runs at its own tempo the moment the section arrives.
+      const mobile = isMobileLayout();
+
       const enterTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top 80%",
-          end: "top 30%",
-          scrub: 1,
-        },
+        scrollTrigger: mobile
+          ? { trigger: section, start: "top 85%", once: true }
+          : { trigger: section, start: "top 80%", end: "top 30%", scrub: 1 },
       });
       enterTl.to(scene, {
         transitionProgress: 1,
@@ -54,12 +61,13 @@ export default function RingGallery() {
       }
 
       const exitTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "bottom 90%",
-          end: "bottom 20%",
-          scrub: 1,
-        },
+        scrollTrigger: mobile
+          ? {
+              trigger: section,
+              start: "bottom 60%",
+              toggleActions: "play none none reverse",
+            }
+          : { trigger: section, start: "bottom 90%", end: "bottom 20%", scrub: 1 },
       });
       if (heroDom) {
         exitTl.to(heroDom, { opacity: 0, duration: 1, ease: "none" });
