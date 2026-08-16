@@ -484,9 +484,29 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
+  position: relative;
 }
+/* Already-decoded grid thumbnail, pinned behind the top of the full shot so
+   the panel has something on screen the instant it opens. It only ever covers
+   the first viewport of a page-length screenshot, which is all the user can
+   see before they scroll. */
+.wk-lb__thumb {
+  position: absolute;
+  inset: 0 0 auto 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  filter: blur(8px);
+  transform: scale(1.04);
+  z-index: 0;
+}
+/* No fade needed: an <img> with no data yet paints nothing, so the blurred
+   thumb shows through until the real pixels land and cover it. */
 .wk-lb__img {
   display: block;
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: auto;
 }
