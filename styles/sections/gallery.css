@@ -226,3 +226,12 @@ html.pg-anim-ready .pg-img-wrap {
     filter: none;
   }
 }
+
+/* phones: let the browser skip layout+paint for the off-screen half of a
+   single-column card list (each card is a promoted image layer) */
+@media (max-width: 767px) {
+  .pg-item {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 70vw;
+  }
+}

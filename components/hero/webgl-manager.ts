@@ -8,6 +8,7 @@ import {
   SLEEP_THRESHOLD_VH,
   type SlideData,
 } from "./slides-data";
+import type { SlideRenderer } from "./slide-renderer";
 
 // r128-style raw color pipeline so textures match the reference site.
 THREE.ColorManagement.enabled = false;
@@ -21,7 +22,7 @@ interface LoadedSlide {
 
 const isMobileMedia = () => window.matchMedia("(max-width: 767px)").matches;
 
-export class WebGLManager {
+export class WebGLManager implements SlideRenderer {
   private container: HTMLElement;
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;

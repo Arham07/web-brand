@@ -34,17 +34,23 @@ export default function HeroSection() {
   const root = useRef<HTMLElement>(null);
   const prewarmRef = useRef<HTMLVideoElement>(null);
 
-  // Prewarm lifecycle: pick the width-appropriate variant on mount, then
-  // stop + hide the element as soon as the WebGL canvas can paint slide 0
-  // itself (no reason to keep a second decoder running underneath).
+  // Prewarm lifecycle (desktop only): the canvas takes a moment to paint
+  // its first frame, so a plain <video> holds the backdrop until then and
+  // stops on `nudot:hero-gl-ready`.
+  //
+  // On phones the DOM slide renderer *is* plain media, so a prewarm would
+  // just be a second decoder of the same file — the element steps aside
+  // immediately and the loader covers the gap.
   useEffect(() => {
     const v = prewarmRef.current;
     if (!v) return;
 
-    v.src =
-      window.innerWidth <= 767
-        ? "/images/home/slider1/slider01_s.mp4"
-        : "/images/home/slider1/slider01.mp4";
+    if (window.innerWidth <= 767) {
+      v.style.display = "none";
+      return;
+    }
+
+    v.src = "/images/home/slider1/slider01.mp4";
     v.play().catch(() => {});
 
     const onGlReady = () => {

@@ -86,22 +86,27 @@ export default function GallerySection() {
             entryTls.push({ item, tl });
           }
 
-          // Parallax drift (image only)
-          const speed = PARALLAX_SPEEDS[i % PARALLAX_SPEEDS.length];
-          gsap.fromTo(
-            img,
-            { yPercent: -speed },
-            {
-              yPercent: speed,
-              ease: "none",
-              scrollTrigger: {
-                trigger: item,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 1.2,
-              },
-            }
-          );
+          // Parallax drift (image only) — desktop only: six scrubbed
+          // tweens keep the ticker running for over a second after every
+          // finger lift, and on the mobile single-column layout the drift
+          // is barely perceptible anyway.
+          if (!isMobileWidth()) {
+            const speed = PARALLAX_SPEEDS[i % PARALLAX_SPEEDS.length];
+            gsap.fromTo(
+              img,
+              { yPercent: -speed },
+              {
+                yPercent: speed,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: item,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: 1.2,
+                },
+              }
+            );
+          }
         });
 
         // Header exit — text lifts away as .pg-item-5 finishes (desktop only;
@@ -134,8 +139,11 @@ export default function GallerySection() {
           }
         }
 
-        // Section exit — the whole grid lifts and fades under the next section.
-        if (grid) {
+        // Section exit — the whole grid lifts and fades under the next
+        // section. Desktop only: on mobile it scrubs opacity on a wrapper
+        // holding six promoted image layers, which is the most expensive
+        // possible thing to animate while the user is flicking past.
+        if (grid && !isMobileWidth()) {
           gsap.to(grid, {
             opacity: 0,
             y: -30,

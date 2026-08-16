@@ -83,6 +83,8 @@ export default function MobileCubeSection() {
     } else {
       let lastY = window.scrollY;
       const onScroll = () => {
+        // only while the cube is on screen — see the observer below
+        if (!running) return;
         const dy = window.scrollY - lastY;
         lastY = window.scrollY;
         addVelocity(dy);

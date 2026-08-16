@@ -24,30 +24,26 @@ export default function FloatingCta() {
     const el = ref.current;
     if (!el) return;
 
-    let last = 0;
-    const check = () => {
-      // any big "Let's Talk" surface on screen → hide the floating twin
-      const bands = document.querySelectorAll(".footer-cta, .hcta");
-      const overlaps = Array.from(bands).some((band) => {
-        const r = band.getBoundingClientRect();
-        return r.top < window.innerHeight && r.bottom > 0;
+    // Any big "Let's Talk" surface on screen hides the floating twin.
+    // An observer instead of a scroll handler: the old throttle ran
+    // querySelectorAll + getBoundingClientRect and then wrote a class —
+    // a read-after-write layout thrash several times a second, on every
+    // page, for the whole of every scroll.
+    const bands = document.querySelectorAll(".footer-cta, .hcta");
+    if (!bands.length) {
+      el.classList.remove("is-suppressed");
+      return;
+    }
+    const onScreen = new Set<Element>();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) onScreen.add(e.target);
+        else onScreen.delete(e.target);
       });
-      el.classList.toggle("is-suppressed", overlaps);
-    };
-    const onScroll = () => {
-      const now = Date.now();
-      if (now - last < 120) return;
-      last = now;
-      check();
-    };
-
-    check();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
+      el.classList.toggle("is-suppressed", onScreen.size > 0);
+    });
+    bands.forEach((b) => io.observe(b));
+    return () => io.disconnect();
   }, [pathname]);
 
   if (pathname === "/contact") return null;

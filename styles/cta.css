@@ -107,3 +107,12 @@
     opacity: 0;
   }
 }
+
+/* phones: an infinite compositor animation keeps the animation host awake
+   for the whole session — the pill is prominent enough without it */
+@media (max-width: 767px) {
+  #floating-cta::before {
+    animation: none;
+    opacity: 0;
+  }
+}

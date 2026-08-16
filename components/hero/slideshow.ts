@@ -1,6 +1,6 @@
 import { scrollTop, scrollToTarget } from "@/lib/lenis";
 import { isCoarsePointer } from "@/lib/device";
-import { WebGLManager } from "./webgl-manager";
+import type { SlideRenderer } from "./slide-renderer";
 import {
   SLIDES,
   AUTOPLAY_MS,
@@ -34,7 +34,7 @@ export class Slideshow {
   private thumbs: HTMLDivElement[] = [];
   private cleanups: Array<() => void> = [];
 
-  constructor(private gl: WebGLManager, private els: SlideshowEls) {}
+  constructor(private gl: SlideRenderer, private els: SlideshowEls) {}
 
   init() {
     this.buildBars();

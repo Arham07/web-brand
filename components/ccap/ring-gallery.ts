@@ -158,6 +158,8 @@ export class RingGalleryScene {
   private readonly mobile = isMobileLayout();
   private readonly ringUnit = this.mobile ? 8 : RING_UNIT;
   private frameParity = 0;
+  /** last value pushed to the CSS `--iris` var (mobile iris mask) */
+  private irisWritten = -1;
 
   private container: HTMLElement;
   private renderer: THREE.WebGLRenderer;
@@ -218,6 +220,7 @@ export class RingGalleryScene {
     this.scheduleRing(1);
 
     // --- post pass: scene renders into a target, then a fullscreen quad ---
+    // (allocated on desktop only — mobile renders straight to the screen)
     this.target = new THREE.WebGLRenderTarget(1, 1);
     this.uniforms = {
       tDiffuse: { value: this.target.texture },
@@ -255,7 +258,11 @@ export class RingGalleryScene {
     window.addEventListener("resize", this.onWindowResize);
 
     // --- render loop gated by proximity ---
-    const margin = Math.max(900, Math.round(window.innerHeight * 1.25));
+    // phones keep the live window tight — the scene used to render across
+    // ~2.5 viewports of scroll (all of the cube section and into the gallery)
+    const margin = this.mobile
+      ? Math.round(window.innerHeight * 0.35)
+      : Math.max(900, Math.round(window.innerHeight * 1.25));
     this.io = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) this.start();
@@ -434,7 +441,7 @@ export class RingGalleryScene {
 
     const bw = Math.max(1, Math.round(width * dpr));
     const bh = Math.max(1, Math.round(height * dpr));
-    this.target.setSize(bw, bh);
+    if (!this.mobile) this.target.setSize(bw, bh);
     this.uniforms.iResolution.value.set(bw, bh);
   }
 
@@ -475,6 +482,22 @@ export class RingGalleryScene {
     if (this.mobile && (this.frameParity ^= 1)) return;
 
     const r = this.renderer;
+    if (this.mobile) {
+      // Straight to the screen: the post pass cost a full-screen shader
+      // plus a ~1.2MB render-target resolve every frame — on a tiled
+      // mobile GPU that resolve is a pipeline stall, i.e. scroll jitter.
+      // The iris is a CSS mask on the canvas and the vignette a static
+      // gradient overlay, both driven from `--iris` below.
+      if (this.irisWritten !== this.transitionProgress) {
+        this.irisWritten = this.transitionProgress;
+        this.container.style.setProperty(
+          "--iris",
+          this.transitionProgress.toFixed(3)
+        );
+      }
+      r.render(this.scene, this.camera);
+      return;
+    }
     r.setRenderTarget(this.target);
     r.render(this.scene, this.camera);
     r.setRenderTarget(null);

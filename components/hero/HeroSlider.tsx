@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { isMobileLayout } from "@/lib/device";
 import { WebGLManager } from "./webgl-manager";
+import { DomSlideRenderer } from "./dom-slides";
 import { Slideshow } from "./slideshow";
+import type { SlideRenderer } from "./slide-renderer";
 
 /**
- * Mounts the three.js slide renderer into #webgl-container and wires the
- * slideshow controller to the already-rendered hero UI elements.
+ * Mounts a slide renderer into #webgl-container and wires the slideshow
+ * controller to the already-rendered hero UI elements.
  * Loaded with ssr:false — window is safe here.
  */
 export default function HeroSlider() {
@@ -30,7 +33,12 @@ export default function HeroSlider() {
     if (Object.values(els).some((el) => !el)) return;
     mounted.current = true;
 
-    const gl = new WebGLManager(container);
+    // Phones get the DOM renderer: the WebGL path re-uploads the slide
+    // video as a GPU texture every frame, which is the bulk of the
+    // first-viewport scroll jitter on mobile.
+    const gl: SlideRenderer = isMobileLayout()
+      ? new DomSlideRenderer(container)
+      : new WebGLManager(container);
     gl.init();
     const show = new Slideshow(
       gl,

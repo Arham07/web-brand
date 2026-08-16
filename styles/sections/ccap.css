@@ -335,4 +335,53 @@
   .ccap-section::after {
     filter: none;
   }
+
+  /* The scene renders straight to the screen on phones (no post pass), so
+     the two effects that pass provided move to the compositor:
+       · iris reveal → a mask on the canvas, radius driven by --iris
+         (the shader's aspect-corrected circle: radius = t·√2.2 in units
+         of viewport height, with a 0.2 soft edge)
+       · vignette   → a static gradient overlay, rasterised once */
+  #sketch {
+    --iris: 0;
+  }
+  #sketch canvas {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 calc(var(--iris) * 148.3vh - 20vh),
+      transparent calc(var(--iris) * 148.3vh)
+    );
+    mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 calc(var(--iris) * 148.3vh - 20vh),
+      transparent calc(var(--iris) * 148.3vh)
+    );
+  }
+  #sketch::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 100% 100% at 50% 50%,
+      transparent 58%,
+      rgba(0, 0, 0, 0.3) 76%,
+      rgba(0, 0, 0, 0.62) 89%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+  }
+
+  /* lighten over a black stage is a mathematical no-op, but it forces two
+     nested blend groups around a decoding video on top of the WebGL canvas */
+  .ccap-section .center-video-box,
+  .ccap-section .center-video-box video {
+    mix-blend-mode: normal;
+  }
+
+  /* the sticky offset is always 0 here (100vh child in a 100vh parent) —
+     it only costs a sticky-constrained layer around the canvas */
+  .ring-gallery-sticky {
+    position: relative;
+  }
 }

@@ -385,7 +385,13 @@ export default function ScrollNav() {
         hookLenis();
         syncVisibility();
       });
-      window.addEventListener("scroll", onScroll, { passive: true });
+      // On phones the pill is permanently visible, so a scroll listener
+      // would re-apply a state that never changes — one per scroll event,
+      // each reading window.innerWidth.
+      const mobilePill = isMobileLayout();
+      if (!mobilePill) {
+        window.addEventListener("scroll", onScroll, { passive: true });
+      }
 
       const onResize = () => {
         if (menuOpen) {

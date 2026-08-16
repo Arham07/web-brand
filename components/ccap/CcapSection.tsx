@@ -114,6 +114,15 @@ export default function CcapSection() {
 
       // --- exit glue: overlay darkens, main shrinks as the next section
       // slides over (ease-in-out-cubic applied to the scrubbed progress) ---
+      // quickSetters, not gsap.set: a set() inside a scrubbed onUpdate
+      // re-resolves the target and rebuilds a plugin chain every frame.
+      const setOverlayOpacity = overlay
+        ? gsap.quickSetter(overlay, "opacity")
+        : null;
+      const setMainScale = mainEl
+        ? gsap.quickSetter(mainEl, "scale")
+        : null;
+      const setMainY = mainEl ? gsap.quickSetter(mainEl, "y", "px") : null;
       const proxy = { p: 0 };
       const glue = gsap.to(proxy, {
         p: 1,
@@ -126,8 +135,9 @@ export default function CcapSection() {
         },
         onUpdate: () => {
           const e = easeInOutCubic(proxy.p);
-          if (overlay) gsap.set(overlay, { opacity: 0.74 * e });
-          if (mainEl) gsap.set(mainEl, { scale: 1 - 0.046 * e, y: -24 * e });
+          setOverlayOpacity?.(0.74 * e);
+          setMainScale?.(1 - 0.046 * e);
+          setMainY?.(-24 * e);
         },
       });
       if (glue.scrollTrigger) triggers.push(glue.scrollTrigger);

@@ -116,6 +116,11 @@ html {
 }
 
 @media (max-width: 767px) {
+  /* no rubber-band handoff at the document edges — it reads as stutter */
+  html,
+  body {
+    overscroll-behavior-y: none;
+  }
   .scroll-track {
     height: auto;
   }
