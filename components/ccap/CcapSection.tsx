@@ -10,7 +10,6 @@ import dynamic from "next/dynamic";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { easeInOutCubic } from "@/lib/ease";
 import { useSectionNear } from "@/hooks/useSectionNear";
-import { isMobileLayout } from "@/lib/device";
 import { hydrateImagesIn, hydrateVideosIn } from "@/lib/lazy-media";
 
 const RingGallery = dynamic(() => import("./RingGallery"), { ssr: false });
@@ -64,7 +63,6 @@ export default function CcapSection() {
       );
       const mediaBox = section.querySelector<HTMLElement>(".center-video-box");
       const overlay = section.querySelector<HTMLElement>("#ccap-exit-overlay");
-      const mainEl = section.querySelector<HTMLElement>(".hero-dom main");
 
       let revealed = false;
       const revealCoreContent = () => {
@@ -122,25 +120,30 @@ export default function CcapSection() {
       // initial state resolution (deep link, restored scroll position)
       resolveState();
 
-      // --- exit glue: overlay darkens, main shrinks as the next section
-      // slides over (ease-in-out-cubic applied to the scrubbed progress) ---
-      // quickSetters, not gsap.set: a set() inside a scrubbed onUpdate
+      // --- exit glue: the overlay darkens as the next section slides over
+      // (ease-in-out-cubic applied to the scrubbed progress) ---
+      //
+      // A quickSetter, not gsap.set: a set() inside a scrubbed onUpdate
       // re-resolves the target and rebuilds a plugin chain every frame.
+      //
+      // NEVER hand quickSetter a multi-value alias — `scale`, `autoAlpha` or
+      // `transform`. gsap-core substitutes the alias without checking for a
+      // comma (gsap-core.js:4165), defeating CSSPlugin's own guard
+      // (CSSPlugin.js:1565), and the name reaches setAttribute() as the
+      // literal "scaleX,scaleY" — which throws InvalidCharacterError in every
+      // engine. This used to also shrink `main` 4.6% and lift it 24px via
+      // quickSetter(mainEl, "scale"); that threw on EVERY frame of this
+      // glue's one-viewport range, so the shrink and the lift never rendered
+      // at all, and the throw escaped through Lenis's emit and ScrollTrigger's
+      // update loop — neither of which catches — taking out every scroll
+      // listener and every trigger queued behind this one, on every one of
+      // those frames. Exactly the jitter reported at the SECTORS->ARCHIVE
+      // boundary. The overlay fade is what has actually been rendering all
+      // along, so it is what the section keeps. Use "scaleX"/"scaleY" if the
+      // shrink is ever wanted back.
       const setOverlayOpacity = overlay
         ? gsap.quickSetter(overlay, "opacity")
         : null;
-      // Phones keep the overlay darkening and drop the shrink. This glue's
-      // scroll range is exactly one viewport and coincides *precisely* with
-      // the next section scrolling in, so its per-frame cost lands on that
-      // transition. `main` is min-height:100vh and holds gradient-clipped
-      // text (background-clip: text), which repaints in full on every scale
-      // write — and a 4.6% shrink plus a 24px lift is not perceptible on a
-      // 375px screen. Desktop keeps all three writes unchanged.
-      const lightGlue = isMobileLayout();
-      const setMainScale =
-        mainEl && !lightGlue ? gsap.quickSetter(mainEl, "scale") : null;
-      const setMainY =
-        mainEl && !lightGlue ? gsap.quickSetter(mainEl, "y", "px") : null;
       const proxy = { p: 0 };
       const glue = gsap.to(proxy, {
         p: 1,
@@ -152,10 +155,7 @@ export default function CcapSection() {
           scrub: 0.35,
         },
         onUpdate: () => {
-          const e = easeInOutCubic(proxy.p);
-          setOverlayOpacity?.(0.74 * e);
-          setMainScale?.(1 - 0.046 * e);
-          setMainY?.(-24 * e);
+          setOverlayOpacity?.(0.74 * easeInOutCubic(proxy.p));
         },
       });
       if (glue.scrollTrigger) triggers.push(glue.scrollTrigger);
@@ -171,7 +171,6 @@ export default function CcapSection() {
         });
         if (mediaBox) mediaBox.style.clipPath = "";
         if (overlay) gsap.set(overlay, { clearProps: "opacity" });
-        if (mainEl) gsap.set(mainEl, { clearProps: "transform" });
       };
     },
     { rootMargin: 2200 }
