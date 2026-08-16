@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { easeInOutCubic } from "@/lib/ease";
 import { useSectionNear } from "@/hooks/useSectionNear";
+import { isMobileLayout } from "@/lib/device";
 import { hydrateImagesIn, hydrateVideosIn } from "@/lib/lazy-media";
 
 const RingGallery = dynamic(() => import("./RingGallery"), { ssr: false });
@@ -128,10 +129,18 @@ export default function CcapSection() {
       const setOverlayOpacity = overlay
         ? gsap.quickSetter(overlay, "opacity")
         : null;
-      const setMainScale = mainEl
-        ? gsap.quickSetter(mainEl, "scale")
-        : null;
-      const setMainY = mainEl ? gsap.quickSetter(mainEl, "y", "px") : null;
+      // Phones keep the overlay darkening and drop the shrink. This glue's
+      // scroll range is exactly one viewport and coincides *precisely* with
+      // the next section scrolling in, so its per-frame cost lands on that
+      // transition. `main` is min-height:100vh and holds gradient-clipped
+      // text (background-clip: text), which repaints in full on every scale
+      // write — and a 4.6% shrink plus a 24px lift is not perceptible on a
+      // 375px screen. Desktop keeps all three writes unchanged.
+      const lightGlue = isMobileLayout();
+      const setMainScale =
+        mainEl && !lightGlue ? gsap.quickSetter(mainEl, "scale") : null;
+      const setMainY =
+        mainEl && !lightGlue ? gsap.quickSetter(mainEl, "y", "px") : null;
       const proxy = { p: 0 };
       const glue = gsap.to(proxy, {
         p: 1,

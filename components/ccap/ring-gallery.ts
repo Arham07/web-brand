@@ -191,6 +191,8 @@ export class RingGalleryScene {
   private uniforms: PostUniforms;
 
   private io: IntersectionObserver;
+  /** tight companion to `io` — ends the loop at the section edge */
+  private stopIo: IntersectionObserver;
   private disposed = false;
   private running = false;
 
@@ -264,19 +266,37 @@ export class RingGalleryScene {
     window.addEventListener("resize", this.onWindowResize);
 
     // --- render loop gated by proximity ---
-    // phones keep the live window tight — the scene used to render across
-    // ~2.5 viewports of scroll (all of the cube section and into the gallery)
+    // Two observers on purpose. The wide one only ever STARTS the loop: it
+    // buys the warm-up lead so the first frames of the entrance are not the
+    // cold ones. The tight one only ever STOPS it.
+    //
+    // With one observer doing both, the same margin that bought the lead also
+    // kept the loop alive for the whole margin AFTER the section left — on
+    // desktop that is 1.25 viewports of the *next* section (the gallery)
+    // still paying for 72 textured planes, an offscreen render-target pass
+    // and a fullscreen post shader every frame, for a scene nobody can see.
+    // Splitting them keeps the lead identical and ends the work at the edge.
     const margin = this.mobile
       ? Math.round(window.innerHeight * 0.35)
       : Math.max(900, Math.round(window.innerHeight * 1.25));
     this.io = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) this.start();
-        else this.stop();
       },
       { rootMargin: `${margin}px 0px ${margin}px 0px` }
     );
     this.io.observe(container);
+
+    this.stopIo = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) return;
+        // never park mid-iris: the mask would freeze at a partial radius
+        if (this.mobile && this.irisState === "live") return;
+        this.stop();
+      },
+      { rootMargin: "120px 0px 120px 0px" }
+    );
+    this.stopIo.observe(container);
   }
 
   dispose() {
@@ -284,6 +304,7 @@ export class RingGalleryScene {
     this.disposed = true;
     this.stop();
     this.io.disconnect();
+    this.stopIo.disconnect();
 
     window.removeEventListener("resize", this.onWindowResize);
     window.removeEventListener("pointermove", this.onDragMove);

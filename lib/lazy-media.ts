@@ -154,7 +154,10 @@ export function initVideoPlaybackManager() {
         }
       });
     },
-    { rootMargin: "300px 0px 300px 0px" }
+    // Tight: a video 300px past the fold is a decoder still running through
+    // the whole entrance of the next section. Two sections' videos used to
+    // decode simultaneously across every boundary.
+    { rootMargin: "120px 0px 120px 0px" }
   );
   document
     .querySelectorAll<HTMLVideoElement>("video[data-lazy-video]")
