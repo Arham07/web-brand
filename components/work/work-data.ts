@@ -16,12 +16,16 @@ export interface WorkProject {
   full: string;
   fullWidth: number;
   fullHeight: number;
+  /** same shot at 1000px (aw) / 895px (wm) — see fullMdWidth */
+  fullMd: string;
+  fullMdWidth: number;
 }
 
 /** aw-XX: 1920-wide full-page webp shots; thumbs 512x387 */
 const aw = (n: number, h: number): Pick<
   WorkProject,
-  "img" | "width" | "height" | "full" | "fullWidth" | "fullHeight"
+  | "img" | "width" | "height"
+  | "full" | "fullWidth" | "fullHeight" | "fullMd" | "fullMdWidth"
 > => {
   const p = String(n).padStart(2, "0");
   return {
@@ -31,13 +35,16 @@ const aw = (n: number, h: number): Pick<
     full: `/images/work/full/aw-${p}.webp`,
     fullWidth: 1920,
     fullHeight: h,
+    fullMd: `/images/work/full-md/aw-${p}.webp`,
+    fullMdWidth: 1000,
   };
 };
 
-/** wm-XX: 895x4096 full-page png shots; thumbs 900x674 top-crop jpg */
+/** wm-XX: 895x4096 full-page shots; thumbs 900x674 top-crop jpg */
 const wm = (n: number): Pick<
   WorkProject,
-  "img" | "width" | "height" | "full" | "fullWidth" | "fullHeight"
+  | "img" | "width" | "height"
+  | "full" | "fullWidth" | "fullHeight" | "fullMd" | "fullMdWidth"
 > => {
   const p = String(n).padStart(2, "0");
   return {
@@ -47,6 +54,10 @@ const wm = (n: number): Pick<
     full: `/images/work/full/wm-${p}.jpg`,
     fullWidth: 895,
     fullHeight: 4096,
+    // already only 895 wide — the md copy is the same pixels as webp, which
+    // is where the two thirds of the bytes go
+    fullMd: `/images/work/full-md/wm-${p}.webp`,
+    fullMdWidth: 895,
   };
 };
 
@@ -56,7 +67,8 @@ const entry = (
   i: number,
   media: Pick<
     WorkProject,
-    "img" | "width" | "height" | "full" | "fullWidth" | "fullHeight"
+    | "img" | "width" | "height"
+    | "full" | "fullWidth" | "fullHeight" | "fullMd" | "fullMdWidth"
   >
 ): WorkProject => ({
   index: `00-${i}`,

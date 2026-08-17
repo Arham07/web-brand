@@ -5,7 +5,30 @@ import { createPortal } from "react-dom";
 import { gsap } from "@/lib/gsap";
 import { getLenis } from "@/lib/lenis";
 import { prefersReducedMotion } from "@/lib/device";
-import { WORK_PROJECTS } from "./work-data";
+import { WORK_PROJECTS, type WorkProject } from "./work-data";
+
+/** Warm the browser cache for a project's lightbox shot, once per project. */
+const prefetched = new Set<string>();
+function prefetchFull(p: WorkProject) {
+  // Match what the lightbox's srcset will pick, so this warms the same entry
+  // rather than pulling a second copy.
+  const url = window.innerWidth <= 1100 ? p.fullMd : p.full;
+  if (prefetched.has(url)) return;
+  prefetched.add(url);
+  const img = new Image();
+  img.decoding = "async";
+  img.src = url;
+}
+
+// Hover only counts after a moment's dwell. On desktop these are the 1920-wide
+// originals, and a cursor sweeping across a 14-card grid would otherwise pull
+// several megabytes for cards the user never meant to look at.
+let hoverTimer = 0;
+const hoverPrefetch = (p: WorkProject) => {
+  window.clearTimeout(hoverTimer);
+  hoverTimer = window.setTimeout(() => prefetchFull(p), 150);
+};
+const cancelHoverPrefetch = () => window.clearTimeout(hoverTimer);
 
 /**
  * The project archive: a 2-column grid of clickable cards. Clicking a card
@@ -171,6 +194,16 @@ export default function WorkGrid() {
           tabIndex={0}
           aria-label={`View ${p.title} — ${p.subtitle}`}
           onClick={() => open(i)}
+          // Start the full shot before the click. A pointer arriving on the
+          // card (or a finger landing on it) precedes the open by a few
+          // hundred ms, and these are 3–5 megapixel page screenshots — enough
+          // head start to have them decoded by the time the panel animates in.
+          onPointerEnter={() => hoverPrefetch(p)}
+          onPointerLeave={cancelHoverPrefetch}
+          // pointerdown is the backstop: hover does not exist on touch, and
+          // press-to-click is still 100–300ms of head start there.
+          onPointerDown={() => prefetchFull(p)}
+          onFocus={() => prefetchFull(p)}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
@@ -246,13 +279,26 @@ export default function WorkGrid() {
               data-lenis-prevent=""
               onScroll={() => !hintGone && setHintGone(true)}
             >
+              {/* The grid thumbnail is already decoded, so it paints the
+                  moment the panel opens and the full shot fades in over it —
+                  the panel is never an empty box waiting on a fetch. */}
+              <img
+                className="wk-lb__thumb"
+                src={project.img}
+                alt=""
+                aria-hidden="true"
+                decoding="async"
+              />
               <img
                 className="wk-lb__img"
-                src={project.full}
+                src={project.fullMd}
+                srcSet={`${project.fullMd} ${project.fullMdWidth}w, ${project.full} ${project.fullWidth}w`}
+                sizes="(max-width: 1100px) 100vw, 1040px"
                 alt={`${project.title} — full page design`}
                 width={project.fullWidth}
                 height={project.fullHeight}
                 decoding="async"
+                fetchPriority="high"
               />
             </div>
             <span
