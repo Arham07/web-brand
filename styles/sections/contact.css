@@ -410,3 +410,212 @@ html.ct-modal-open #film-grain-canvas {
     filter: none;
   }
 }
+
+/* ================================================================== */
+/*  Phase 2 — C-01 intro, C-02 chips/no-site, C-04 aside, /thank-you  */
+/* ================================================================== */
+
+/* intro block above the form — the ad's promise, restated */
+.contact-page .ct-intro {
+  max-width: 720px;
+  margin-bottom: clamp(36px, 6vh, 64px);
+}
+.contact-page .ct-intro__heading {
+  font-family: var(--font-family-display);
+  font-size: clamp(1.7rem, 3.6vw, 2.8rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.contact-page .ct-intro__sub {
+  margin-top: 14px;
+  font-size: clamp(14px, 1.3vw, 16px);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.65);
+}
+.contact-page .ct-intro__trust {
+  margin-top: 12px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* form + aside layout */
+.contact-page .ct-form-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .contact-page .ct-form-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* choice chips — single-select rows for "what do you need" / budget */
+.contact-page .ct-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.contact-page .ct-chip {
+  padding: 10px 20px;
+  border: 1px solid #2c2c2c;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease,
+    background-color 0.25s ease;
+}
+.contact-page .ct-chip:hover {
+  border-color: #4a4a4a;
+  color: #fff;
+}
+.contact-page .ct-chip.is-active {
+  border-color: var(--color-accent, #c7ccd4);
+  background: rgba(199, 204, 212, 0.08);
+  color: #fff;
+}
+
+/* "I don't have one yet" tick under the website input */
+.contact-page .ct-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.contact-page .ct-input:disabled {
+  opacity: 0.35;
+}
+.contact-page .ct-nosite {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  user-select: none;
+}
+.contact-page .ct-nosite input {
+  accent-color: var(--color-accent, #c7ccd4);
+  width: 15px;
+  height: 15px;
+}
+.contact-page .ct-nosite:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* under-button reassurance */
+.contact-page .ct-under-button {
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* C-04 — what happens next (beside the form on desktop) */
+.contact-page .ct-aside {
+  position: sticky;
+  top: clamp(80px, 12vh, 140px);
+  padding: 28px 26px;
+  border: 1px solid #222;
+  border-radius: 4px;
+}
+.contact-page .ct-aside__heading {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.contact-page .ct-steps {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.contact-page .ct-step {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.contact-page .ct-step__k {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent, #c7ccd4);
+}
+.contact-page .ct-step__v {
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.6);
+}
+.contact-page .ct-aside__email {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #222;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+.contact-page .ct-aside__email a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (max-width: 900px) {
+  .contact-page .ct-aside {
+    position: static;
+  }
+}
+
+/* /thank-you */
+.contact-page .ty-main {
+  min-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(100px, 18vh, 200px) var(--ct-side-pad, 6vw)
+    clamp(60px, 10vh, 120px);
+}
+.contact-page .ty-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+.contact-page .ty-title {
+  margin-top: 18px;
+  font-family: var(--font-family-display);
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+.contact-page .ty-body {
+  margin-top: 24px;
+  max-width: 560px;
+  font-size: clamp(14px, 1.3vw, 16px);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.65);
+}
+.contact-page .ty-actions {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.contact-page .ty-actions__label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+}
+.contact-page .ty-link {
+  font-size: 15px;
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
