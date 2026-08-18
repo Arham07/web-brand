@@ -68,7 +68,6 @@ export const ASSETS = [
   "images/footer-bg.jpg",
 
   // --- about page ---
-  "images/about/about.mp4",
   "images/about/box.webp",
   ...["box2", "box3", "box4"].map((b) => `images/about/${b}.webp`),
   ...range(6).map((n) => `images/about/box/s${n}.svg`), // marquee separators

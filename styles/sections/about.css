@@ -13,29 +13,31 @@
 }
 
 /* ================================================================== */
-/*  Hero — 200vh track, sticky 100vh stage (never pinned by GSAP)      */
+/*  Hero — content-height stage, ending exactly on the divider rule.    */
+/*  It used to be a 200vh track with a sticky 100vh stage, sized for a  */
+/*  video that scrubbed out to full-bleed below the rule. With the      */
+/*  video gone there is nothing under the rule, so a locked 100vh just  */
+/*  buys empty screen: the block flows now and the section stops at the */
+/*  1px line.                                                           */
 /* ================================================================== */
 
 .about-page .ab-hero-track {
   position: relative;
   display: block;
-  height: 200vh;
 }
 
 .about-page .ab-hero-viewport {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  position: relative;
   width: 100%;
+  /* clips the marquee lanes, which are wider than the screen by design */
   overflow: hidden;
+  padding-top: clamp(180px, 30vh, 340px);
 }
 
 /* ---------------------------------------------------- marquee rows */
 
 .about-page .ab-marquee-rows {
-  position: absolute;
-  top: 20vh;
-  left: 0;
+  position: relative;
   width: 100%;
   height: 14vw;
   display: flex;
@@ -121,10 +123,9 @@
 /* -------------------------------------------------- divider + labels */
 
 .about-page .ab-divider {
-  position: absolute;
-  top: 50vh;
-  left: 0;
+  position: relative;
   width: 100%;
+  margin-top: clamp(56px, 7vw, 110px);
   z-index: 2;
 }
 
@@ -184,62 +185,6 @@
   transform-origin: left center;
 }
 
-/* ---------------------------------------------------- video + copy */
-
-.about-page .ab-hero-placeholder,
-.about-page .ab-hero-video {
-  position: absolute;
-  top: 54vh;
-  left: 38vw;
-  width: 24vw;
-  height: 14vw;
-}
-
-.about-page .ab-hero-placeholder {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.about-page .ab-hero-video {
-  z-index: 3;
-  object-fit: cover;
-  display: block;
-  background: var(--color-bg, #000);
-  will-change: transform;
-}
-
-.about-page .ab-hero-caption,
-.about-page .ab-hero-bottom {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.28rem;
-  text-align: center;
-  pointer-events: none;
-}
-
-.about-page .ab-hero-caption {
-  top: calc(54vh + 14vw + 1.5vw);
-}
-
-.about-page .ab-hero-bottom {
-  bottom: 4vh;
-}
-
-.about-page .ab-hero-line {
-  display: block;
-  font-family: var(--font-family-body);
-  font-size: clamp(0.66rem, 0.72vw, 0.82rem);
-  line-height: 1.5;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-meta);
-  color: rgba(255, 255, 255, 0.68);
-}
-
 /* ================================================================== */
 /*  Fixed 12-column hairline grid overlay                              */
 /* ================================================================== */
@@ -287,20 +232,11 @@
 }
 
 /* ================================================================== */
-/*  Mobile — single-screen hero, no sticky stage, no scrub             */
+/*  Mobile — hero label/marquee scale                                  */
 /* ================================================================== */
 
 @media (max-width: 767px) {
-  .about-page .ab-hero-track {
-    height: 100vh;
-  }
-
-  .about-page .ab-hero-viewport {
-    position: relative;
-  }
-
   .about-page .ab-marquee-rows {
-    top: 17vh;
     height: 30vw;
     gap: 2vw;
   }
@@ -310,7 +246,7 @@
   }
 
   .about-page .ab-divider {
-    top: 46vh;
+    margin-top: clamp(56px, 18vw, 90px);
   }
 
   .about-page .ab-divider__labels {
@@ -323,19 +259,124 @@
     text-align: left;
   }
 
-  .about-page .ab-hero-placeholder,
-  .about-page .ab-hero-video {
-    top: 54vh;
-    left: 6vw;
-    width: 88vw;
-    height: 50vw;
-  }
+}
 
-  .about-page .ab-hero-caption {
-    display: none;
-  }
+/* ================================================================== */
+/*  Phase 5 — A-07 process + A-08 closing CTA (AboutOutro)             */
+/* ================================================================== */
 
-  .about-page .ab-hero-bottom {
-    bottom: 3vh;
+.about-page .ab-outro {
+  position: relative;
+  z-index: 2;
+  padding: clamp(80px, 14vh, 160px) 6vw clamp(80px, 12vh, 140px);
+  background: var(--color-bg, #0a0b0c);
+}
+
+.about-page .ab-outro-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.about-page .ab-outro-heading {
+  margin-top: 16px;
+  font-family: var(--font-family-display);
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.about-page .ab-stages {
+  margin: clamp(36px, 6vh, 56px) auto 0;
+  padding: 0;
+  list-style: none;
+  max-width: 860px;
+}
+
+.about-page .ab-stage {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0 28px;
+  padding: 22px 0;
+  border-bottom: 1px solid #1e1f21;
+}
+.about-page .ab-stage:first-child {
+  border-top: 1px solid #1e1f21;
+}
+
+.about-page .ab-stage__k {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent, #c7ccd4);
+  padding-top: 3px;
+}
+
+.about-page .ab-stage__body {
+  font-size: clamp(14px, 1.25vw, 16px);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.62);
+}
+.about-page .ab-stage__body strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.about-page .ab-outro-cta {
+  text-align: center;
+}
+.about-page .ab-outro-heading--cta {
+  margin-top: 0;
+}
+
+.about-page .ab-outro-sub {
+  margin: 16px auto 0;
+  max-width: 480px;
+  font-size: clamp(13px, 1.2vw, 15px);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.about-page .ab-outro-actions {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.about-page .ab-outro-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 40px;
+  border-radius: 999px;
+  background: var(--grad-accent);
+  color: var(--color-on-metal, #0d0e10);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.about-page .ab-outro-btn:hover {
+  transform: translateY(-2px);
+}
+.about-page .ab-outro-btn--ghost {
+  background: transparent;
+  border: 1px solid #2c2c2c;
+  color: #fff;
+}
+.about-page .ab-outro-btn--ghost:hover {
+  border-color: #4a4a4a;
+}
+
+@media (max-width: 640px) {
+  .about-page .ab-stage {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 }

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import AboutHero from "@/components/about/AboutHero";
+import AboutProcess from "@/components/about/AboutProcess";
 import GridOverlay from "@/components/about/GridOverlay";
 import WorkPreviewSection from "@/components/about/WorkPreviewSection";
 import CoreCubeSection from "@/components/about/CoreCubeSection";
+import AboutOutro from "@/components/about/AboutOutro";
 import SiteFooter from "@/components/footer/SiteFooter";
 
 export const metadata: Metadata = {
@@ -23,8 +25,10 @@ export default function AboutPage() {
     <div className="about-page">
       <GridOverlay />
       <AboutHero />
+      <AboutProcess />
       <WorkPreviewSection />
       <CoreCubeSection />
+      <AboutOutro />
       <SiteFooter />
     </div>
   );
