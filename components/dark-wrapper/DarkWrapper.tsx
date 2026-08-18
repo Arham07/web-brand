@@ -106,11 +106,11 @@ export default function DarkWrapper() {
         </div>
 
         <div id="intro-panel" className="intro-panel">
-          <div className="ip-top-chapter1">( Brand Strategy Experts )</div>
+          <div className="ip-top-chapter1">( The Real Problem )</div>
           <div className="ip-top-header">
             <div className="title-reveal-wrap">
               <h2 className="ip-top-chapter">
-                ( Guarding the Aesthetic Core, Defining the Digital Landing Point )
+                Your website isn&apos;t ugly. It&apos;s just not selling.
               </h2>
             </div>
           </div>

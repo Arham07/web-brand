@@ -49,6 +49,13 @@ export default function Loader() {
     if (mountedAtRef.current === null) {
       mountedAtRef.current = performance.now();
     }
+
+    // Ad traffic skips the show entirely (copy doc H-01): someone who tapped
+    // an ad has already decided to give us three seconds — spending them on
+    // a logo animation is the most expensive branding money can buy. Meta
+    // often arrives with only fbclid, so utm_* alone is not enough.
+    const q = window.location.search;
+    const isAdTraffic = /[?&](utm_[a-z]+|fbclid|gclid)=/i.test(q);
     const anchor = mountedAtRef.current;
     const remaining = (target: number) =>
       Math.max(0, target - (performance.now() - anchor));
@@ -68,6 +75,17 @@ export default function Loader() {
       window.dispatchEvent(new CustomEvent("nudot:loader-dismissed"));
     };
 
+    const skipNow = () => {
+      fireHeroReveal();
+      fireDismiss();
+      setRemoved(true);
+    };
+
+    if (isAdTraffic) {
+      skipNow();
+      return;
+    }
+
     const timers: number[] = [
       window.setTimeout(fireHeroReveal, remaining(HERO_REVEAL_MS)),
       window.setTimeout(fireDismiss, remaining(DISMISS_MS)),
@@ -80,8 +98,21 @@ export default function Loader() {
       }, remaining(HARD_FALLBACK_MS)),
     ];
 
+    // Any click, scroll or keypress skips the rest of the show (doc H-01:
+    // the loader must never cost an impatient visitor anything).
+    const skipEvents: Array<keyof WindowEventMap> = [
+      "pointerdown",
+      "wheel",
+      "touchstart",
+      "keydown",
+    ];
+    for (const ev of skipEvents) {
+      window.addEventListener(ev, skipNow, { once: true, passive: true });
+    }
+
     return () => {
       for (const id of timers) window.clearTimeout(id);
+      for (const ev of skipEvents) window.removeEventListener(ev, skipNow);
     };
   }, []);
 

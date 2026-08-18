@@ -298,17 +298,17 @@ export default function GallerySection() {
           </video>
         </div>
         <h2 className="gallery-header-label" data-reveal="fade">
-          ( Redefining Brand Visual Thinking )
+          ( Proof )
         </h2>
         <div className="gallery-header-title">
           <span className="gh-line" data-reveal="word">
-            ARCHIVE OF
+            WORK THAT SHIPPED
           </span>
           <span className="gh-line grad-text" data-reveal="word">
-            THE SELECTED WORKS
+            AND WHAT IT DID
           </span>
           <span className="gh-line" data-reveal="word">
-            BY AMERICAN WEB GUILD
+            AFTER LAUNCH
           </span>
         </div>
         <p
@@ -316,7 +316,7 @@ export default function GallerySection() {
           data-reveal="fade"
           data-reveal-delay="0.3"
         >
-          Where digital visual energy is unleashed
+          Every build below is live — the full archive is on the Work page
         </p>
       </div>
 

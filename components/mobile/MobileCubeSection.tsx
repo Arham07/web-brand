@@ -244,10 +244,10 @@ export default function MobileCubeSection() {
 
       <div className="mcube-copy">
         <p className="mcube-copy__desc">
-          Every powerful digital experience begins at a single precise point.
-          American Web Guild specializes in custom web design, high-end
-          commercial visual generation, and AI motion imagery — crafting
-          every pixel with precision so it delivers maximum brand value.
+          American Web Guild is a US-based custom web design and development
+          studio. Strategy, copy, design, motion and code live under one roof
+          — so nothing gets lost between four vendors. One team, one thread,
+          and a site engineered to convert from the first wireframe.
         </p>
       </div>
     </section>

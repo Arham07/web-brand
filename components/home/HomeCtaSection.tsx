@@ -31,29 +31,33 @@ export default function HomeCtaSection() {
     <section className="hcta" ref={sectionRef} aria-label="Start a project">
       <h2 className="hcta__title">
         <span className="hcta__line" data-reveal="word">
-          LOOKING FOR EXPERT
+          SEE YOUR NEW HOMEPAGE
         </span>
         <span className="hcta__line" data-reveal="word">
-          WEB DESIGN OR DEVELOPMENT?
+          BEFORE YOU SPEND
         </span>
         <span className="hcta__line grad-text" data-reveal="word">
-          LET&apos;S TALK.
+          A DOLLAR.
         </span>
       </h2>
       <p className="hcta__sub" data-reveal="fade">
-        Share a few details about your project and we&apos;ll send you a free,
-        no-obligation quote within 24 hours — know exactly what your website
-        will cost before you spend a single dollar.
+        Send us your current site and one line about what you sell. Within 72
+        hours we&apos;ll send back a custom homepage concept designed for your
+        business. Free, no call required. Like it? We build the rest in 14
+        days. Don&apos;t? Keep the concept anyway.
       </p>
       <div className="hcta__actions" data-reveal="fade">
-        <a className="hcta__btn" href="/contact" data-cursor="QUOTE">
-          Get a Free Quote
+        <a className="hcta__btn" href="/contact" data-cursor="CONCEPT">
+          Get My Free Homepage Concept
           <span aria-hidden="true">&rarr;</span>
         </a>
         <a className="hcta__btn hcta__btn--ghost" href="/pricing" data-cursor="PRICING">
-          View Pricing
+          View Pricing &amp; Packages
         </a>
       </div>
+      <p className="hcta__risk" data-reveal="fade">
+        Free · 72-hour turnaround · No call required · Yours to keep
+      </p>
     </section>
   );
 }

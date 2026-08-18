@@ -15,10 +15,10 @@ import { hydrateImagesIn, hydrateVideosIn } from "@/lib/lazy-media";
 const RingGallery = dynamic(() => import("./RingGallery"), { ssr: false });
 
 const SERVICE_TAGS = [
-  "( Web Visual Aesthetics )",
-  "( High-End Commercial Visuals )",
-  "( UX & Interface )",
-  "( AI Image & Motion )",
+  "( Custom Web Design & Development )",
+  "( Conversion & UX Design )",
+  "( Brand Identity & Commercial Visuals )",
+  "( Motion, 3D & AI Visuals )",
 ];
 
 type TitleState = "hidden" | "visible" | "exiting";
@@ -228,7 +228,7 @@ export default function CcapSection() {
                   </div>
                   <div className="service-label reveal-wrap text1vw">
                     <h2 className="reveal-inner">
-                      Cross-Disciplinary Visuals & Digital Integration
+                      Four disciplines. One team. One invoice.
                     </h2>
                   </div>
                 </div>

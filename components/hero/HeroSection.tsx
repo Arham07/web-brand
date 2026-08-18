@@ -201,30 +201,22 @@ export default function HeroSection() {
                     <Mask>{label}</Mask>
                   </a>
                 ))}
-                <a className="hero-cta" href="/contact" data-cursor="CONTACT">
-                  <Mask>
-                    Let&apos;s Talk
-                    <span className="hero-cta__arrow" aria-hidden="true">
-                      {" "}&rarr;
-                    </span>
-                  </Mask>
-                </a>
               </nav>
             </div>
             <div className="grid-4 border-top-line">
               <div>
-                <Mask>( Interactive Web Development )</Mask>
+                <Mask>( Custom Web Design &amp; Development )</Mask>
               </div>
               <div className="cell-center">
                 <Mask>( Motion Design )</Mask>
               </div>
               <div className="cell-center">
                 <h1 className="hero-title">
-                  <Mask>High-End Web Design</Mask>
+                  <Mask>Custom Web Design That Books Calls</Mask>
                 </h1>
               </div>
               <div className="cell-right">
-                <Mask>( Core Brand Identity )</Mask>
+                <Mask>( Conversion-Focused )</Mask>
               </div>
             </div>
           </div>
@@ -232,11 +224,11 @@ export default function HeroSection() {
           <div className="grid-4 bottom-footer">
             <div className="footer-col">
               <Mask>
-                Strategy, Design, and
+                Strategy, copy, design, motion and
                 <br />
-                Development. Lightning-fast, lean,
+                code from one team — built around the
                 <br />
-                and sensibly priced.
+                one action you want a visitor to take.
               </Mask>
             </div>
             <div className="footer-col">
@@ -248,7 +240,7 @@ export default function HeroSection() {
                 {/* dummy US number — replace with real VOIP before ads */}
                 (213) 555-0142
                 <br />
-                American Web Guild ©
+                We reply in under 1 business hour.
               </Mask>
             </div>
             <div className="footer-col col-right footer-links">

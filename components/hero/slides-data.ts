@@ -15,21 +15,21 @@ export const SLIDES: SlideData[] = [
     mobileVideo: "/images/home/slider1/slider01_s.mp4",
     thumb: "/images/home/slider1/slider01.webp",
     mobileThumb: "/images/home/slider1/slider01_s.webp",
-    title: "American Web Guild",
+    title: "Custom web design that books calls. Not just compliments.",
   },
   {
     image: "/images/home/slider2/slider02.webp",
     mobileImage: "/images/home/slider2/slider02_m.webp",
     thumb: "/images/home/slider2/slider02_pc.webp",
     mobileThumb: "/images/home/slider2/slider02_s.webp",
-    title: "PERFORMANCE FLUIDS",
+    title: "A website your competitors screenshot. And your buyers buy from.",
   },
   {
     video: "/images/home/slider3/slider03pro.mp4",
     mobileVideo: "/images/home/slider3/slider03_s.mp4",
     thumb: "/images/home/slider3/slider03.webp",
     mobileThumb: "/images/home/slider3/slider03_s.webp",
-    title: "Visual Direction",
+    title: "Custom website, live in 14 days. Or you don't pay.",
   },
 ];
 

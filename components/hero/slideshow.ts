@@ -208,6 +208,15 @@ export class Slideshow {
     this.current = index;
     this.updateCounter(index);
     this.swapTitle(SLIDES[index].title);
+    // Which H1 variant is on screen — a free multivariate signal once any
+    // analytics is installed (dataLayer if present, plus a DOM event).
+    (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({
+      event: "hero_slide_view",
+      slideIndex: index,
+    });
+    window.dispatchEvent(
+      new CustomEvent("awg:hero-slide", { detail: { index } })
+    );
     this.setActiveThumb(index);
     this.aimWave(index);
 
