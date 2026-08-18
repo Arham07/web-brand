@@ -245,7 +245,7 @@ export default function MobileCubeSection() {
       <div className="mcube-copy">
         <p className="mcube-copy__desc">
           Every powerful digital experience begins at a single precise point.
-          American Web Guild specializes in Taichung web design, high-end
+          American Web Guild specializes in custom web design, high-end
           commercial visual generation, and AI motion imagery — crafting
           every pixel with precision so it delivers maximum brand value.
         </p>

@@ -100,7 +100,7 @@ export const WORK_HEADER = {
 
 export const YEARS_COUNTER = {
   above: "Distilling Over",
-  target: 14,
+  target: 6,
   unit: "YEARS",
   below: "Total Digital Shift",
 };

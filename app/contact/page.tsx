@@ -5,13 +5,13 @@ import ScrollMarquee from "@/components/shared/ScrollMarquee";
 import SiteFooter from "@/components/footer/SiteFooter";
 
 export const metadata: Metadata = {
-  title: "Contact | American Web Guild — Project Enquiries",
+  title: "Get a Free Homepage Design Concept | American Web Guild",
   description:
-    "Get in touch with American Web Guild — a web design, premium commercial visual and AI motion-image team. Enquiries welcome for brand sites, interactive experience design and Gen-AI visual projects.",
+    "Send your site and what you sell. In 72 hours we'll send back a custom homepage concept for your business — free, no call required, yours to keep.",
   openGraph: {
-    title: "Contact | American Web Guild · Web Design & Commercial Visual Collaboration",
+    title: "Get a Free Homepage Design Concept | American Web Guild",
     description:
-      "Start a conversation about your next digital transformation with American Web Guild.",
+      "Send your site and what you sell. In 72 hours we'll send back a custom homepage concept for your business — free, no call required, yours to keep.",
     url: "https://americanwebguild.com/contact",
   },
   alternates: { canonical: "https://americanwebguild.com/contact" },

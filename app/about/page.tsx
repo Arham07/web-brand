@@ -6,13 +6,13 @@ import CoreCubeSection from "@/components/about/CoreCubeSection";
 import SiteFooter from "@/components/footer/SiteFooter";
 
 export const metadata: Metadata = {
-  title: "About American Web Guild | High-End Custom Websites & Digital Experience",
+  title: "About American Web Guild | Custom Web Design Studio",
   description:
-    "American Web Guild is an independent digital studio of senior UI/UX designers and avant-garde developers. We reject bloated templates, building on native code, headless architecture and top-tier motion to create quietly luxurious digital assets for enterprises and benchmark brands.",
+    "A custom web design studio that builds every site from scratch around one question: does it convert? Meet the team, the process, and the 14-day build.",
   openGraph: {
-    title: "About Us | American Web Guild — Web Design × Motion FX × AI Visual Innovation",
+    title: "About American Web Guild | Custom Web Design Studio",
     description:
-      "Meet American Web Guild. We focus on high-end custom site builds and brand visual upgrades, augmented by advanced AI imaging, to craft digital identities with international perspective.",
+      "A custom web design studio that builds every site from scratch around one question: does it convert? Meet the team, the process, and the 14-day build.",
     url: "https://americanwebguild.com/about",
   },
   alternates: { canonical: "https://americanwebguild.com/about" },

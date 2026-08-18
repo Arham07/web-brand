@@ -199,13 +199,13 @@ export default function CcapSection() {
             </div>
             <div className="top-nav">
               <div className="nav-left">
-                <Reveal>14Y_VISUAL_MASTERY</Reveal>
+                <Reveal>150+_SITES_SHIPPED</Reveal>
               </div>
               <div className="nav-center">
-                <Reveal>400+_DEPLOYED_WORKS</Reveal>
+                <Reveal>14-DAY_AVG_LAUNCH</Reveal>
               </div>
               <div className="nav-right">
-                <Reveal>ESTABLISHED_2026</Reveal>
+                <Reveal>SINCE_2020</Reveal>
               </div>
             </div>
             <div className="media-gallery">

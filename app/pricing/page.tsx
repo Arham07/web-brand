@@ -5,13 +5,13 @@ import ScrollMarquee from "@/components/shared/ScrollMarquee";
 import SiteFooter from "@/components/footer/SiteFooter";
 
 export const metadata: Metadata = {
-  title: "Pricing | American Web Guild — Better Packages, Better Prices",
+  title: "Website Design Pricing — $349 to $1,299 | American Web Guild",
   description:
-    "Transparent pricing from American Web Guild: website design, e-commerce, logo design, SEO, branding and social media marketing packages — premium quality with a 100% satisfaction guarantee.",
+    "Published website design pricing with no discovery call required. Three packages from $349, custom quotes in 24 hours, and a money-back guarantee on every build.",
   openGraph: {
-    title: "Pricing | American Web Guild — Better Packages, Better Prices",
+    title: "Website Design Pricing — $349 to $1,299 | American Web Guild",
     description:
-      "Website design, e-commerce, logo, SEO, branding and SMM packages — transparent pricing, premium execution.",
+      "Published website design pricing with no discovery call required. Three packages from $349, custom quotes in 24 hours, and a money-back guarantee on every build.",
     url: "https://americanwebguild.com/pricing",
   },
   alternates: { canonical: "https://americanwebguild.com/pricing" },

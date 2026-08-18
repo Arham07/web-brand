@@ -5,13 +5,13 @@ import ScrollMarquee from "@/components/shared/ScrollMarquee";
 import SiteFooter from "@/components/footer/SiteFooter";
 
 export const metadata: Metadata = {
-  title: "Work | American Web Guild — Corporate Site Redesign & Digital Transformation",
+  title: "Web Design Portfolio — 14 Recent Builds | American Web Guild",
   description:
-    "Browse American Web Guild's premium portfolio. Web design, motion/FX design and brand visual elevation across precision machining, technology, food & beverage and beauty — immersive digital experiences with international presence.",
+    "Browse our web design portfolio: custom websites, redesigns and e-commerce builds, with the results each one produced after launch.",
   openGraph: {
-    title: "Works | American Web Guild — Web Design × Motion FX × Brand Visual Elevation",
+    title: "Web Design Portfolio — 14 Recent Builds | American Web Guild",
     description:
-      "Browse American Web Guild's premium portfolio. Web design, motion FX and brand visual elevation — immersive digital experiences for enterprises.",
+      "Browse our web design portfolio: custom websites, redesigns and e-commerce builds, with the results each one produced after launch.",
     url: "https://americanwebguild.com/work",
   },
   alternates: { canonical: "https://americanwebguild.com/work" },

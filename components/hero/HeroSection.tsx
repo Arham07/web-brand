@@ -241,31 +241,27 @@ export default function HeroSection() {
             </div>
             <div className="footer-col">
               <Mask>
-                {/* TODO: swap in the real inbox once one exists */}
-                <a href="mailto:hello@americanwebguild.com">
-                  hello@americanwebguild.com
+                <a href="mailto:info@americanwebguild.com">
+                  info@americanwebguild.com
                 </a>
                 <br />
-                04-36033622
+                {/* dummy US number — replace with real VOIP before ads */}
+                (213) 555-0142
                 <br />
-                American Web Guild 2026©
+                American Web Guild ©
               </Mask>
             </div>
             <div className="footer-col col-right footer-links">
-              {/* TODO: point these at American Web Guild's real profiles —
-                  the original hrefs belonged to the reference site's own accounts */}
+              {/* Dead "#" social links removed (copy doc, H-03): a link
+                  that goes nowhere on a design studio's site says something
+                  large. Real profiles slot back in here when they exist. */}
               {[
-                ["#", "Instagram"],
-                ["#", "Threads"],
-                ["#", "Facebook"],
+                ["/work", "Our Work"],
+                ["/pricing", "Pricing"],
+                ["/contact", "Free Concept"],
               ].map(([href, label]) => (
                 <Mask key={label}>
-                  <a
-                    className="hairline-link"
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a className="hairline-link" href={href}>
                     {label}
                   </a>
                 </Mask>

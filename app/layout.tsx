@@ -52,16 +52,16 @@ const bitcount = Bitcount_Grid_Single({
 });
 
 export const metadata: Metadata = {
-  title: "American Web Guild | Web Design x Brand Visuals x Motion Design",
+  title: "Custom Web Design That Books Calls | American Web Guild",
   description:
-    "American Web Guild is a leading creative studio specializing in high-end web design, motion design, and brand visual elevation. We blend fluid minimalist aesthetics with advanced front-end technology to build immersive, interactive websites with an international standard of craft — turning digital experience into your strongest business asset.",
+    "Custom web design and development for service brands. Strategy, copy, design and code from one team, live in 14 days. See your homepage redesigned free — 72 hours, no call required.",
   metadataBase: new URL("https://americanwebguild.com"),
   openGraph: {
     type: "website",
     url: "https://americanwebguild.com/",
-    title: "American Web Guild | Web Design x Motion Design x Brand Visuals",
+    title: "Custom Web Design That Books Calls | American Web Guild",
     description:
-      "American Web Guild is a leading creative studio specializing in high-end web design, motion design, and brand visual elevation, building immersive, interactive websites with an international standard of craft.",
+      "Custom web design and development for service brands. Strategy, copy, design and code from one team, live in 14 days. See your homepage redesigned free — 72 hours, no call required.",
     images: ["/images/og.jpg"],
     locale: "en_US",
     siteName: "American Web Guild",

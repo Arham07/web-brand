@@ -15,10 +15,15 @@ const DORMANT_NAV = [
 
 // TODO: point these at American Web Guild's real profiles once they exist —
 // the original hrefs belonged to the reference site's own accounts.
+/* SW-03 service links — the internal-linking row. Dead social icons
+   (all pointed at "#") removed per the copy doc: "nobody misses an icon
+   that isn't there." Targets move to dedicated service pages in Phase 6. */
 const SOCIALS = [
-  { href: "#", text: "Instagram" },
-  { href: "#", text: "Threads" },
-  { href: "#", text: "Facebook" },
+  { href: "/pricing", text: "Custom Web Design" },
+  { href: "/pricing", text: "Website Redesign" },
+  { href: "/pricing", text: "E-Commerce Design" },
+  { href: "/work", text: "UI/UX Design" },
+  { href: "/work", text: "Motion & 3D" },
 ] as const;
 
 /** Wrap `el` in an overflow-hidden .frev-wrap (idempotent) and preset its offset. */
@@ -186,30 +191,35 @@ export default function SiteFooter() {
 
       <div className="footer-top">
         <div className="footer-info-bar">
-          <span>Web Design Studio</span>
-          <span>Commercial Visual · AI Motion</span>
-          <span>Est. 2026 · Taichung</span>
+          <span>Custom Web Design &amp; Development</span>
+          <span>Brand Visuals · Motion</span>
+          <span>Est. 2020 · California</span>
         </div>
 
         <div className="footer-main-content">
           <div className="footer-left">
             <p className="footer-description">
-              American Web Guild | Taichung web design, high-end commercial
-              visual generation, and AI motion imagery. We integrate brand
-              identity, interactive experience design, and Gen-AI visual
-              technology to build internationally competitive digital visual
-              narratives for brands.
+              American Web Guild — custom web design, development and brand
+              visuals. We build conversion-focused custom websites for
+              service brands: strategy, copy, design, motion and code from
+              one team. Most projects go live in 14 days. Every build is
+              backed by a money-back guarantee.
             </p>
             <div className="footer-contact-info">
-              {/* TODO: swap in the real inbox once one exists */}
-              <a className="footer-email" href="mailto:hello@americanwebguild.com">
-                hello@americanwebguild.com
+              <a className="footer-email" href="mailto:info@americanwebguild.com">
+                info@americanwebguild.com
               </a>
-              <span className="footer-phone">(04) 3603-3622</span>
+              {/* TODO: dummy US number (555-01XX is reserved for fiction) —
+                  replace with the real VOIP line BEFORE ads go live */}
+              <span className="footer-phone">(213) 555-0142</span>
             </div>
             <div className="footer-address">
-              4F, No. 447, Sec. 3, Wenxin Rd., Beitun Dist., Taichung City
-              406, Taiwan
+              Serving clients nationwide from California, USA
+            </div>
+            <div className="footer-trust-row">
+              <span>100% money-back guarantee</span>
+              <span>You own everything</span>
+              <span>Replies within 1 business hour</span>
             </div>
             <div className="footer-nav-links">
               {SOCIALS.map((s) => (
@@ -242,7 +252,7 @@ export default function SiteFooter() {
         <div className="footer-cta">
           <span className="footer-cta__label">Have a project in mind?</span>
           <a className="footer-cta__btn" href="/contact" data-cursor="CONTACT">
-            Let&apos;s Talk
+            Get your free homepage concept
             <span className="footer-cta__arrow" aria-hidden="true">
               &rarr;
             </span>

@@ -53,10 +53,10 @@ export default function FloatingCta() {
       id="floating-cta"
       href="/contact"
       data-cursor="CONTACT"
-      aria-label="Contact us — let's talk"
+      aria-label="Get your free homepage concept"
       ref={ref}
     >
-      <span className="floating-cta__label">Let&apos;s Talk</span>
+      <span className="floating-cta__label">Free Homepage Concept</span>
       <svg
         className="floating-cta__arrow"
         width="14"
