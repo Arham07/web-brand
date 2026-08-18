@@ -247,12 +247,16 @@
   opacity: 0.85;
   color: var(--color-accent-2, #fff);
 }
+.work-page .wk-card-caption__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
 .work-page .wk-card-caption__label {
   font-size: 12px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  opacity: 0.88;
-  text-align: right;
+  letter-spacing: 0.04em;
+  opacity: 0.82;
 }
 
 /* explicit "openable" affordance: silver pill in the hover caption */
@@ -565,4 +569,149 @@ html.wk-lb-open #floating-cta {
   .work-page .wk-hero::after {
     filter: none;
   }
+}
+
+/* ================================================================== */
+/*  Phase 4 — W-05 testimonials + W-06 closing CTA                     */
+/* ================================================================== */
+
+.work-page .wk-quotes,
+.work-page .wk-cta-section {
+  position: relative;
+  z-index: 3;
+  background: var(--color-bg, #0a0b0c);
+  padding: clamp(80px, 12vh, 150px) clamp(24px, 5vw, 80px);
+}
+
+.work-page .wk-quotes__eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wk-muted);
+}
+
+.work-page .wk-quotes__heading {
+  margin-top: 16px;
+  max-width: 22ch;
+  font-family: var(--font-family-display);
+  font-size: clamp(1.7rem, 3.4vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+.work-page .wk-quotes__grid {
+  margin-top: clamp(40px, 6vh, 64px);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: #1e1f21;
+  border: 1px solid #1e1f21;
+}
+
+/* Six quotes in a four-up grid leave a half-empty second row, so the last
+   two widen to fill it. The :nth-last-child half of each selector is the
+   guard: add or remove a quote and these stop matching on their own,
+   rather than silently mis-spanning a row nobody re-checked. */
+.work-page .wk-quote:nth-child(5):nth-last-child(2),
+.work-page .wk-quote:nth-child(6):nth-last-child(1) {
+  grid-column: span 2;
+}
+
+@media (max-width: 1100px) {
+  .work-page .wk-quotes__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .work-page .wk-quote:nth-child(5):nth-last-child(2),
+  .work-page .wk-quote:nth-child(6):nth-last-child(1) {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .work-page .wk-quotes__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.work-page .wk-quote {
+  margin: 0;
+  padding: clamp(24px, 2.4vw, 36px);
+  background: var(--color-bg, #0a0b0c);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.work-page .wk-quote__text {
+  margin: 0;
+  font-size: clamp(14px, 1.15vw, 16px);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.work-page .wk-quote__by {
+  margin-top: auto;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent-2, #fff);
+  opacity: 0.75;
+}
+
+/* ------------------------------------------------------------- CTA */
+
+.work-page .wk-cta {
+  text-align: center;
+}
+
+.work-page .wk-cta__heading {
+  font-family: var(--font-family-display);
+  font-size: clamp(1.9rem, 4.2vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+
+.work-page .wk-cta__sub {
+  margin: 16px auto 0;
+  max-width: 480px;
+  font-size: clamp(13px, 1.2vw, 15px);
+  line-height: 1.7;
+  color: var(--wk-soft);
+}
+
+.work-page .wk-cta__actions {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.work-page .wk-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 40px;
+  border-radius: 999px;
+  background: var(--grad-accent);
+  color: var(--color-on-metal, #0d0e10);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 0.25s ease;
+}
+.work-page .wk-cta__btn:hover {
+  transform: translateY(-2px);
+}
+.work-page .wk-cta__btn--ghost {
+  background: transparent;
+  border: 1px solid #2c2c2c;
+  color: #fff;
+}
+.work-page .wk-cta__btn--ghost:hover {
+  border-color: #4a4a4a;
 }

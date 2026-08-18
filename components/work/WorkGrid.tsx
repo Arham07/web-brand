@@ -192,7 +192,7 @@ export default function WorkGrid() {
           data-cursor="VIEW"
           role="button"
           tabIndex={0}
-          aria-label={`View ${p.title} — ${p.subtitle}`}
+          aria-label={`View ${p.title} — ${p.date}. ${p.subtitle}`}
           onClick={() => open(i)}
           // Start the full shot before the click. A pointer arriving on the
           // card (or a finger landing on it) precedes the open by a few
@@ -215,7 +215,7 @@ export default function WorkGrid() {
             <img
               className="wk-cover"
               src={p.img}
-              alt={`${p.title} — ${p.subtitle}`}
+              alt={p.alt}
               width={p.width}
               height={p.height}
               loading="eager"
@@ -224,8 +224,14 @@ export default function WorkGrid() {
             />
             <div className="wk-blur" aria-hidden="true" />
             <div className="wk-blend" aria-hidden="true" />
+            {/* W-03: the hover overlay used to say only "00-4 / View
+                Project", which tells a visitor nothing about the build.
+                Industry + build facts now ride along with it. */}
             <div className="wk-card-caption" aria-hidden="true">
-              <span className="wk-card-caption__index">{p.index}</span>
+              <span className="wk-card-caption__meta">
+                <span className="wk-card-caption__index">{p.date}</span>
+                <span className="wk-card-caption__label">{p.subtitle}</span>
+              </span>
               <span className="wk-card-caption__cta">
                 View Project
                 <span aria-hidden="true">&#8599;</span>
@@ -294,7 +300,7 @@ export default function WorkGrid() {
                 src={project.fullMd}
                 srcSet={`${project.fullMd} ${project.fullMdWidth}w, ${project.full} ${project.fullWidth}w`}
                 sizes="(max-width: 1100px) 100vw, 1040px"
-                alt={`${project.title} — full page design`}
+                alt={`${project.alt} — full page design`}
                 width={project.fullWidth}
                 height={project.fullHeight}
                 decoding="async"

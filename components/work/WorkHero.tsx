@@ -34,15 +34,18 @@ export default function WorkHero() {
   return (
     <header className="wk-hero" ref={rootRef}>
       <div className="wk-hero__top">
-        <h1 className="wk-hero__title">{WORK_HERO.title}</h1>
+        {/* The lockup is decoration; "WORK" is not what this page is about.
+            The <h1> is the sentence in the middle, so the heading a crawler
+            and a screen reader read matches what the page actually shows. */}
+        <span className="wk-hero__title" aria-hidden="true">
+          {WORK_HERO.title}
+        </span>
         <div className="wk-hero__center">
-          <p className="wk-hero__desc">
-            {WORK_HERO.desc[0]}
-            <br />
-            {WORK_HERO.desc[1]}
-          </p>
+          <h1 className="wk-hero__desc">{WORK_HERO.heading}</h1>
         </div>
-        <p className="wk-hero__code">{WORK_HERO.code}</p>
+        <span className="wk-hero__code" aria-hidden="true">
+          {WORK_HERO.code}
+        </span>
       </div>
 
       <div className="wk-hero__line" />
