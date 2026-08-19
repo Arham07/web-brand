@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import {
   FORM_FIELDS,
   FIELD_ERRORS,
-  EMAIL_RE,
+  REQUIRED_CLIENT,
+  fieldValid,
+  FAILURE,
   NO_SITE_LABEL,
   FORM_INTRO,
   WHAT_HAPPENS,
@@ -21,80 +23,170 @@ const EMPTY: Values = FORM_FIELDS.reduce<Values>((acc, f) => {
   return acc;
 }, {});
 
-const REQUIRED = FORM_FIELDS.filter((f) => f.required).map((f) => f.name);
-
 /**
  * The contact form (copy doc C-02, adapted): seven fields, choice
  * chips instead of dropdowns, and a redirect to /thank-you on success —
  * the page the Meta Lead event will fire from once the pixel is installed.
  *
- * TODO(backend): submission is still simulated. When the PHP endpoint lands
- * (deferred by request), only the send step below changes — the validation,
- * the states and the redirect stay as they are.
+ * Submits to /api/contact, which mails the lead to info@ and sends the
+ * visitor a receipt. Success is the redirect; failure raises a dialog that
+ * keeps every value typed so far, because asking someone to retype seven
+ * fields after a network blip is how a paid click gets thrown away.
  */
+
+/** Give up rather than leave the button stuck on "Sending…" forever. */
+const REQUEST_TIMEOUT_MS = 15_000;
+/** If the client-side route change stalls, get there the blunt way. */
+const NAV_FAILSAFE_MS = 2_500;
 export default function ContactForm() {
   const [values, setValues] = useState<Values>(EMPTY);
   const [noSite, setNoSite] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const timerRef = useRef<number>(0);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  // `sending` is state because it drives the overlay; this is the re-entry
+  // guard. Enter inside a text input can fire submit before React has
+  // committed the disabled attribute, and a duplicate submit is a duplicate
+  // email in someone's inbox.
+  const sendingRef = useRef(false);
 
-  // Suppress the blend-mode chrome while the sending overlay is up.
+  // Suppress the blend-mode chrome while either overlay is up.
+  const modalOpen = sending || error !== null;
   useEffect(() => {
     const html = document.documentElement;
-    html.classList.toggle("ct-modal-open", sending);
+    html.classList.toggle("ct-modal-open", modalOpen);
     return () => html.classList.remove("ct-modal-open");
-  }, [sending]);
+  }, [modalOpen]);
 
   useEffect(() => () => window.clearTimeout(timerRef.current), []);
 
-  const fieldValid = (name: string, value: string): boolean => {
-    const v = value.trim();
-    if (name === "email") return EMAIL_RE.test(v);
-    if (name === "website") return noSite || v.length > 0;
-    if (REQUIRED.includes(name)) return v.length > 0;
-    return true;
-  };
+  useEffect(() => {
+    if (error === null) return;
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setError(null);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [error]);
+
+  // The one rule the server can't share: the "I don't have one yet" tick is
+  // React state, so it never crosses the wire as a field value. It stays here,
+  // layered on top of the shared rule, rather than being reconstructed
+  // server-side from a boolean the client might fail to send.
+  const validate = (name: string, value: string): boolean =>
+    name === "website" && noSite
+      ? true
+      : fieldValid(name, value, REQUIRED_CLIENT);
 
   const showsError = (name: string) =>
-    touched[name] && !fieldValid(name, values[name] ?? "");
+    touched[name] && !validate(name, values[name] ?? "");
 
   const setValue = (name: string, value: string) =>
     setValues((v) => ({ ...v, [name]: value }));
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (sending) return;
+    if (sendingRef.current) return;
 
-    // Honeypot: a filled hidden field means a bot — pretend success.
-    const hp = (formRef.current?.elements.namedItem("_hp") as HTMLInputElement)
-      ?.value;
+    const hp =
+      (formRef.current?.elements.namedItem("_hp") as HTMLInputElement)?.value ??
+      "";
 
-    const invalid = REQUIRED.filter((n) => !fieldValid(n, values[n] ?? ""));
-    if (invalid.length && !hp) {
-      setTouched((t) => ({
-        ...t,
-        ...Object.fromEntries(REQUIRED.map((n) => [n, true])),
-      }));
-      const first = formRef.current?.querySelector<HTMLElement>(
-        `[name="${invalid[0]}"], [data-field="${invalid[0]}"]`
+    // Honeypot-filled submissions skip validation on purpose and are posted
+    // anyway: the server answers 200 without sending, and arguing with a bot
+    // about its phone number only tells it which field to fix next time.
+    if (!hp) {
+      const invalid = REQUIRED_CLIENT.filter(
+        (n) => !validate(n, values[n] ?? "")
       );
-      first?.focus({ preventScroll: true });
-      return;
+      if (invalid.length) {
+        setTouched((t) => ({
+          ...t,
+          ...Object.fromEntries(REQUIRED_CLIENT.map((n) => [n, true])),
+        }));
+        formRef.current
+          ?.querySelector<HTMLElement>(
+            `[name="${invalid[0]}"], [data-field="${invalid[0]}"]`
+          )
+          ?.focus({ preventScroll: true });
+        return;
+      }
     }
 
+    sendingRef.current = true;
     setSending(true);
-    // Simulated send (see TODO above). The redirect target is the real one:
-    // /thank-you is the campaign's conversion destination (doc C-05).
-    timerRef.current = window.setTimeout(() => {
-      (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({
-        event: "lead_form_submitted",
+    setError(null);
+
+    const abort = new AbortController();
+    const timeout = window.setTimeout(() => abort.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      // No trailing slash: the app redirects /path → /path/ with a 308, and
+      // paying for that round trip on every submit is pure waste.
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // `hasNoSite` travels so the email can say "starting from scratch".
+        // The API does not validate `website` against it — see contact-data.
+        body: JSON.stringify({ ...values, hasNoSite: noSite, _hp: hp }),
+        signal: abort.signal,
+        cache: "no-store",
       });
+
+      const data = (await res.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: string;
+      } | null;
+
+      if (!res.ok || !data?.ok) {
+        // Prefer the server's message when it wrote one for a human (a
+        // validation complaint, the rate limit); fall back otherwise.
+        setError(data?.error || FAILURE.sub);
+        sendingRef.current = false;
+        setSending(false);
+        return;
+      }
+
+      // HTTP 200 and nothing else. Firing this before the send — as the
+      // simulated version did — reports conversions that never reached the
+      // inbox, and the ad platform then optimises toward whatever we told it.
+      // Suppressed for honeypot hits: the server answered 200 without
+      // sending, so counting it would train the campaign on bots.
+      if (!hp) {
+        (window as unknown as { dataLayer?: unknown[] }).dataLayer?.push({
+          event: "lead_form_submitted",
+        });
+      }
+
+      // `sending` stays true across the navigation so the overlay covers the
+      // gap instead of flashing the form back. The component unmounts on
+      // arrival and its cleanup drops `ct-modal-open`.
       router.push("/thank-you");
-    }, 1200);
+      timerRef.current = window.setTimeout(() => {
+        if (window.location.pathname !== "/thank-you") {
+          window.location.assign("/thank-you");
+        }
+      }, NAV_FAILSAFE_MS);
+    } catch (err) {
+      // A network failure here doesn't prove the lead was lost — the server
+      // may have logged and mailed it already. We can't know, so we show the
+      // failure; the server's own log is what makes a false alarm recoverable.
+      setError(
+        (err as Error)?.name === "AbortError" ? FAILURE.timeout : FAILURE.sub
+      );
+      sendingRef.current = false;
+      setSending(false);
+    } finally {
+      window.clearTimeout(timeout);
+      // Deliberately no setSending(false) here — on the success path that
+      // would tear the overlay down mid-navigation.
+    }
   };
 
   return (
@@ -282,6 +374,43 @@ export default function ContactForm() {
             height={66}
           />
           <span className="ct-sending__label">{SENDING_LABEL}</span>
+        </div>
+      )}
+
+      {/* Failure. Values are never cleared — the whole point is that someone
+          who just filled seven fields doesn't have to do it twice. The mailto
+          is the escape hatch for the case where the endpoint is the problem;
+          TransitionProvider exempts mailto:, so it won't fire a page
+          transition on the way out. */}
+      {error !== null && (
+        <div
+          className="ct-lightbox is-error"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="ct-lb-error-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setError(null);
+          }}
+        >
+          <div className="ct-lightbox__box">
+            <h2 className="ct-lightbox__title" id="ct-lb-error-title">
+              {FAILURE.title}
+            </h2>
+            <p className="ct-lightbox__sub">{error}</p>
+            <p className="ct-lightbox__fallback">
+              {FAILURE.fallback}{" "}
+              <a href={`mailto:${FAILURE.email}`}>{FAILURE.email}</a>
+            </p>
+            <button
+              type="button"
+              className="ct-submit ct-lightbox__close"
+              ref={closeRef}
+              data-cursor="CLOSE"
+              onClick={() => setError(null)}
+            >
+              {FAILURE.close}
+            </button>
+          </div>
         </div>
       )}
     </div>

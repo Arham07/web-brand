@@ -326,6 +326,24 @@
   font-size: 11px;
 }
 
+/* Failure variant. Same dialog, same type scale — only the title takes the
+   red already used for field errors, so a failed send reads as the same
+   family of problem rather than a different design. */
+.contact-page .ct-lightbox.is-error .ct-lightbox__title {
+  color: #e55;
+}
+.contact-page .ct-lightbox__fallback {
+  margin: -14px 0 30px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #959595;
+}
+.contact-page .ct-lightbox__fallback a {
+  color: var(--color-accent, #c7ccd4);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 @keyframes ct-fade-in {
   from {
     opacity: 0;
@@ -400,6 +418,11 @@ html.ct-modal-open #film-grain-canvas {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* The hourglass spins for as long as the request takes — up to 15s on a bad
+     connection. A continuous spinner is precisely what this query exists for. */
+  .contact-page .ct-sending__glass {
+    animation: none;
+  }
 }
 
 /* mobile: the radial gradient already fades to transparent — the extra

@@ -146,3 +146,90 @@ export const MARQUEE_WORD = "LET'S TALK";
 export const MARQUEE_REPEAT = 8;
 
 export const SENDING_LABEL = "Sending";
+
+/* ------------------------------------------------------------------ */
+/*  Validation — one rule set, used by the form AND by /api/contact.   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Per-field caps. The form itself has no length limits — these exist because
+ * a submit is just an HTTP request, and nothing stops someone posting a
+ * megabyte of "notes" straight at the endpoint.
+ */
+export const MAX_LENGTHS: Record<string, number> = {
+  name: 120,
+  email: 200,
+  phone: 40,
+  website: 300,
+  // need/budget are capped, not allowlisted — see fieldValid().
+  need: 60,
+  budget: 60,
+  notes: 4000,
+};
+
+/**
+ * What the *form* refuses to submit — derived from the `required` flags so
+ * the two can never drift apart. Includes `website`.
+ */
+export const REQUIRED_CLIENT: readonly string[] = FORM_FIELDS.filter(
+  (f) => f.required
+).map((f) => f.name);
+
+/**
+ * What the *API* refuses to accept — deliberately looser than the client.
+ *
+ * `website` is missing on purpose. The form counts it as satisfied by the
+ * "I don't have one yet" tick, and that tick is React state that never
+ * crosses the wire as a field value. Enforcing `website` server-side would
+ * mean re-deriving the rule from a boolean the client might one day fail to
+ * send, and the failure mode is a 400 on a lead that arrived from a paid
+ * click. An underspecified lead costs a follow-up question; a rejected one
+ * costs the click.
+ */
+export const REQUIRED_SERVER: readonly string[] = [
+  "name",
+  "email",
+  "phone",
+  "need",
+];
+
+/**
+ * One field, one verdict. Pure — no component state, no request context. The
+ * only variable is which names count as required, so the form can be strict
+ * and the API lenient without two copies of the rule going out of sync.
+ *
+ * `need` and `budget` are length-capped free strings rather than checked
+ * against their `options`. A visitor on a bundle cached from before a copy
+ * change would otherwise be rejected for picking a chip we showed them. The
+ * values are escaped where they are rendered, so an unexpected string is a
+ * cosmetic problem, never a security one.
+ */
+export function fieldValid(
+  name: string,
+  value: string,
+  required: readonly string[] = REQUIRED_CLIENT
+): boolean {
+  const v = value.trim();
+  if (v.length > (MAX_LENGTHS[name] ?? 200)) return false;
+  // An optional email still has to look like an email if one was typed.
+  if (name === "email") {
+    return required.includes("email") || v !== "" ? EMAIL_RE.test(v) : true;
+  }
+  return required.includes(name) ? v.length > 0 : true;
+}
+
+/**
+ * Shown when the send genuinely failed. `sub` is the fallback — the server's
+ * own message is preferred when it wrote one for a human (a validation
+ * complaint, the rate limit), since it is more specific. The mailto is the
+ * point of the dialog: someone the form can't serve should still be able to
+ * reach us.
+ */
+export const FAILURE = {
+  title: "NOT SENT",
+  sub: "Something broke on our end — your details are still in the form.",
+  timeout: "That took too long. Check your connection and hit send again.",
+  fallback: "Or email us directly at",
+  email: "info@americanwebguild.com",
+  close: "Try again",
+} as const;
