@@ -223,10 +223,24 @@ export default function SiteFooter() {
             </div>
             <div className="footer-nav-links">
               {SOCIALS.map((s) => (
-                <a key={s.text} href={s.href} target="_blank" rel="noopener noreferrer">
+                <a key={s.text} href={s.href} data-transition-label={s.text}>
                   {s.text}
                 </a>
               ))}
+            </div>
+            {/* Legal row. Deliberately NOT in the parallax copyright band —
+                that band is display:none below 1024px, and most ad traffic
+                is a phone. Meta's ad review needs a reachable privacy
+                policy, and a buyer checks terms before paying; neither can
+                be behind a breakpoint. */}
+            <div className="footer-legal">
+              <a href="/privacy-policy" data-transition-label="Privacy">
+                Privacy Policy
+              </a>
+              <span aria-hidden="true">·</span>
+              <a href="/terms-and-conditions" data-transition-label="Terms">
+                Terms &amp; Conditions
+              </a>
             </div>
           </div>
 

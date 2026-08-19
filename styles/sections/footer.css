@@ -309,3 +309,28 @@
     filter: none;
   }
 }
+
+/* legal row — under the service links in the left column, so it survives
+   the 1024px breakpoint that hides the parallax copyright band */
+.footer-legal {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+  font-size: 13px;
+}
+.footer-legal a {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(255, 255, 255, 0.25);
+  transition: color 0.25s ease, text-decoration-color 0.25s ease;
+}
+.footer-legal a:hover {
+  color: #fff;
+  text-decoration-color: rgba(255, 255, 255, 0.6);
+}
+.footer-legal > span[aria-hidden] {
+  opacity: 0.4;
+}

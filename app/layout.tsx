@@ -28,6 +28,7 @@ import "../styles/sections/contact.css";
 import "../styles/sections/work.css";
 import "../styles/sections/pricing.css";
 import "../styles/sections/faq.css";
+import "../styles/sections/legal.css";
 
 import AppShell from "@/components/providers/AppShell";
 
