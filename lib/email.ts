@@ -183,29 +183,66 @@ function renderText(lead: Lead, rows: Row[]): string {
   return `New lead — American Web Guild\n\n${body}\n\n---\n${meta}\n\nHit Reply to answer ${headerSafe(lead.name, 64)} directly.\n`;
 }
 
+function smtpErr(err: unknown) {
+  const e = err as {
+    message?: string;
+    code?: string;
+    command?: string;
+    response?: string;
+    responseCode?: number;
+  };
+  return {
+    code: e?.code ?? "unknown",
+    responseCode: e?.responseCode,
+    command: e?.command,
+    message: e?.message ?? "unknown",
+  };
+}
+
 export async function sendLeadEmail(lead: Lead): Promise<void> {
-  const user = requireEnv("SMTP_USER");
-  const to = process.env.CONTACT_TO_EMAIL || "info@americanwebguild.com";
-  const rows = rowsFor(lead);
+  try {
+    const user = requireEnv("SMTP_USER");
+    const to = process.env.CONTACT_TO_EMAIL || "info@americanwebguild.com";
+    const rows = rowsFor(lead);
 
-  // Name first so repeat submissions from one person thread together;
-  // need · budget means the inbox list is already a qualification queue.
-  const parts = [headerSafe(lead.name, 60)];
-  if (lead.need?.trim()) parts.push(headerSafe(lead.need, 40));
-  if (lead.budget?.trim()) parts.push(headerSafe(lead.budget, 40));
+    // Name first so repeat submissions from one person thread together;
+    // need · budget means the inbox list is already a qualification queue.
+    const parts = [headerSafe(lead.name, 60)];
+    if (lead.need?.trim()) parts.push(headerSafe(lead.need, 40));
+    if (lead.budget?.trim()) parts.push(headerSafe(lead.budget, 40));
 
-  await buildTransport().sendMail({
-    // Must be the authenticated mailbox. Hostinger refuses to send as anything
-    // else, and a visitor's address here would fail SPF and land in spam.
-    from: { name: "American Web Guild", address: user },
-    to,
-    // Object form, never `"Name <addr>"` — see headerSafe().
-    replyTo: { name: headerSafe(lead.name, 64), address: lead.email },
-    subject: `New lead — ${parts.join(" · ")}`,
-    text: renderText(lead, rows),
-    html: renderHtml(lead, rows),
-    headers: { "X-Lead-Source": "contact-form" },
-  });
+    console.log("[email] sendLeadEmail: attempting", {
+      to,
+      from: user,
+      replyTo: lead.email,
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT ?? "465",
+    });
+
+    const info = await buildTransport().sendMail({
+      // Must be the authenticated mailbox. Hostinger refuses to send as anything
+      // else, and a visitor's address here would fail SPF and land in spam.
+      from: { name: "American Web Guild", address: user },
+      to,
+      // Object form, never `"Name <addr>"` — see headerSafe().
+      replyTo: { name: headerSafe(lead.name, 64), address: lead.email },
+      subject: `New lead — ${parts.join(" · ")}`,
+      text: renderText(lead, rows),
+      html: renderHtml(lead, rows),
+      headers: { "X-Lead-Source": "contact-form" },
+    });
+
+    console.log("[email] sendLeadEmail: SUCCESS", {
+      to,
+      messageId: info.messageId,
+      accepted: info.accepted,
+      rejected: info.rejected,
+      response: info.response,
+    });
+  } catch (err) {
+    console.error("[email] sendLeadEmail: FAILED", smtpErr(err));
+    throw err;
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -237,22 +274,23 @@ function safeFirstName(name: string): string {
 }
 
 export async function sendLeadReceipt(lead: Lead): Promise<void> {
-  const now = Date.now();
-  if (now - receiptWindowStart > 24 * 60 * 60 * 1000) {
-    receiptWindowStart = now;
-    receiptCount = 0;
-  }
-  if (receiptCount >= RECEIPT_DAILY_CAP) {
-    // A circuit breaker, not an error: the lead itself has already been mailed
-    // and logged. Only the courtesy copy is suppressed.
-    throw new Error(`Receipt daily cap reached (${RECEIPT_DAILY_CAP})`);
-  }
-  receiptCount += 1;
+  try {
+    const now = Date.now();
+    if (now - receiptWindowStart > 24 * 60 * 60 * 1000) {
+      receiptWindowStart = now;
+      receiptCount = 0;
+    }
+    if (receiptCount >= RECEIPT_DAILY_CAP) {
+      // A circuit breaker, not an error: the lead itself has already been mailed
+      // and logged. Only the courtesy copy is suppressed.
+      throw new Error(`Receipt daily cap reached (${RECEIPT_DAILY_CAP})`);
+    }
+    receiptCount += 1;
 
-  const user = requireEnv("SMTP_USER");
-  const first = safeFirstName(lead.name);
+    const user = requireEnv("SMTP_USER");
+    const first = safeFirstName(lead.name);
 
-  const text = `Hi ${first},
+    const text = `Hi ${first},
 
 Thanks — we've got your request, and it's already with a designer.
 
@@ -268,7 +306,7 @@ doesn't end up in a spam folder.
 https://americanwebguild.com
 `;
 
-  const html = `<!doctype html><html><body style="margin:0;background:#0a0b0c;padding:24px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    const html = `<!doctype html><html><body style="margin:0;background:#0a0b0c;padding:24px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
 <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;margin:0 auto;background:#111318;border:1px solid #23262b;border-radius:10px;">
 <tr><td style="padding:26px 24px 8px;color:#fff;font-size:18px;font-weight:600;">Hi ${esc(first)}, we've got it.</td></tr>
 <tr><td style="padding:0 24px 16px;color:#c3c7cd;font-size:14px;line-height:1.7;">Your request is already with a designer.</td></tr>
@@ -283,13 +321,32 @@ https://americanwebguild.com
 </td></tr>
 </table></body></html>`;
 
-  await buildTransport().sendMail({
-    from: { name: "American Web Guild", address: user },
-    to: lead.email,
-    replyTo: { name: "American Web Guild", address: user },
-    subject: "We've got your request — concept within 72 hours",
-    text,
-    html,
-    headers: { "X-Lead-Source": "contact-form-receipt", "Auto-Submitted": "auto-replied" },
-  });
+    console.log("[email] sendLeadReceipt: attempting", {
+      to: lead.email,
+      from: user,
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT ?? "465",
+    });
+
+    const info = await buildTransport().sendMail({
+      from: { name: "American Web Guild", address: user },
+      to: lead.email,
+      replyTo: { name: "American Web Guild", address: user },
+      subject: "We've got your request — concept within 72 hours",
+      text,
+      html,
+      headers: { "X-Lead-Source": "contact-form-receipt", "Auto-Submitted": "auto-replied" },
+    });
+
+    console.log("[email] sendLeadReceipt: SUCCESS", {
+      to: lead.email,
+      messageId: info.messageId,
+      accepted: info.accepted,
+      rejected: info.rejected,
+      response: info.response,
+    });
+  } catch (err) {
+    console.error("[email] sendLeadReceipt: FAILED", smtpErr(err));
+    throw err; 
+  }
 }

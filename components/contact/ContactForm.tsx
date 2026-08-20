@@ -1,5 +1,5 @@
 "use client";
-
+ 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -205,14 +205,24 @@ export default function ContactForm() {
           onSubmit={onSubmit}
           noValidate
         >
-          {/* honeypot — off-screen, never focusable */}
+          {/* honeypot — off-screen, never focusable. `readOnly` + manager
+              ignore attrs stop Chrome/1Password filling it with the visitor's
+              email (which used to silently drop a real lead). Bots that set
+              .value in JS still trip it. */}
           <input
             type="text"
             name="_hp"
             tabIndex={-1}
             autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            readOnly
             aria-hidden="true"
             className="ct-honeypot"
+            data-lpignore="true"
+            data-1p-ignore="true"
+            data-form-type="other"
           />
 
           <div className="ct-fields">

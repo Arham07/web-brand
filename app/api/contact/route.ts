@@ -202,8 +202,19 @@ export async function POST(request: Request) {
         humans?". */
   const hp = raw._hp;
   if (typeof hp === "string" && hp.trim() !== "") {
-    logLead("lead-hp", { hp: hp.slice(0, 200), body: raw });
-    return ok();
+    // Password managers ignore autoComplete="off" and write the email (or
+    // name/phone) into the hidden field. That is a human, not a bot — same
+    // value in a visible field is the tell. Dropping those is worse than
+    // letting a rare copy-paste bot through.
+    const filled = hp.trim().toLowerCase();
+    const sameAs = (v: unknown) =>
+      typeof v === "string" && v.trim().toLowerCase() === filled;
+    if (sameAs(raw.email) || sameAs(raw.name) || sameAs(raw.phone)) {
+      logLead("lead-hp-autofill", { hp: hp.slice(0, 200) });
+    } else {
+      logLead("lead-hp", { hp: hp.slice(0, 200), body: raw });
+      return ok();
+    }
   }
 
   const { ip, chain } = clientKey(request);
@@ -283,7 +294,7 @@ export async function POST(request: Request) {
     await sendLeadEmail(lead);
   } catch (err) {
     // Message and code only. Some nodemailer errors carry the whole transport
-    // config, auth included, and writing the SMTP password into the runtime
+    // config, auth included, and writing the SMTP password into the runtime 
     // log is exactly the thing the rest of this file exists to prevent.
     const e = err as { message?: string; code?: string };
     console.error(`[contact] send failed: ${e?.code ?? ""} ${e?.message ?? "unknown"}`);
