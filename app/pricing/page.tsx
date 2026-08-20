@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description:
     "Published website design pricing with no discovery call required. Three packages from $349, custom quotes in 24 hours, and a money-back guarantee on every build.",
   openGraph: {
+    images: ["/images/og.jpg"],
     title: "Website Design Pricing — $349 to $1,299 | American Web Guild",
     description:
       "Published website design pricing with no discovery call required. Three packages from $349, custom quotes in 24 hours, and a money-back guarantee on every build.",
