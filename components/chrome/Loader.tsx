@@ -23,8 +23,21 @@ const HARD_FALLBACK_MS = 5500;
 
 let hasBooted = false;
 
+// The mark is layered: a static logo paints instantly, and the video fades
+// in over it once its first frame is decoded (wired up in the effect below —
+// NOT via an inline onloadeddata attribute: that fires pre-hydration and
+// mutates the injected DOM, which React then flags as a hydration mismatch).
+// On a connection too slow to deliver 26KB in time the visitor simply sees
+// the logo — never a blank box. fav.png is the same silver mark the video
+// features, so the handoff reads as the logo "coming alive", not a swap.
+// Boolean attrs are written as `autoplay=""` — the exact form the browser's
+// serializer produces — because React hydrates dangerouslySetInnerHTML by
+// comparing this string against the parsed DOM's innerHTML, and `autoplay`
+// vs `autoplay=""` is a mismatch warning on every load (it predates the img;
+// the old video-only string had it too).
 const ICON_VIDEO_HTML =
-  '<video src="/images/loading.mp4" autoplay muted playsinline preload="auto"></video>';
+  '<img src="/images/fav.png" alt="" draggable="false">' +
+  '<video src="/images/loading.mp4" autoplay="" muted="" playsinline="" preload="auto"></video>';
 
 export default function Loader() {
   // Read-only initializer: true on any mount after the first client boot.
@@ -86,6 +99,18 @@ export default function Loader() {
       return;
     }
 
+    // Reveal the icon video over the static logo once it has a real frame.
+    // Waiting for hydration costs nothing visible: the logo already covers
+    // the box, and on a fast connection this runs within the first frames.
+    const iconVideo = document.querySelector<HTMLVideoElement>(
+      "#nudot-loader .nd-icon video",
+    );
+    const revealIcon = () => iconVideo?.classList.add("nd-live");
+    if (iconVideo) {
+      if (iconVideo.readyState >= 2) revealIcon();
+      else iconVideo.addEventListener("loadeddata", revealIcon, { once: true });
+    }
+
     const timers: number[] = [
       window.setTimeout(fireHeroReveal, remaining(HERO_REVEAL_MS)),
       window.setTimeout(fireDismiss, remaining(DISMISS_MS)),
@@ -113,6 +138,7 @@ export default function Loader() {
     return () => {
       for (const id of timers) window.clearTimeout(id);
       for (const ev of skipEvents) window.removeEventListener(ev, skipNow);
+      iconVideo?.removeEventListener("loadeddata", revealIcon);
     };
   }, []);
 

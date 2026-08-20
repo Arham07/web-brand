@@ -17,6 +17,20 @@
   cursor: grabbing;
 }
 
+.hero-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url("/images/home/slider1/web-bg.webp");
+  background-size: cover;
+  background-position: center;
+}
+@media (max-width: 767px) {
+  .hero-poster {
+    background-image: url("/images/home/slider1/mob-bg.webp");
+  }
+}
+
 .hero-prewarm {
   position: absolute;
   inset: 0;
