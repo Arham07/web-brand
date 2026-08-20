@@ -117,8 +117,18 @@ export default function HeroSection() {
 
   return (
     <section className="hero-section" ref={root}>
-      {/* instant slide-0 backdrop; the poster paints pre-hydration, the
-          mount effect picks the width-appropriate variant, and the element
+      {/* Poster floor — the layer that shows whenever no video frame is
+          ready to paint. A full-res still of slide 1's video (37KB desktop /
+          21KB mobile via media query, sections/hero.css), NOT the 2KB
+          slider01.webp thumb this hero used to stretch full-screen — on a
+          slow connection that thumb sat there for seconds and looked broken.
+          Everything above it (prewarm frame, WebGL canvas, DOM slides) only
+          paints once it has real pixels, so a stalled network simply leaves
+          this image up and the video appears over it whenever it arrives —
+          no detection, no flicker, nothing for the visitor to notice. */}
+      <div className="hero-poster" aria-hidden="true" />
+      {/* instant slide-0 backdrop; the poster attribute paints
+          pre-hydration, the mount effect starts the stream, and the element
           is stopped + hidden once the WebGL canvas is ready (it used to
           keep decoding the desktop file forever, in parallel with WebGL's
           own copy — on phones that meant two decoders and 1.2MB extra). */}
@@ -130,7 +140,7 @@ export default function HeroSection() {
         loop
         playsInline
         preload="metadata"
-        poster="/images/home/slider1/slider01.webp"
+        poster="/images/home/slider1/web-bg.webp"
       />
       <div id="webgl-container" />
 

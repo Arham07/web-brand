@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description:
     "Send your site and what you sell. In 72 hours we'll send back a custom homepage concept for your business — free, no call required, yours to keep.",
   openGraph: {
+    images: ["/images/og.jpg"],
     title: "Get a Free Homepage Design Concept | American Web Guild",
     description:
       "Send your site and what you sell. In 72 hours we'll send back a custom homepage concept for your business — free, no call required, yours to keep.",

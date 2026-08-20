@@ -86,11 +86,25 @@
   animation: ndIconOut 0.45s ease 2s forwards;
 }
 
+#nudot-loader .nd-icon {
+  position: relative;
+}
+#nudot-loader .nd-icon img,
 #nudot-loader .nd-icon video {
   display: block;
   width: clamp(44px, 8vw, 104px);
   height: clamp(44px, 8vw, 104px);
   object-fit: contain;
+}
+/* video rides on top of the static mark, invisible until it has a frame */
+#nudot-loader .nd-icon video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+#nudot-loader .nd-icon video.nd-live {
+  opacity: 1;
 }
 
 /* ---------------------------- keyframes --------------------------- */

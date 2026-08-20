@@ -12,8 +12,8 @@ export const ASSETS = [
   "images/pc_logo.svg",
   "images/textlogo.svg",
   "images/down.svg",
-  "images/fav.png",
-  "images/og.jpg",
+  "images/fav.png", 
+  "images/og.png", 
 
   // --- loader ---
   "images/loading.mp4",

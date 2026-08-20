@@ -63,7 +63,14 @@ export const metadata: Metadata = {
     title: "Custom Web Design That Books Calls | American Web Guild",
     description:
       "Custom web design and development for service brands. Strategy, copy, design and code from one team, live in 14 days. See your homepage redesigned free — 72 hours, no call required.",
-    images: ["/images/og.jpg"],
+    images: [
+      {
+        url: "/images/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "American Web Guild — custom web design studio",
+      },
+    ],
     locale: "en_US",
     siteName: "American Web Guild",
   },
