@@ -120,7 +120,19 @@ function clientKey(request: Request): { ip: string; chain: string } {
  * JSON.stringify, never concatenation — it escapes newlines, so a name
  * containing a fake log line can't forge entries.
  */
-function logLead(t: "lead" | "lead-hp" | "lead-send-failed", data: unknown) {
+type LeadLogTag =
+  /** a real submission, logged before the send is attempted */
+  | "lead"
+  /** honeypot filled and NOT matching any visible field — treated as a bot */
+  | "lead-hp"
+  /** honeypot filled by a password manager (value matches a visible field) —
+      the submission is let through; this line exists so the rate of false
+      honeypot hits stays visible */
+  | "lead-hp-autofill"
+  /** the send threw; the matching "lead" line above it is the recovery copy */
+  | "lead-send-failed";
+
+function logLead(t: LeadLogTag, data: unknown) {
   try {
     console.log(JSON.stringify({ t, at: new Date().toISOString(), data }));
   } catch {
