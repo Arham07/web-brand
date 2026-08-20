@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "Browse our web design portfolio: custom websites, redesigns and e-commerce builds across fintech, real estate, retail and more.",
   openGraph: {
+    images: ["/images/og.jpg"],
     title: "Web Design Portfolio | American Web Guild",
     description:
       "Browse our web design portfolio: custom websites, redesigns and e-commerce builds across fintech, real estate, retail and more.",

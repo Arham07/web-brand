@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     "A custom web design studio that builds every site from scratch around one question: does it convert? Meet the team, the process, and the 14-day build.",
   openGraph: {
+    images: ["/images/og.jpg"],
     title: "About American Web Guild | Custom Web Design Studio",
     description:
       "A custom web design studio that builds every site from scratch around one question: does it convert? Meet the team, the process, and the 14-day build.",
