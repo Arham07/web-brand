@@ -5,6 +5,11 @@ import {
   Bitcount_Grid_Single,
 } from "next/font/google";
 
+import {
+  ORGANIZATION_JSONLD,
+  WEBSITE_JSONLD,
+  jsonLdString,
+} from "@/lib/structured-data";
 import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/loader.css";
@@ -104,6 +109,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${dmSans.variable} ${zalando.variable} ${bitcount.variable}`}
     >
       <body suppressHydrationWarning>
+        {/* Machine-readable identity — every page carries the Organization
+            and WebSite nodes; the FAQPage node is homepage-only (page.tsx). */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdString(ORGANIZATION_JSONLD) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdString(WEBSITE_JSONLD) }}
+        />
         <AppShell>{children}</AppShell>
       </body>
     </html>

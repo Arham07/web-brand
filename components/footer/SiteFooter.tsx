@@ -214,7 +214,7 @@ export default function SiteFooter() {
               <span className="footer-phone">(213) 555-0142</span>
             </div>
             <div className="footer-address">
-              Serving clients nationwide from California, USA
+              2108 N St Ste N, Sacramento, CA 95816 — serving clients nationwide
             </div>
             <div className="footer-trust-row">
               <span>100% money-back guarantee</span>

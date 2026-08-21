@@ -83,11 +83,47 @@ function safeHref(raw: string): string | undefined {
 function buildTransport() {
   const host = requireEnv("SMTP_HOST");
   const user = requireEnv("SMTP_USER");
-  const pass = requireEnv("SMTP_PASS");
+  // Panel-sourced secrets arrive with whatever the panel's own parser left
+  // behind. Two failure modes are common enough to defend against here:
+  // surrounding quotes kept as literal characters, and stray outer whitespace.
+  // Both produce a password that is wrong by 1-2 chars and looks perfectly
+  // correct in the panel UI.
+  //
+  // NOTE: this cannot rescue a value truncated at a `#`. A dotenv-style
+  // parser drops everything after an unquoted `#` before the process ever
+  // sees it — those bytes are simply gone. Keep SMTP passwords alphanumeric.
+  const pass = requireEnv("SMTP_PASS")
+    .trim()
+    .replace(/^(["'])([\s\S]*)\1$/, "$2");
   const port = Number(process.env.SMTP_PORT ?? 465);
   if (!Number.isFinite(port) || port <= 0) {
     throw new EmailConfigError(`SMTP_PORT is not a valid port: ${process.env.SMTP_PORT}`);
   }
+
+  /* Credential fingerprint — shape only, NEVER the value.
+     A 535 means the server disliked what we sent, and the same credentials
+     authenticate fine from a laptop, so the question is only "did the string
+     survive the trip from the hosting panel intact?". A panel that stores a
+     pasted `"pw"` verbatim, or keeps a trailing space, produces a password
+     that is wrong by one or two characters and looks perfectly right in the
+     UI. Length plus these three booleans distinguish every such case without
+     putting the secret in a log file.
+     DELETE THIS BLOCK once SMTP is confirmed working. */
+  console.log(
+    "[email] credential fingerprint:",
+    JSON.stringify({
+      userLen: user.length,
+      userHasAt: user.includes("@"),
+      passLen: pass.length,
+      passWrappedInQuotes:
+        (pass.startsWith('"') && pass.endsWith('"')) ||
+        (pass.startsWith("'") && pass.endsWith("'")),
+      passHasOuterSpace: pass !== pass.trim(),
+      passHasHash: pass.includes("#"),
+      port,
+      secure: port === 465,
+    }),
+  );
 
   return nodemailer.createTransport({
     host,
